@@ -1,0 +1,436 @@
+/* USER CODE BEGIN Header */
+/**
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
+ * All rights reserved.</center></h2>
+ *
+ * This software component is licensed by ST under Ultimate Liberty license
+ * SLA0044, the "License"; You may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at:
+ *                             www.st.com/SLA0044
+ *
+ ******************************************************************************
+ */
+/* USER CODE END Header */
+
+/* Includes ------------------------------------------------------------------*/
+#include "main.h"
+#include "crc.h"
+#include "dma2d.h"
+#include "gfxsimulator.h"
+#include "i2c.h"
+#include "ltdc.h"
+#include "spi.h"
+#include "tim.h"
+#include "usart.h"
+#include "gpio.h"
+#include "fmc.h"
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+#include "../Drivers/BSP/STM32F429I-Discovery/stm32f429i_discovery_lcd.h"
+#include "../Drivers/BSP/STM32F429I-Discovery/Fonts/fonts.h"
+#include "hehe.h"
+#include "stmlogo.h"
+/* USER CODE END Includes */
+
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
+
+/* USER CODE END PTD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+
+/* USER CODE END PD */
+
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
+
+/* USER CODE END PM */
+
+/* Private variables ---------------------------------------------------------*/
+
+/* USER CODE BEGIN PV */
+ZyroskopDane Data;
+uint8_t Animacja;
+volatile uint16_t X, Y;
+volatile uint8_t Kierunek;
+
+DMA2D_HandleTypeDef hdma2d;
+I2C_HandleTypeDef hi2c3;
+LTDC_HandleTypeDef hltdc;
+SPI_HandleTypeDef hspi5;
+SDRAM_HandleTypeDef hsdram1;
+/* USER CODE END PV */
+
+/* Private function prototypes -----------------------------------------------*/
+void SystemClock_Config(void);
+/* USER CODE BEGIN PFP */
+
+/* USER CODE END PFP */
+
+/* Private user code ---------------------------------------------------------*/
+/* USER CODE BEGIN 0 */
+uint8_t spi5_sendrecv(uint8_t byte) {
+	uint8_t answer;
+
+	HAL_SPI_TransmitReceive(&hspi5, &byte, &answer, 1, HAL_MAX_DELAY);
+
+	return answer;
+}
+
+uint8_t SPI5_read(uint8_t address) {
+	uint8_t dane;
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
+	spi5_sendrecv(address | 0x80);
+	dane = spi5_sendrecv(0xFF);
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
+
+	return dane;
+}
+
+void SPI5_write(uint8_t address, uint8_t data) {
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
+	spi5_sendrecv(address);
+	data = spi5_sendrecv(data);
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_SET);
+
+}
+
+uint8_t OurL3GD20_Init() {
+	if (SPI5_read(0x0F) != 0b11010100) {
+
+		return 1;
+	}
+
+	//Enable L3GD20 Power bit
+	SPI5_write(0x20, 0xFF);
+
+	//Set L3GD20 scale
+
+	SPI5_write(0x23, 0x00);
+
+	//Set high-pass filter settings
+	SPI5_write(0x21, 0x00);
+
+	//Enable high-pass filter
+	SPI5_write(0x24, 0x10);
+
+	//SPI5_write(0x22, 0b10000000);
+	//SPI5_write(0x30, 0b01010101);
+
+	//SPI5_write(0x32, 0b00000100);
+	//SPI5_write(0x33, 0b01111110);
+
+	//SPI5_write(0x34, 0b00000100);
+	//SPI5_write(0x35, 0b01111110);
+
+	//SPI5_write(0x36, 0b00000100);
+	//SPI5_write(0x37, 0b01111110);
+
+	//printf("Konf: %d", SPI5_read(0x31));
+
+	//Everything OK
+	return 0;
+}
+
+void OurL3GD20_Read() {
+	float s;
+	short temp1, temp2, temp3;
+
+	// Read X axis
+
+	temp1 = (SPI5_read(0x28) | SPI5_read(0x29) << 8);
+	temp2 = (SPI5_read(0x2A) | SPI5_read(0x2B) << 8);
+	temp3 = (SPI5_read(0x2C) | SPI5_read(0x2D) << 8);
+
+	// Sensitivity at 250 range = 8.75 mdps/digit
+	s = 8.75 * 0.001;
+
+	Data.OsX = (short) ((float) temp1 * s);
+	Data.OsY = (short) ((float) temp2 * s);
+	Data.OsZ = (short) ((float) temp3 * s);
+
+}
+
+void send_char(char c) {
+	HAL_UART_Transmit(&huart1, (uint8_t*) &c, 1, 1000);
+}
+
+int __io_putchar(int ch) {
+	send_char(ch);
+	return ch;
+}
+
+/* USER CODE END 0 */
+
+/**
+  * @brief  The application entry point.
+  * @retval int
+  */
+int main(void)
+{
+  /* USER CODE BEGIN 1 */
+
+  /* USER CODE END 1 */
+
+  /* MCU Configuration--------------------------------------------------------*/
+
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
+
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
+  /* Configure the system clock */
+  SystemClock_Config();
+
+  /* USER CODE BEGIN SysInit */
+
+  /* USER CODE END SysInit */
+
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_CRC_Init();
+  MX_DMA2D_Init();
+  MX_FMC_Init();
+  MX_GFXSIMULATOR_Init();
+  MX_LTDC_Init();
+  MX_SPI5_Init();
+  MX_TIM1_Init();
+  MX_USART1_UART_Init();
+  MX_I2C3_Init();
+  MX_TIM10_Init();
+  /* USER CODE BEGIN 2 */
+
+	HAL_TIM_Base_Start_IT(&htim10);
+	__HAL_SPI_ENABLE(&hspi5);
+
+	Animacja = 0;
+	Kierunek = 1;
+	X = 0;
+	Y = 0;
+
+	OurL3GD20_Init();
+
+	BSP_LCD_Init();
+	BSP_LCD_LayerDefaultInit(LCD_BACKGROUND_LAYER, LCD_FRAME_BUFFER);
+
+	BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
+	BSP_LCD_DisplayOn();
+	BSP_LCD_Clear(LCD_COLOR_BLUE);
+	BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Hehe);
+
+	BSP_LCD_SetTextColor(LCD_COLOR_DARKGRAY);
+	BSP_LCD_DisplayStringAtLine(5, (uint8_t*) "Hello, Elo");
+
+	HAL_Delay(2000);
+	BSP_LCD_ClearStringLine(5);
+	BSP_LCD_Clear(LCD_COLOR_WHITE);
+	BSP_LCD_FillRect(0, 0, 240, 15);
+	BSP_LCD_FillRect(0, 305, 240, 15);
+
+	Animacja = 1;
+
+  /* USER CODE END 2 */
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+	while (1) {
+
+		OurL3GD20_Read();
+		printf("OsX: %d\n\r", Data.OsX);
+		printf("OsY: %d\n\r", Data.OsY);
+		printf("OsZ: %d\n\r", Data.OsZ);
+		HAL_Delay(200);
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+
+	}
+  /* USER CODE END 3 */
+}
+
+/**
+  * @brief System Clock Configuration
+  * @retval None
+  */
+void SystemClock_Config(void)
+{
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+
+  /** Configure the main internal regulator output voltage 
+  */
+  __HAL_RCC_PWR_CLK_ENABLE();
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+  /** Initializes the CPU, AHB and APB busses clocks 
+  */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLM = 4;
+  RCC_OscInitStruct.PLL.PLLN = 180;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+  RCC_OscInitStruct.PLL.PLLQ = 3;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Activate the Over-Drive mode 
+  */
+  if (HAL_PWREx_EnableOverDrive() != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Initializes the CPU, AHB and APB busses clocks 
+  */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_LTDC;
+  PeriphClkInitStruct.PLLSAI.PLLSAIN = 192;
+  PeriphClkInitStruct.PLLSAI.PLLSAIR = 2;
+  PeriphClkInitStruct.PLLSAIDivR = RCC_PLLSAIDIVR_2;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+/* USER CODE BEGIN 4 */
+
+/* USER CODE END 4 */
+
+/**
+  * @brief  Period elapsed callback in non blocking mode
+  * @note   This function is called  when TIM6 interrupt took place, inside
+  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+  * a global variable "uwTick" used as application time base.
+  * @param  htim : TIM handle
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  /* USER CODE BEGIN Callback 0 */
+	if (htim->Instance == TIM10) //Przerwanie pochodzi od timera 10
+	{
+		if (Animacja == 1) {
+			if ((Y < 300) && (Kierunek == 1)) {
+
+				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
+
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+				BSP_LCD_FillRect(110, Y - 10, 25, 25);
+
+				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+
+				Y += 10;
+				BSP_LCD_FillCircle(120, Y, 10);
+				BSP_LCD_FillRect(0, 0, 240, 15);
+				BSP_LCD_FillRect(0, 305, 240, 15);
+
+			} else if ((Y >= 300) && (Kierunek == 1)) {
+				Kierunek = 0;
+
+				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
+
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+				BSP_LCD_FillRect(110, Y - 10, 25, 25);
+
+				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+
+				Y -= 10;
+				BSP_LCD_FillCircle(120, Y, 10);
+				BSP_LCD_FillRect(0, 0, 240, 15);
+				BSP_LCD_FillRect(0, 305, 240, 15);
+
+			} else if ((Y > 20) && (Kierunek == 0)) {
+
+				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
+
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+				BSP_LCD_FillRect(110, Y - 10, 25, 25);
+
+				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+
+				Y -= 10;
+				BSP_LCD_FillCircle(120, Y, 10);
+				BSP_LCD_FillRect(0, 0, 240, 15);
+				BSP_LCD_FillRect(0, 305, 240, 15);
+
+			} else if ((Y <= 20) && (Kierunek == 0)) {
+				Kierunek = 1;
+
+				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
+
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+				BSP_LCD_FillRect(110, Y - 10, 25, 25);
+
+				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+
+				Y += 10;
+				BSP_LCD_FillCircle(120, Y, 10);
+				BSP_LCD_FillRect(0, 0, 240, 15);
+				BSP_LCD_FillRect(0, 305, 240, 15);
+			}
+
+		}
+	}
+
+  /* USER CODE END Callback 0 */
+  if (htim->Instance == TIM6) {
+    HAL_IncTick();
+  }
+  /* USER CODE BEGIN Callback 1 */
+
+  /* USER CODE END Callback 1 */
+}
+
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @retval None
+  */
+void Error_Handler(void)
+{
+  /* USER CODE BEGIN Error_Handler_Debug */
+	/* User can add his own implementation to report the HAL error return state */
+
+  /* USER CODE END Error_Handler_Debug */
+}
+
+#ifdef  USE_FULL_ASSERT
+/**
+  * @brief  Reports the name of the source file and the source line number
+  *         where the assert_param error has occurred.
+  * @param  file: pointer to the source file name
+  * @param  line: assert_param error line source number
+  * @retval None
+  */
+void assert_failed(uint8_t *file, uint32_t line)
+{ 
+  /* USER CODE BEGIN 6 */
+	/* User can add his own implementation to report the file name and line number,
+	 tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  /* USER CODE END 6 */
+}
+#endif /* USE_FULL_ASSERT */
+
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
