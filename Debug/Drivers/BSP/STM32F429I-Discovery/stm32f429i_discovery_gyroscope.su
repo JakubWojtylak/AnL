@@ -1,0 +1,7 @@
+stm32f429i_discovery_gyroscope.c:98:9:BSP_GYRO_Init	24	static
+stm32f429i_discovery_gyroscope.c:154:9:BSP_GYRO_ReadID	16	static
+stm32f429i_discovery_gyroscope.c:168:6:BSP_GYRO_Reset	8	static
+stm32f429i_discovery_gyroscope.c:181:6:BSP_GYRO_ITConfig	24	static
+stm32f429i_discovery_gyroscope.c:204:6:BSP_GYRO_EnableIT	16	static
+stm32f429i_discovery_gyroscope.c:219:6:BSP_GYRO_DisableIT	16	static
+stm32f429i_discovery_gyroscope.c:231:6:BSP_GYRO_GetXYZ	16	static

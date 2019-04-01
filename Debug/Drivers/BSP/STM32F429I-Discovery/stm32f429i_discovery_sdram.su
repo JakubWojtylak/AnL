@@ -1,0 +1,10 @@
+stm32f429i_discovery_sdram.c:102:9:BSP_SDRAM_Init	8	static
+stm32f429i_discovery_sdram.c:163:6:BSP_SDRAM_Initialization_sequence	24	static
+stm32f429i_discovery_sdram.c:225:9:BSP_SDRAM_ReadData	24	static
+stm32f429i_discovery_sdram.c:243:9:BSP_SDRAM_ReadData_DMA	24	static
+stm32f429i_discovery_sdram.c:261:9:BSP_SDRAM_WriteData	24	static
+stm32f429i_discovery_sdram.c:283:9:BSP_SDRAM_WriteData_DMA	24	static
+stm32f429i_discovery_sdram.c:300:9:BSP_SDRAM_Sendcmd	16	static
+stm32f429i_discovery_sdram.c:315:6:BSP_SDRAM_DMA_IRQHandler	8	static
+stm32f429i_discovery_sdram.c:326:13:BSP_SDRAM_MspInit	72	static
+stm32f429i_discovery_sdram.c:447:13:BSP_SDRAM_MspDeInit	16	static

@@ -1,0 +1,73 @@
+#ifndef $(doc_name_ws)_H_
+#define $(doc_name_ws)_H_
+
+#include <stdint.h>
+
+// struct packing, pragma for GCC !!!
+#pragma pack(push, 1)
+
+$(start_block_images_table)
+
+typedef struct $(doc_name_ws)_tagBITMAPFILEHEADER {
+  uint16_t   bfType;
+  uint32_t   bfSize;
+  uint16_t   bfReserved1;
+  uint16_t   bfReserved2;
+  uint32_t   bfOffBits;
+} $(doc_name_ws)_BITMAPFILEHEADER; // size is 14 bytes
+
+typedef struct $(doc_name_ws)_tagBITMAPINFOHEADER {
+  uint32_t  biSize;
+  uint32_t  biWidth;
+  uint32_t  biHeight;
+  uint16_t  biPlanes;
+  uint16_t  biBitCount;
+  uint32_t  biCompression;
+  uint32_t  biSizeImage;
+  uint32_t  biXPelsPerMeter;
+  uint32_t  biYPelsPerMeter;
+  uint32_t  biClrUsed;
+  uint32_t  biClrImportant;
+} $(doc_name_ws)_BITMAPINFOHEADER; // size is 40 bytes
+
+typedef struct $(doc_name_ws)_tag_Struct {
+  // offset 0, size 14
+  $(doc_name_ws)_BITMAPFILEHEADER fileHeader;
+  // offset 14, size 40
+  $(doc_name_ws)_BITMAPINFOHEADER infoHeader;
+  // offset 54, size $(out_blocks_count) words
+  uint16_t data[$(out_blocks_count)];
+} $(doc_name_ws)_Struct;
+
+$(doc_name_ws)_Struct $(doc_name_ws) = {
+  {
+    0x4d42u,
+    sizeof($(doc_name_ws)_BITMAPINFOHEADER) + sizeof($(doc_name_ws)_BITMAPFILEHEADER) + ($(out_blocks_count) * 2),
+    0x0000u,
+    0x0000u,
+    sizeof($(doc_name_ws)_BITMAPINFOHEADER) + sizeof($(doc_name_ws)_BITMAPFILEHEADER)
+  },
+  {
+    sizeof($(doc_name_ws)_BITMAPINFOHEADER),
+    $(out_image_width),
+    $(out_image_height),
+    1u,
+    $(out_bpp),
+    0x00000003u,
+    ($(out_blocks_count) * 2),
+    0x00000000ul,
+    0x00000000ul,
+    0x00000000ul,
+    0x00000000ul
+  },
+  {
+  $(out_image_data)
+  }
+};
+
+$(end_block_images_table)
+
+// struct packing, pragma for GCC !!!
+#pragma pack (pop)
+
+#endif /* $(doc_name_ws)_H_ */

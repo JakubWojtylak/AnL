@@ -1,0 +1,8 @@
+stm32f429i_discovery_eeprom.c:158:10:BSP_EEPROM_Init	8	static
+stm32f429i_discovery_eeprom.c:192:10:BSP_EEPROM_ReadBuffer	32	static
+stm32f429i_discovery_eeprom.c:249:10:BSP_EEPROM_WritePage	32	static
+stm32f429i_discovery_eeprom.c:293:10:BSP_EEPROM_WriteBuffer	32	static
+stm32f429i_discovery_eeprom.c:450:10:BSP_EEPROM_WaitEepromStandbyState	8	static
+stm32f429i_discovery_eeprom.c:466:6:HAL_I2C_MemTxCpltCallback	16	static
+stm32f429i_discovery_eeprom.c:475:6:HAL_I2C_MemRxCpltCallback	16	static
+stm32f429i_discovery_eeprom.c:483:13:BSP_EEPROM_TIMEOUT_UserCallback	4	static

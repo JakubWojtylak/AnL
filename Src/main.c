@@ -34,6 +34,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "../Drivers/BSP/STM32F429I-Discovery/stm32f429i_discovery_lcd.h"
+#include "../Drivers/BSP/STM32F429I-Discovery/stm32f429i_discovery_gyroscope.h"
 #include "../Drivers/BSP/STM32F429I-Discovery/Fonts/fonts.h"
 #include "hehe.h"
 #include "stmlogo.h"
@@ -57,10 +58,16 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-ZyroskopDane Data;
+volatile ZyroskopDane DataOld, DataNow;
+volatile int32_t CalkaX, CalkaY, CalkaZ;
+float dT;
 uint8_t Animacja;
 volatile uint16_t X, Y;
 volatile uint8_t Kierunek;
+volatile uint8_t fPoruszonoX;
+volatile uint8_t fPoruszonoY;
+volatile uint16_t CzasZerowaniaX;
+volatile uint16_t CzasZerowaniaY;
 
 DMA2D_HandleTypeDef hdma2d;
 I2C_HandleTypeDef hi2c3;
@@ -153,9 +160,9 @@ void OurL3GD20_Read() {
 	// Sensitivity at 250 range = 8.75 mdps/digit
 	s = 8.75 * 0.001;
 
-	Data.OsX = (short) ((float) temp1 * s);
-	Data.OsY = (short) ((float) temp2 * s);
-	Data.OsZ = (short) ((float) temp3 * s);
+	DataNow.OsX = (short) ((float) temp1 * s);
+	DataNow.OsY = (short) ((float) temp2 * s);
+	DataNow.OsZ = (short) ((float) temp3 * s);
 
 }
 
@@ -208,24 +215,33 @@ int main(void)
   MX_USART1_UART_Init();
   MX_I2C3_Init();
   MX_TIM10_Init();
+  MX_TIM11_Init();
   /* USER CODE BEGIN 2 */
 
 	HAL_TIM_Base_Start_IT(&htim10);
+	HAL_TIM_Base_Start_IT(&htim11);
 	__HAL_SPI_ENABLE(&hspi5);
 
 	Animacja = 0;
 	Kierunek = 1;
-	X = 0;
-	Y = 0;
+	X = 120;
+	Y = 170;
+	dT = 0.001;
+	fPoruszonoX = 0;
+	fPoruszonoY = 0;
+	CzasZerowaniaX = 0;
+	CzasZerowaniaY = 0;
 
 	OurL3GD20_Init();
 
 	BSP_LCD_Init();
+	//BSP_LCD_LayerDefaultInit(LCD_FOREGROUND_LAYER, LCD_FRAME_BUFFER+1024*1024*4);
 	BSP_LCD_LayerDefaultInit(LCD_BACKGROUND_LAYER, LCD_FRAME_BUFFER);
 
 	BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
+
 	BSP_LCD_DisplayOn();
-	BSP_LCD_Clear(LCD_COLOR_BLUE);
+	BSP_LCD_Clear(LCD_COLOR_BLACK);
 	BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Hehe);
 
 	BSP_LCD_SetTextColor(LCD_COLOR_DARKGRAY);
@@ -233,11 +249,19 @@ int main(void)
 
 	HAL_Delay(2000);
 	BSP_LCD_ClearStringLine(5);
-	BSP_LCD_Clear(LCD_COLOR_WHITE);
+
+	BSP_LCD_Clear(LCD_COLOR_BLACK);
+	BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
 	BSP_LCD_FillRect(0, 0, 240, 15);
 	BSP_LCD_FillRect(0, 305, 240, 15);
+	BSP_LCD_FillRect(0, 15, 15, 290);
+	BSP_LCD_FillRect(225, 15, 15, 290);
+
 
 	Animacja = 1;
+	//long CalkaX = 0;
+	//long CalkaY = 0;
+	//long CalkaZ = 0;
 
   /* USER CODE END 2 */
 
@@ -245,10 +269,16 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 	while (1) {
 
-		OurL3GD20_Read();
-		printf("OsX: %d\n\r", Data.OsX);
-		printf("OsY: %d\n\r", Data.OsY);
-		printf("OsZ: %d\n\r", Data.OsZ);
+		//OurL3GD20_Read();
+		/*CalkaX += (long)Data.OsX;
+		CalkaY += (long)Data.OsY;
+		CalkaZ += (long)Data.OsZ;*/
+		printf("Calka X: %li\n\r", CalkaX);
+		printf("Calka Y: %li\n\r", CalkaY);
+		printf("Calka Z: %li\n\r", CalkaZ);
+		//printf("OsX: %d\n\r", Data.OsX);
+		//printf("OsY: %d\n\r", Data.OsY);
+		//printf("OsZ: %d\n\r", Data.OsZ);
 		HAL_Delay(200);
     /* USER CODE END WHILE */
 
@@ -332,67 +362,229 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 0 */
 	if (htim->Instance == TIM10) //Przerwanie pochodzi od timera 10
 	{
-		if (Animacja == 1) {
+		if (Animacja == 1)
+		{
 			if ((Y < 300) && (Kierunek == 1)) {
 
 				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
 
-				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-				BSP_LCD_FillRect(110, Y - 10, 25, 25);
-
 				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 
-				Y += 10;
-				BSP_LCD_FillCircle(120, Y, 10);
+				if(X <= 25 && Y <= 25)
+					BSP_LCD_FillRect(X-10, Y - 10, 40, 40);
+				else if(X >= 215 && Y >= 295)
+					BSP_LCD_FillRect(X-20, Y - 20, 30, 30);
+				else if(X <= 25 && Y >= 295)
+					BSP_LCD_FillRect(X-10, Y - 20, 40, 30);
+				else if(X >= 215 && Y <= 25)
+					BSP_LCD_FillRect(X-20, Y - 10, 30, 40);
+				else if(X <= 25)
+					BSP_LCD_FillRect(X-10, Y - 20, 40, 40);
+				else if(X >= 215)
+					BSP_LCD_FillRect(X-20, Y - 20, 30, 40);
+				else if(Y >= 295)
+					BSP_LCD_FillRect(X-20, Y - 20, 40, 30);
+				else if(Y <= 25)
+					BSP_LCD_FillRect(X-20, Y - 10, 40, 40);
+				else
+					BSP_LCD_FillRect(X-20, Y - 20, 40, 40);
+
+
+
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+
+				//Y += 10;
+				BSP_LCD_FillCircle(X, Y, 10);
 				BSP_LCD_FillRect(0, 0, 240, 15);
 				BSP_LCD_FillRect(0, 305, 240, 15);
+				BSP_LCD_FillRect(0, 15, 15, 290);
+				BSP_LCD_FillRect(225, 15, 15, 290);
 
 			} else if ((Y >= 300) && (Kierunek == 1)) {
 				Kierunek = 0;
 
 				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
 
-				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-				BSP_LCD_FillRect(110, Y - 10, 25, 25);
-
 				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+				if(X <= 25 && Y <= 25)
+					BSP_LCD_FillRect(X-10, Y - 10, 40, 40);
+				else if(X >= 215 && Y >= 295)
+					BSP_LCD_FillRect(X-20, Y - 20, 30, 30);
+				else if(X <= 25 && Y >= 295)
+					BSP_LCD_FillRect(X-10, Y - 20, 40, 30);
+				else if(X >= 215 && Y <= 25)
+					BSP_LCD_FillRect(X-20, Y - 10, 30, 40);
+				else if(X <= 25)
+					BSP_LCD_FillRect(X-10, Y - 20, 40, 40);
+				else if(X >= 215)
+					BSP_LCD_FillRect(X-20, Y - 20, 30, 40);
+				else if(Y >= 295)
+					BSP_LCD_FillRect(X-20, Y - 20, 40, 30);
+				else if(Y <= 25)
+					BSP_LCD_FillRect(X-20, Y - 10, 40, 40);
+				else
+					BSP_LCD_FillRect(X-20, Y - 20, 40, 40);
 
-				Y -= 10;
-				BSP_LCD_FillCircle(120, Y, 10);
+
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+
+				//Y -= 10;
+				BSP_LCD_FillCircle(X, Y, 10);
 				BSP_LCD_FillRect(0, 0, 240, 15);
 				BSP_LCD_FillRect(0, 305, 240, 15);
+				BSP_LCD_FillRect(0, 15, 15, 290);
+				BSP_LCD_FillRect(225, 15, 15, 290);
 
 			} else if ((Y > 20) && (Kierunek == 0)) {
 
 				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
 
-				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-				BSP_LCD_FillRect(110, Y - 10, 25, 25);
-
 				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+				if(X <= 25 && Y <= 25)
+					BSP_LCD_FillRect(X-10, Y - 10, 40, 40);
+				else if(X >= 215 && Y >= 295)
+					BSP_LCD_FillRect(X-20, Y - 20, 30, 30);
+				else if(X <= 25 && Y >= 295)
+					BSP_LCD_FillRect(X-10, Y - 20, 40, 30);
+				else if(X >= 215 && Y <= 25)
+					BSP_LCD_FillRect(X-20, Y - 10, 30, 40);
+				else if(X <= 25)
+					BSP_LCD_FillRect(X-10, Y - 20, 40, 40);
+				else if(X >= 215)
+					BSP_LCD_FillRect(X-20, Y - 20, 30, 40);
+				else if(Y >= 295)
+					BSP_LCD_FillRect(X-20, Y - 20, 40, 30);
+				else if(Y <= 25)
+					BSP_LCD_FillRect(X-20, Y - 10, 40, 40);
+				else
+					BSP_LCD_FillRect(X-20, Y - 20, 40, 40);
 
-				Y -= 10;
-				BSP_LCD_FillCircle(120, Y, 10);
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+
+				//Y -= 10;
+				BSP_LCD_FillCircle(X, Y, 10);
 				BSP_LCD_FillRect(0, 0, 240, 15);
 				BSP_LCD_FillRect(0, 305, 240, 15);
+				BSP_LCD_FillRect(0, 15, 15, 290);
+				BSP_LCD_FillRect(225, 15, 15, 290);
 
 			} else if ((Y <= 20) && (Kierunek == 0)) {
 				Kierunek = 1;
 
 				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
 
-				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-				BSP_LCD_FillRect(110, Y - 10, 25, 25);
-
 				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+				if(X <= 25 && Y <= 25)
+					BSP_LCD_FillRect(X-10, Y - 10, 40, 40);
+				else if(X >= 215 && Y >= 295)
+					BSP_LCD_FillRect(X-20, Y - 20, 30, 30);
+				else if(X <= 25 && Y >= 295)
+					BSP_LCD_FillRect(X-10, Y - 20, 40, 30);
+				else if(X >= 215 && Y <= 25)
+					BSP_LCD_FillRect(X-20, Y - 10, 30, 40);
+				else if(X <= 25)
+					BSP_LCD_FillRect(X-10, Y - 20, 40, 40);
+				else if(X >= 215)
+					BSP_LCD_FillRect(X-20, Y - 20, 30, 40);
+				else if(Y >= 295)
+					BSP_LCD_FillRect(X-20, Y - 20, 40, 30);
+				else if(Y <= 25)
+					BSP_LCD_FillRect(X-20, Y - 10, 40, 40);
+				else
+					BSP_LCD_FillRect(X-20, Y - 20, 40, 40);
 
-				Y += 10;
-				BSP_LCD_FillCircle(120, Y, 10);
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+
+				//Y += 10;
+				BSP_LCD_FillCircle(X, Y, 10);
 				BSP_LCD_FillRect(0, 0, 240, 15);
 				BSP_LCD_FillRect(0, 305, 240, 15);
+				BSP_LCD_FillRect(0, 15, 15, 290);
+				BSP_LCD_FillRect(225, 15, 15, 290);
 			}
 
 		}
+	}
+
+	if (htim->Instance == TIM11) {
+		OurL3GD20_Read();
+		CalkaX += (long)(DataNow.OsX + ((DataOld.OsX - DataNow.OsX)*0.5));
+		CalkaY += (long)(DataNow.OsY + ((DataOld.OsY - DataNow.OsY)*0.5));
+
+		DataOld = DataNow;
+
+		if(CalkaY > 10000)
+		{
+			fPoruszonoX = 1;
+			fPoruszonoY = 1;
+
+			if(X < 215)
+				X += 1;
+
+		}else if(CalkaY < -10000)
+		{
+			fPoruszonoX = 1;
+			fPoruszonoY = 1;
+
+			if(X > 25)
+				X -= 1;
+
+		}
+
+		if(CalkaX > 10000)
+		{
+			fPoruszonoX = 1;
+			fPoruszonoY = 1;
+
+			if(Y < 295)
+				Y += 1;
+
+		}else if(CalkaX < -10000)
+		{
+			fPoruszonoX = 1;
+			fPoruszonoY = 1;
+
+			if(Y > 25)
+				Y -= 1;
+
+		}
+
+		if(fPoruszonoY == 1 && (CalkaY <= 8000 && CalkaY >= -8000))
+		{
+			CzasZerowaniaY += 1;
+
+		}else if(fPoruszonoY == 1 && (CalkaY > 8000 || CalkaY < -8000))
+		{
+			CzasZerowaniaY = 0;
+		}
+
+
+		if(fPoruszonoX == 1 && (CalkaX <= 8000 && CalkaX >= -8000))
+		{
+			CzasZerowaniaX += 1;
+
+		}else if(fPoruszonoX == 1 && (CalkaX > 8000 || CalkaX < -8000))
+		{
+			CzasZerowaniaX = 0;
+		}
+
+		if(CzasZerowaniaX >= 1000)
+		{
+			CalkaX = 0;
+
+			CzasZerowaniaX = 0;
+			fPoruszonoX = 0;
+		}
+
+		if(CzasZerowaniaY >= 1000)
+		{
+			CalkaY = 0;
+
+			CzasZerowaniaY = 0;
+			fPoruszonoY = 0;
+		}
+
+
 	}
 
   /* USER CODE END Callback 0 */
