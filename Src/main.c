@@ -571,7 +571,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		}
 
 
-		if(fPoruszonoX == 1 && (CalkaX <= 10000 && CalkaX >= -10000))
+		if(fPoruszonoX == 1 && (CalkaX <= 10000 && CalkaX >= -10000)||(CalkaX>20000 ||CalkaX<-20000))
 		{
 			CzasZerowaniaX += 1;
 
