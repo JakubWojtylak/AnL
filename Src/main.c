@@ -513,15 +513,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	if (htim->Instance == TIM11) {
 		OurL3GD20_Read();
 
-		if(DataNow.OsX >= 25 && DataNow.OsY <= 20)
+		if((DataNow.OsX >= 25 && DataNow.OsY <= 20) || (DataNow.OsX <= -25 && DataNow.OsY >= -20))
 			CalkaX += (long)(DataNow.OsX + ((DataOld.OsX - DataNow.OsX)*0.5));
-		else if(DataNow.OsX >= 25 && DataNow.OsY >= 25)
+		else if((DataNow.OsX >= 25 && DataNow.OsY >= 25) || (DataNow.OsX <= -25 && DataNow.OsY <= -25))
 			CalkaX += (long)(DataNow.OsX + ((DataOld.OsX - DataNow.OsX)*0.5));
 
-		if(DataNow.OsY >= 25 && DataNow.OsX <= 20)
+		if((DataNow.OsY >= 25 && DataNow.OsX <= 20) || (DataNow.OsY <= -25 && DataNow.OsX >= -20))
 			CalkaY += (long)(DataNow.OsY + ((DataOld.OsY - DataNow.OsY)*0.5));
-		else if(DataNow.OsX >= 25 && DataNow.OsY >= 25)
-			CalkaY += (long)(DataNow.OsX + ((DataOld.OsX - DataNow.OsX)*0.5));
+		else if((DataNow.OsX >= 25 && DataNow.OsY >= 25) || (DataNow.OsX <= -25 && DataNow.OsY <= -25))
+			CalkaY += (long)(DataNow.OsY + ((DataOld.OsY - DataNow.OsY)*0.5));
 
 		DataOld = DataNow;
 
@@ -561,7 +561,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 		}
 
-		if(fPoruszonoY == 1 && (CalkaY <= 10000 && CalkaY >= -10000))
+		if(fPoruszonoY == 1 && (CalkaY <= 10000 && CalkaY >= -10000)||(CalkaY>20000 ||CalkaY<-20000))
 		{
 			CzasZerowaniaY += 1;
 
