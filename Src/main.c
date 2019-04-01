@@ -242,10 +242,10 @@ int main(void)
 
 	BSP_LCD_DisplayOn();
 	BSP_LCD_Clear(LCD_COLOR_BLACK);
-	BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Hehe);
+	//BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Hehe);
 
 	BSP_LCD_SetTextColor(LCD_COLOR_DARKGRAY);
-	BSP_LCD_DisplayStringAtLine(5, (uint8_t*) "Hello, Elo");
+	BSP_LCD_DisplayStringAtLine(5, (uint8_t*) "Hello");
 
 	HAL_Delay(2000);
 	BSP_LCD_ClearStringLine(5);
@@ -276,6 +276,10 @@ int main(void)
 		printf("Calka X: %li\n\r", CalkaX);
 		printf("Calka Y: %li\n\r", CalkaY);
 		printf("Calka Z: %li\n\r", CalkaZ);
+		printf("CzasX: %d\n\r", CzasZerowaniaX);
+		printf("CzasY: %d\n\r", CzasZerowaniaY);
+		printf("Predkosc X: %d\n\r", DataNow.OsX);
+		printf("Predkosc Y: %d\n\r", DataNow.OsY);
 		//printf("OsX: %d\n\r", Data.OsX);
 		//printf("OsY: %d\n\r", Data.OsY);
 		//printf("OsZ: %d\n\r", Data.OsZ);
@@ -508,8 +512,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 	if (htim->Instance == TIM11) {
 		OurL3GD20_Read();
-		CalkaX += (long)(DataNow.OsX + ((DataOld.OsX - DataNow.OsX)*0.5));
-		CalkaY += (long)(DataNow.OsY + ((DataOld.OsY - DataNow.OsY)*0.5));
+
+		if(DataNow.OsX >= 25 && DataNow.OsY <= 20)
+			CalkaX += (long)(DataNow.OsX + ((DataOld.OsX - DataNow.OsX)*0.5));
+		else if(DataNow.OsX >= 25 && DataNow.OsY >= 25)
+			CalkaX += (long)(DataNow.OsX + ((DataOld.OsX - DataNow.OsX)*0.5));
+
+		if(DataNow.OsY >= 25 && DataNow.OsX <= 20)
+			CalkaY += (long)(DataNow.OsY + ((DataOld.OsY - DataNow.OsY)*0.5));
+		else if(DataNow.OsX >= 25 && DataNow.OsY >= 25)
+			CalkaY += (long)(DataNow.OsX + ((DataOld.OsX - DataNow.OsX)*0.5));
 
 		DataOld = DataNow;
 
@@ -549,21 +561,21 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 		}
 
-		if(fPoruszonoY == 1 && (CalkaY <= 8000 && CalkaY >= -8000))
+		if(fPoruszonoY == 1 && (CalkaY <= 10000 && CalkaY >= -10000))
 		{
 			CzasZerowaniaY += 1;
 
-		}else if(fPoruszonoY == 1 && (CalkaY > 8000 || CalkaY < -8000))
+		}else if(fPoruszonoY == 1 && (CalkaY > 10000 || CalkaY < -10000))
 		{
 			CzasZerowaniaY = 0;
 		}
 
 
-		if(fPoruszonoX == 1 && (CalkaX <= 8000 && CalkaX >= -8000))
+		if(fPoruszonoX == 1 && (CalkaX <= 10000 && CalkaX >= -10000))
 		{
 			CzasZerowaniaX += 1;
 
-		}else if(fPoruszonoX == 1 && (CalkaX > 8000 || CalkaX < -8000))
+		}else if(fPoruszonoX == 1 && (CalkaX > 10000 || CalkaX < -10000))
 		{
 			CzasZerowaniaX = 0;
 		}
