@@ -37,7 +37,10 @@
 #include "../Drivers/BSP/STM32F429I-Discovery/stm32f429i_discovery_gyroscope.h"
 #include "../Drivers/BSP/STM32F429I-Discovery/Fonts/fonts.h"
 #include "hehe.h"
-#include "stmlogo.h"
+#include "Menu.h"
+#include "Menu_kontynuuj.h"
+#include "Menu_nowagra.h"
+#include "Menu_poziomy.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -242,10 +245,15 @@ int main(void)
 
 	BSP_LCD_DisplayOn();
 	BSP_LCD_Clear(LCD_COLOR_BLACK);
-	//BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Hehe);
-
-	BSP_LCD_SetTextColor(LCD_COLOR_DARKGRAY);
-	BSP_LCD_DisplayStringAtLine(5, (uint8_t*) "Hello");
+	BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Menu);
+	HAL_Delay(2000);
+	BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Menu_nowagra);
+	HAL_Delay(2000);
+	BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Menu_kontynuuj);
+	HAL_Delay(2000);
+	BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Menu_poziomy);
+	//BSP_LCD_SetTextColor(LCD_COLOR_DARKGRAY);
+	//BSP_LCD_DisplayStringAtLine(5, (uint8_t*) "Hello");
 
 	HAL_Delay(2000);
 	BSP_LCD_ClearStringLine(5);
@@ -571,7 +579,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		}
 
 
-		if(fPoruszonoX == 1 && (CalkaX <= 10000 && CalkaX >= -10000))
+		if(fPoruszonoX == 1 && (CalkaX <= 10000 && CalkaX >= -10000)||(CalkaX>20000 ||CalkaX<-20000))
 		{
 			CzasZerowaniaX += 1;
 
