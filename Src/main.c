@@ -209,8 +209,6 @@ int main(void)
   MX_TIM11_Init();
   /* USER CODE BEGIN 2 */
 
-	HAL_TIM_Base_Start_IT(&htim10);
-	HAL_TIM_Base_Start_IT(&htim11);
 	__HAL_SPI_ENABLE(&hspi5);
 
 	Animacja = 0;
@@ -222,8 +220,6 @@ int main(void)
 	fMovedY = 0;
 	ResetTimeX = 0;
 	ResetTimeY = 0;
-
-	OurL3GD20_Init();
 
 	BSP_LCD_Init();
 	//BSP_LCD_LayerDefaultInit(LCD_FOREGROUND_LAYER, LCD_FRAME_BUFFER+1024*1024*4);
@@ -246,13 +242,17 @@ int main(void)
 	HAL_Delay(2000);
 	BSP_LCD_ClearStringLine(5);
 
-	BSP_LCD_Clear(LCD_COLOR_BLACK);
-	BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+	BSP_LCD_Clear(LCD_COLOR_WHITE);
+	BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 	BSP_LCD_FillRect(0, 0, 240, 15);
 	BSP_LCD_FillRect(0, 305, 240, 15);
 	BSP_LCD_FillRect(0, 15, 15, 290);
 	BSP_LCD_FillRect(225, 15, 15, 290);
 
+	OurL3GD20_Init();
+
+	HAL_TIM_Base_Start_IT(&htim10);
+	HAL_TIM_Base_Start_IT(&htim11);
 
 	Animacja = 1;
 
@@ -361,7 +361,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
 
-				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
 
 				if(X <= 25 && Y <= 25)
 					BSP_LCD_FillRect(X-10, Y - 10, 40, 40);
@@ -384,7 +384,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 
 
-				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 
 				//Y += 10;
 				BSP_LCD_FillCircle(X, Y, 10);
@@ -398,7 +398,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
 
-				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
 				if(X <= 25 && Y <= 25)
 					BSP_LCD_FillRect(X-10, Y - 10, 40, 40);
 				else if(X >= 215 && Y >= 295)
@@ -419,7 +419,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 					BSP_LCD_FillRect(X-20, Y - 20, 40, 40);
 
 
-				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 
 				//Y -= 10;
 				BSP_LCD_FillCircle(X, Y, 10);
@@ -432,7 +432,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
 
-				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
 				if(X <= 25 && Y <= 25)
 					BSP_LCD_FillRect(X-10, Y - 10, 40, 40);
 				else if(X >= 215 && Y >= 295)
@@ -452,7 +452,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				else
 					BSP_LCD_FillRect(X-20, Y - 20, 40, 40);
 
-				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 
 				//Y -= 10;
 				BSP_LCD_FillCircle(X, Y, 10);
@@ -466,7 +466,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
 
-				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
 				if(X <= 25 && Y <= 25)
 					BSP_LCD_FillRect(X-10, Y - 10, 40, 40);
 				else if(X >= 215 && Y >= 295)
@@ -484,9 +484,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				else if(Y <= 25)
 					BSP_LCD_FillRect(X-20, Y - 10, 40, 40);
 				else
-					BSP_LCD_FillRect(X-20, Y - 2co0, 40, 40);
+					BSP_LCD_FillRect(X-20, Y - 20, 40, 40);
 
-				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 
 				//Y += 10;
 				BSP_LCD_FillCircle(X, Y, 10);

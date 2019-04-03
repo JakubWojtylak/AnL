@@ -25,21 +25,21 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  10 .ARM.attributes 00000030  00000000  00000000  000c00b0  2**0
                   CONTENTS, READONLY
- 11 .debug_info   00026802  00000000  00000000  000c00e0  2**0
+ 11 .debug_info   00026807  00000000  00000000  000c00e0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_abbrev 00004cc6  00000000  00000000  000e68e2  2**0
+ 12 .debug_abbrev 00004cc6  00000000  00000000  000e68e7  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_aranges 00001c50  00000000  00000000  000eb5a8  2**3
+ 13 .debug_aranges 00001c50  00000000  00000000  000eb5b0  2**3
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_ranges 000019f0  00000000  00000000  000ed1f8  2**3
+ 14 .debug_ranges 000019f0  00000000  00000000  000ed200  2**3
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_line   0000d413  00000000  00000000  000eebe8  2**0
+ 15 .debug_line   0000d7cf  00000000  00000000  000eebf0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_str    00007d2f  00000000  00000000  000fbffb  2**0
+ 16 .debug_str    00007d34  00000000  00000000  000fc3bf  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .comment      0000007c  00000000  00000000  00103d2a  2**0
+ 17 .comment      0000007c  00000000  00000000  001040f3  2**0
                   CONTENTS, READONLY
- 18 .debug_frame  00007c84  00000000  00000000  00103da8  2**2
+ 18 .debug_frame  00007c84  00000000  00000000  00104170  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -790,8 +790,8 @@ Disassembly of section .text:
  8000a7a:	bf08      	it	eq
  8000a7c:	2800      	cmpeq	r0, #0
  8000a7e:	bf1c      	itt	ne
- 8000a80:	f04f 31ff 	movne.w	r1, #4294967295	; 0xffffffff
- 8000a84:	f04f 30ff 	movne.w	r0, #4294967295	; 0xffffffff
+ 8000a80:	f04f 31ff 	movne.w	r1, #4294967295
+ 8000a84:	f04f 30ff 	movne.w	r0, #4294967295
  8000a88:	f000 b97a 	b.w	8000d80 <__aeabi_idiv0>
  8000a8c:	f1ad 0c08 	sub.w	ip, sp, #8
  8000a90:	e96d ce04 	strd	ip, lr, [sp, #-16]!
@@ -831,7 +831,7 @@ Disassembly of section .text:
  8000af6:	42ab      	cmp	r3, r5
  8000af8:	d90a      	bls.n	8000b10 <__udivmoddi4+0x6c>
  8000afa:	19ed      	adds	r5, r5, r7
- 8000afc:	f108 32ff 	add.w	r2, r8, #4294967295	; 0xffffffff
+ 8000afc:	f108 32ff 	add.w	r2, r8, #4294967295
  8000b00:	f080 8123 	bcs.w	8000d4a <__udivmoddi4+0x2a6>
  8000b04:	42ab      	cmp	r3, r5
  8000b06:	f240 8120 	bls.w	8000d4a <__udivmoddi4+0x2a6>
@@ -846,7 +846,7 @@ Disassembly of section .text:
  8000b24:	45a1      	cmp	r9, r4
  8000b26:	d909      	bls.n	8000b3c <__udivmoddi4+0x98>
  8000b28:	19e4      	adds	r4, r4, r7
- 8000b2a:	f100 33ff 	add.w	r3, r0, #4294967295	; 0xffffffff
+ 8000b2a:	f100 33ff 	add.w	r3, r0, #4294967295
  8000b2e:	f080 810a 	bcs.w	8000d46 <__udivmoddi4+0x2a2>
  8000b32:	45a1      	cmp	r9, r4
  8000b34:	f240 8107 	bls.w	8000d46 <__udivmoddi4+0x2a2>
@@ -903,7 +903,7 @@ Disassembly of section .text:
  8000bc4:	42ab      	cmp	r3, r5
  8000bc6:	d907      	bls.n	8000bd8 <__udivmoddi4+0x134>
  8000bc8:	19ed      	adds	r5, r5, r7
- 8000bca:	f108 30ff 	add.w	r0, r8, #4294967295	; 0xffffffff
+ 8000bca:	f108 30ff 	add.w	r0, r8, #4294967295
  8000bce:	d202      	bcs.n	8000bd6 <__udivmoddi4+0x132>
  8000bd0:	42ab      	cmp	r3, r5
  8000bd2:	f200 80d1 	bhi.w	8000d78 <__udivmoddi4+0x2d4>
@@ -917,7 +917,7 @@ Disassembly of section .text:
  8000bec:	45a4      	cmp	ip, r4
  8000bee:	d907      	bls.n	8000c00 <__udivmoddi4+0x15c>
  8000bf0:	19e4      	adds	r4, r4, r7
- 8000bf2:	f100 33ff 	add.w	r3, r0, #4294967295	; 0xffffffff
+ 8000bf2:	f100 33ff 	add.w	r3, r0, #4294967295
  8000bf6:	d202      	bcs.n	8000bfe <__udivmoddi4+0x15a>
  8000bf8:	45a4      	cmp	ip, r4
  8000bfa:	f200 80b8 	bhi.w	8000d6e <__udivmoddi4+0x2ca>
@@ -945,7 +945,7 @@ Disassembly of section .text:
  8000c46:	fa00 f40e 	lsl.w	r4, r0, lr
  8000c4a:	d909      	bls.n	8000c60 <__udivmoddi4+0x1bc>
  8000c4c:	19ed      	adds	r5, r5, r7
- 8000c4e:	f101 30ff 	add.w	r0, r1, #4294967295	; 0xffffffff
+ 8000c4e:	f101 30ff 	add.w	r0, r1, #4294967295
  8000c52:	f080 808a 	bcs.w	8000d6a <__udivmoddi4+0x2c6>
  8000c56:	42ab      	cmp	r3, r5
  8000c58:	f240 8087 	bls.w	8000d6a <__udivmoddi4+0x2c6>
@@ -960,7 +960,7 @@ Disassembly of section .text:
  8000c76:	42ab      	cmp	r3, r5
  8000c78:	d907      	bls.n	8000c8a <__udivmoddi4+0x1e6>
  8000c7a:	19ed      	adds	r5, r5, r7
- 8000c7c:	f100 38ff 	add.w	r8, r0, #4294967295	; 0xffffffff
+ 8000c7c:	f100 38ff 	add.w	r8, r0, #4294967295
  8000c80:	d26f      	bcs.n	8000d62 <__udivmoddi4+0x2be>
  8000c82:	42ab      	cmp	r3, r5
  8000c84:	d96d      	bls.n	8000d62 <__udivmoddi4+0x2be>
@@ -989,7 +989,7 @@ Disassembly of section .text:
  8000cd0:	fa00 fa01 	lsl.w	sl, r0, r1
  8000cd4:	d908      	bls.n	8000ce8 <__udivmoddi4+0x244>
  8000cd6:	18ed      	adds	r5, r5, r3
- 8000cd8:	f109 30ff 	add.w	r0, r9, #4294967295	; 0xffffffff
+ 8000cd8:	f109 30ff 	add.w	r0, r9, #4294967295
  8000cdc:	d243      	bcs.n	8000d66 <__udivmoddi4+0x2c2>
  8000cde:	42ac      	cmp	r4, r5
  8000ce0:	d941      	bls.n	8000d66 <__udivmoddi4+0x2c2>
@@ -1004,7 +1004,7 @@ Disassembly of section .text:
  8000cfe:	45a0      	cmp	r8, r4
  8000d00:	d907      	bls.n	8000d12 <__udivmoddi4+0x26e>
  8000d02:	18e4      	adds	r4, r4, r3
- 8000d04:	f100 35ff 	add.w	r5, r0, #4294967295	; 0xffffffff
+ 8000d04:	f100 35ff 	add.w	r5, r0, #4294967295
  8000d08:	d229      	bcs.n	8000d5e <__udivmoddi4+0x2ba>
  8000d0a:	45a0      	cmp	r8, r4
  8000d0c:	d927      	bls.n	8000d5e <__udivmoddi4+0x2ba>
@@ -2461,7 +2461,7 @@ void BSP_LCD_LayerDefaultInit(uint16_t LayerIndex, uint32_t FB_Address)
  80015b4:	009b      	lsls	r3, r3, #2
  80015b6:	440b      	add	r3, r1
  80015b8:	3304      	adds	r3, #4
- 80015ba:	f04f 32ff 	mov.w	r2, #4294967295	; 0xffffffff
+ 80015ba:	f04f 32ff 	mov.w	r2, #4294967295
  80015be:	601a      	str	r2, [r3, #0]
   DrawProp[LayerIndex].pFont     = &Font24;
  80015c0:	88fa      	ldrh	r2, [r7, #6]
@@ -4786,7 +4786,7 @@ __weak void HAL_Delay(uint32_t Delay)
   /* Add a freq to guarantee minimum wait */
   if (wait < HAL_MAX_DELAY)
  8002452:	68fb      	ldr	r3, [r7, #12]
- 8002454:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
+ 8002454:	f1b3 3fff 	cmp.w	r3, #4294967295
  8002458:	d005      	beq.n	8002466 <HAL_Delay+0x26>
   {
     wait += (uint32_t)(uwTickFreq);
@@ -6181,7 +6181,7 @@ HAL_StatusTypeDef HAL_DMA2D_PollForTransfer(DMA2D_HandleTypeDef *hdma2d, uint32_
       /* Check for the Timeout */
       if(Timeout != HAL_MAX_DELAY)
  8002b62:	683b      	ldr	r3, [r7, #0]
- 8002b64:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
+ 8002b64:	f1b3 3fff 	cmp.w	r3, #4294967295
  8002b68:	d01a      	beq.n	8002ba0 <HAL_DMA2D_PollForTransfer+0xbc>
       {
         if(((HAL_GetTick() - tickstart ) > Timeout)||(Timeout == 0U))
@@ -6334,7 +6334,7 @@ HAL_StatusTypeDef HAL_DMA2D_PollForTransfer(DMA2D_HandleTypeDef *hdma2d, uint32_
       /* Check for the Timeout */
       if(Timeout != HAL_MAX_DELAY)
  8002c48:	683b      	ldr	r3, [r7, #0]
- 8002c4a:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
+ 8002c4a:	f1b3 3fff 	cmp.w	r3, #4294967295
  8002c4e:	d01a      	beq.n	8002c86 <HAL_DMA2D_PollForTransfer+0x1a2>
       {
         if(((HAL_GetTick() - tickstart ) > Timeout)||(Timeout == 0U))
@@ -12717,7 +12717,7 @@ HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint
  800515c:	429a      	cmp	r2, r3
  800515e:	d303      	bcc.n	8005168 <HAL_SPI_Transmit+0x158>
  8005160:	683b      	ldr	r3, [r7, #0]
- 8005162:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
+ 8005162:	f1b3 3fff 	cmp.w	r3, #4294967295
  8005166:	d102      	bne.n	800516e <HAL_SPI_Transmit+0x15e>
  8005168:	683b      	ldr	r3, [r7, #0]
  800516a:	2b00      	cmp	r3, #0
@@ -12820,7 +12820,7 @@ HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint
  80051f8:	429a      	cmp	r2, r3
  80051fa:	d303      	bcc.n	8005204 <HAL_SPI_Transmit+0x1f4>
  80051fc:	683b      	ldr	r3, [r7, #0]
- 80051fe:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
+ 80051fe:	f1b3 3fff 	cmp.w	r3, #4294967295
  8005202:	d102      	bne.n	800520a <HAL_SPI_Transmit+0x1fa>
  8005204:	683b      	ldr	r3, [r7, #0]
  8005206:	2b00      	cmp	r3, #0
@@ -13143,7 +13143,7 @@ HAL_StatusTypeDef HAL_SPI_Receive(SPI_HandleTypeDef *hspi, uint8_t *pData, uint1
  80053bc:	429a      	cmp	r2, r3
  80053be:	d303      	bcc.n	80053c8 <HAL_SPI_Receive+0x154>
  80053c0:	683b      	ldr	r3, [r7, #0]
- 80053c2:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
+ 80053c2:	f1b3 3fff 	cmp.w	r3, #4294967295
  80053c6:	d102      	bne.n	80053ce <HAL_SPI_Receive+0x15a>
  80053c8:	683b      	ldr	r3, [r7, #0]
  80053ca:	2b00      	cmp	r3, #0
@@ -13210,7 +13210,7 @@ HAL_StatusTypeDef HAL_SPI_Receive(SPI_HandleTypeDef *hspi, uint8_t *pData, uint1
  8005422:	429a      	cmp	r2, r3
  8005424:	d303      	bcc.n	800542e <HAL_SPI_Receive+0x1ba>
  8005426:	683b      	ldr	r3, [r7, #0]
- 8005428:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
+ 8005428:	f1b3 3fff 	cmp.w	r3, #4294967295
  800542c:	d102      	bne.n	8005434 <HAL_SPI_Receive+0x1c0>
  800542e:	683b      	ldr	r3, [r7, #0]
  8005430:	2b00      	cmp	r3, #0
@@ -13592,7 +13592,7 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
  8005644:	429a      	cmp	r2, r3
  8005646:	d307      	bcc.n	8005658 <HAL_SPI_TransmitReceive+0x1d8>
  8005648:	6bbb      	ldr	r3, [r7, #56]	; 0x38
- 800564a:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
+ 800564a:	f1b3 3fff 	cmp.w	r3, #4294967295
  800564e:	d003      	beq.n	8005658 <HAL_SPI_TransmitReceive+0x1d8>
       {
         errorcode = HAL_TIMEOUT;
@@ -13749,7 +13749,7 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
  800573a:	429a      	cmp	r2, r3
  800573c:	d303      	bcc.n	8005746 <HAL_SPI_TransmitReceive+0x2c6>
  800573e:	6bbb      	ldr	r3, [r7, #56]	; 0x38
- 8005740:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
+ 8005740:	f1b3 3fff 	cmp.w	r3, #4294967295
  8005744:	d102      	bne.n	800574c <HAL_SPI_TransmitReceive+0x2cc>
  8005746:	6bbb      	ldr	r3, [r7, #56]	; 0x38
  8005748:	2b00      	cmp	r3, #0
@@ -13877,7 +13877,7 @@ static HAL_StatusTypeDef SPI_WaitFlagStateUntilTimeout(SPI_HandleTypeDef *hspi, 
   {
     if (Timeout != HAL_MAX_DELAY)
  80057ee:	683b      	ldr	r3, [r7, #0]
- 80057f0:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
+ 80057f0:	f1b3 3fff 	cmp.w	r3, #4294967295
  80057f4:	d048      	beq.n	8005888 <SPI_WaitFlagStateUntilTimeout+0xac>
     {
       if (((HAL_GetTick() - Tickstart) >= Timeout) || (Timeout == 0U))
@@ -15895,7 +15895,7 @@ static HAL_StatusTypeDef UART_WaitOnFlagUntilTimeout(UART_HandleTypeDef *huart, 
     /* Check for the Timeout */
     if (Timeout != HAL_MAX_DELAY)
  80062c6:	69bb      	ldr	r3, [r7, #24]
- 80062c8:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
+ 80062c8:	f1b3 3fff 	cmp.w	r3, #4294967295
  80062cc:	d028      	beq.n	8006320 <UART_WaitOnFlagUntilTimeout+0x6c>
     {
       if ((Timeout == 0U) || ((HAL_GetTick() - Tickstart) > Timeout))
@@ -16915,7 +16915,7 @@ HAL_StatusTypeDef FMC_SDRAM_SendCommand(FMC_SDRAM_TypeDef *Device, FMC_SDRAM_Com
     /* Check for the Timeout */
     if(Timeout != HAL_MAX_DELAY)
  8006980:	687b      	ldr	r3, [r7, #4]
- 8006982:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
+ 8006982:	f1b3 3fff 	cmp.w	r3, #4294967295
  8006986:	d00c      	beq.n	80069a2 <FMC_SDRAM_SendCommand+0x62>
     {
       if((Timeout == 0U)||((HAL_GetTick() - tickstart ) > Timeout))
@@ -18563,7 +18563,7 @@ uint8_t spi5_sendrecv(uint8_t byte) {
 	HAL_SPI_TransmitReceive(&hspi5, &byte, &answer, 1, HAL_MAX_DELAY);
  8007376:	f107 020f 	add.w	r2, r7, #15
  800737a:	1df9      	adds	r1, r7, #7
- 800737c:	f04f 33ff 	mov.w	r3, #4294967295	; 0xffffffff
+ 800737c:	f04f 33ff 	mov.w	r3, #4294967295
  8007380:	9300      	str	r3, [sp, #0]
  8007382:	2301      	movs	r3, #1
  8007384:	4803      	ldr	r0, [pc, #12]	; (8007394 <spi5_sendrecv+0x28>)
@@ -18902,151 +18902,151 @@ int main(void)
  80075a8:	f001 faae 	bl	8008b08 <MX_TIM11_Init>
   /* USER CODE BEGIN 2 */
 
-	HAL_TIM_Base_Start_IT(&htim10);
- 80075ac:	485c      	ldr	r0, [pc, #368]	; (8007720 <main+0x1b0>)
- 80075ae:	f7fe f9fd 	bl	80059ac <HAL_TIM_Base_Start_IT>
-	HAL_TIM_Base_Start_IT(&htim11);
- 80075b2:	485c      	ldr	r0, [pc, #368]	; (8007724 <main+0x1b4>)
- 80075b4:	f7fe f9fa 	bl	80059ac <HAL_TIM_Base_Start_IT>
 	__HAL_SPI_ENABLE(&hspi5);
- 80075b8:	4b5b      	ldr	r3, [pc, #364]	; (8007728 <main+0x1b8>)
- 80075ba:	681b      	ldr	r3, [r3, #0]
- 80075bc:	4a5a      	ldr	r2, [pc, #360]	; (8007728 <main+0x1b8>)
- 80075be:	6812      	ldr	r2, [r2, #0]
- 80075c0:	6812      	ldr	r2, [r2, #0]
- 80075c2:	f042 0240 	orr.w	r2, r2, #64	; 0x40
- 80075c6:	601a      	str	r2, [r3, #0]
+ 80075ac:	4b5c      	ldr	r3, [pc, #368]	; (8007720 <main+0x1b0>)
+ 80075ae:	681b      	ldr	r3, [r3, #0]
+ 80075b0:	4a5b      	ldr	r2, [pc, #364]	; (8007720 <main+0x1b0>)
+ 80075b2:	6812      	ldr	r2, [r2, #0]
+ 80075b4:	6812      	ldr	r2, [r2, #0]
+ 80075b6:	f042 0240 	orr.w	r2, r2, #64	; 0x40
+ 80075ba:	601a      	str	r2, [r3, #0]
 
 	Animacja = 0;
- 80075c8:	4b58      	ldr	r3, [pc, #352]	; (800772c <main+0x1bc>)
- 80075ca:	2200      	movs	r2, #0
- 80075cc:	701a      	strb	r2, [r3, #0]
+ 80075bc:	4b59      	ldr	r3, [pc, #356]	; (8007724 <main+0x1b4>)
+ 80075be:	2200      	movs	r2, #0
+ 80075c0:	701a      	strb	r2, [r3, #0]
 	Direction = 1;
- 80075ce:	4b58      	ldr	r3, [pc, #352]	; (8007730 <main+0x1c0>)
- 80075d0:	2201      	movs	r2, #1
- 80075d2:	701a      	strb	r2, [r3, #0]
+ 80075c2:	4b59      	ldr	r3, [pc, #356]	; (8007728 <main+0x1b8>)
+ 80075c4:	2201      	movs	r2, #1
+ 80075c6:	701a      	strb	r2, [r3, #0]
 	X = 120;
- 80075d4:	4b57      	ldr	r3, [pc, #348]	; (8007734 <main+0x1c4>)
- 80075d6:	2278      	movs	r2, #120	; 0x78
- 80075d8:	801a      	strh	r2, [r3, #0]
+ 80075c8:	4b58      	ldr	r3, [pc, #352]	; (800772c <main+0x1bc>)
+ 80075ca:	2278      	movs	r2, #120	; 0x78
+ 80075cc:	801a      	strh	r2, [r3, #0]
 	Y = 170;
- 80075da:	4b57      	ldr	r3, [pc, #348]	; (8007738 <main+0x1c8>)
- 80075dc:	22aa      	movs	r2, #170	; 0xaa
- 80075de:	801a      	strh	r2, [r3, #0]
+ 80075ce:	4b58      	ldr	r3, [pc, #352]	; (8007730 <main+0x1c0>)
+ 80075d0:	22aa      	movs	r2, #170	; 0xaa
+ 80075d2:	801a      	strh	r2, [r3, #0]
 	dT = 0.001;
- 80075e0:	4b56      	ldr	r3, [pc, #344]	; (800773c <main+0x1cc>)
- 80075e2:	4a57      	ldr	r2, [pc, #348]	; (8007740 <main+0x1d0>)
- 80075e4:	601a      	str	r2, [r3, #0]
+ 80075d4:	4b57      	ldr	r3, [pc, #348]	; (8007734 <main+0x1c4>)
+ 80075d6:	4a58      	ldr	r2, [pc, #352]	; (8007738 <main+0x1c8>)
+ 80075d8:	601a      	str	r2, [r3, #0]
 	fMovedX = 0;
+ 80075da:	4b58      	ldr	r3, [pc, #352]	; (800773c <main+0x1cc>)
+ 80075dc:	2200      	movs	r2, #0
+ 80075de:	701a      	strb	r2, [r3, #0]
+	fMovedY = 0;
+ 80075e0:	4b57      	ldr	r3, [pc, #348]	; (8007740 <main+0x1d0>)
+ 80075e2:	2200      	movs	r2, #0
+ 80075e4:	701a      	strb	r2, [r3, #0]
+	ResetTimeX = 0;
  80075e6:	4b57      	ldr	r3, [pc, #348]	; (8007744 <main+0x1d4>)
  80075e8:	2200      	movs	r2, #0
- 80075ea:	701a      	strb	r2, [r3, #0]
-	fMovedY = 0;
+ 80075ea:	801a      	strh	r2, [r3, #0]
+	ResetTimeY = 0;
  80075ec:	4b56      	ldr	r3, [pc, #344]	; (8007748 <main+0x1d8>)
  80075ee:	2200      	movs	r2, #0
- 80075f0:	701a      	strb	r2, [r3, #0]
-	ResetTimeX = 0;
- 80075f2:	4b56      	ldr	r3, [pc, #344]	; (800774c <main+0x1dc>)
- 80075f4:	2200      	movs	r2, #0
- 80075f6:	801a      	strh	r2, [r3, #0]
-	ResetTimeY = 0;
- 80075f8:	4b55      	ldr	r3, [pc, #340]	; (8007750 <main+0x1e0>)
- 80075fa:	2200      	movs	r2, #0
- 80075fc:	801a      	strh	r2, [r3, #0]
-
-	OurL3GD20_Init();
- 80075fe:	f7ff ff0f 	bl	8007420 <OurL3GD20_Init>
+ 80075f0:	801a      	strh	r2, [r3, #0]
 
 	BSP_LCD_Init();
- 8007602:	f7f9 ff19 	bl	8001438 <BSP_LCD_Init>
+ 80075f2:	f7f9 ff21 	bl	8001438 <BSP_LCD_Init>
 	//BSP_LCD_LayerDefaultInit(LCD_FOREGROUND_LAYER, LCD_FRAME_BUFFER+1024*1024*4);
 	BSP_LCD_LayerDefaultInit(LCD_BACKGROUND_LAYER, LCD_FRAME_BUFFER);
- 8007606:	f04f 4150 	mov.w	r1, #3489660928	; 0xd0000000
- 800760a:	2000      	movs	r0, #0
- 800760c:	f7f9 ff96 	bl	800153c <BSP_LCD_LayerDefaultInit>
+ 80075f6:	f04f 4150 	mov.w	r1, #3489660928	; 0xd0000000
+ 80075fa:	2000      	movs	r0, #0
+ 80075fc:	f7f9 ff9e 	bl	800153c <BSP_LCD_LayerDefaultInit>
 
 	BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
- 8007610:	2000      	movs	r0, #0
- 8007612:	f7f9 fff7 	bl	8001604 <BSP_LCD_SelectLayer>
+ 8007600:	2000      	movs	r0, #0
+ 8007602:	f7f9 ffff 	bl	8001604 <BSP_LCD_SelectLayer>
 
 	BSP_LCD_DisplayOn();
- 8007616:	f7fa fb7f 	bl	8001d18 <BSP_LCD_DisplayOn>
+ 8007606:	f7fa fb87 	bl	8001d18 <BSP_LCD_DisplayOn>
 	BSP_LCD_Clear(LCD_COLOR_BLACK);
- 800761a:	f04f 407f 	mov.w	r0, #4278190080	; 0xff000000
- 800761e:	f7fa f833 	bl	8001688 <BSP_LCD_Clear>
+ 800760a:	f04f 407f 	mov.w	r0, #4278190080	; 0xff000000
+ 800760e:	f7fa f83b 	bl	8001688 <BSP_LCD_Clear>
 	BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Menu);
- 8007622:	4a4c      	ldr	r2, [pc, #304]	; (8007754 <main+0x1e4>)
- 8007624:	2100      	movs	r1, #0
- 8007626:	2000      	movs	r0, #0
- 8007628:	f7fa f9e8 	bl	80019fc <BSP_LCD_DrawBitmap>
+ 8007612:	4a4e      	ldr	r2, [pc, #312]	; (800774c <main+0x1dc>)
+ 8007614:	2100      	movs	r1, #0
+ 8007616:	2000      	movs	r0, #0
+ 8007618:	f7fa f9f0 	bl	80019fc <BSP_LCD_DrawBitmap>
 	HAL_Delay(2000);
- 800762c:	f44f 60fa 	mov.w	r0, #2000	; 0x7d0
- 8007630:	f7fa ff06 	bl	8002440 <HAL_Delay>
+ 800761c:	f44f 60fa 	mov.w	r0, #2000	; 0x7d0
+ 8007620:	f7fa ff0e 	bl	8002440 <HAL_Delay>
 	BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Menu_nowagra);
- 8007634:	4a48      	ldr	r2, [pc, #288]	; (8007758 <main+0x1e8>)
- 8007636:	2100      	movs	r1, #0
- 8007638:	2000      	movs	r0, #0
- 800763a:	f7fa f9df 	bl	80019fc <BSP_LCD_DrawBitmap>
+ 8007624:	4a4a      	ldr	r2, [pc, #296]	; (8007750 <main+0x1e0>)
+ 8007626:	2100      	movs	r1, #0
+ 8007628:	2000      	movs	r0, #0
+ 800762a:	f7fa f9e7 	bl	80019fc <BSP_LCD_DrawBitmap>
 	HAL_Delay(2000);
- 800763e:	f44f 60fa 	mov.w	r0, #2000	; 0x7d0
- 8007642:	f7fa fefd 	bl	8002440 <HAL_Delay>
+ 800762e:	f44f 60fa 	mov.w	r0, #2000	; 0x7d0
+ 8007632:	f7fa ff05 	bl	8002440 <HAL_Delay>
 	BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Menu_kontynuuj);
- 8007646:	4a45      	ldr	r2, [pc, #276]	; (800775c <main+0x1ec>)
- 8007648:	2100      	movs	r1, #0
- 800764a:	2000      	movs	r0, #0
- 800764c:	f7fa f9d6 	bl	80019fc <BSP_LCD_DrawBitmap>
+ 8007636:	4a47      	ldr	r2, [pc, #284]	; (8007754 <main+0x1e4>)
+ 8007638:	2100      	movs	r1, #0
+ 800763a:	2000      	movs	r0, #0
+ 800763c:	f7fa f9de 	bl	80019fc <BSP_LCD_DrawBitmap>
 	HAL_Delay(2000);
- 8007650:	f44f 60fa 	mov.w	r0, #2000	; 0x7d0
- 8007654:	f7fa fef4 	bl	8002440 <HAL_Delay>
+ 8007640:	f44f 60fa 	mov.w	r0, #2000	; 0x7d0
+ 8007644:	f7fa fefc 	bl	8002440 <HAL_Delay>
 	BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Menu_poziomy);
- 8007658:	4a41      	ldr	r2, [pc, #260]	; (8007760 <main+0x1f0>)
- 800765a:	2100      	movs	r1, #0
- 800765c:	2000      	movs	r0, #0
- 800765e:	f7fa f9cd 	bl	80019fc <BSP_LCD_DrawBitmap>
+ 8007648:	4a43      	ldr	r2, [pc, #268]	; (8007758 <main+0x1e8>)
+ 800764a:	2100      	movs	r1, #0
+ 800764c:	2000      	movs	r0, #0
+ 800764e:	f7fa f9d5 	bl	80019fc <BSP_LCD_DrawBitmap>
 	//BSP_LCD_SetTextColor(LCD_COLOR_DARKGRAY);
 	//BSP_LCD_DisplayStringAtLine(5, (uint8_t*) "Hello");
 
 	HAL_Delay(2000);
- 8007662:	f44f 60fa 	mov.w	r0, #2000	; 0x7d0
- 8007666:	f7fa feeb 	bl	8002440 <HAL_Delay>
+ 8007652:	f44f 60fa 	mov.w	r0, #2000	; 0x7d0
+ 8007656:	f7fa fef3 	bl	8002440 <HAL_Delay>
 	BSP_LCD_ClearStringLine(5);
- 800766a:	2005      	movs	r0, #5
- 800766c:	f7fa f834 	bl	80016d8 <BSP_LCD_ClearStringLine>
+ 800765a:	2005      	movs	r0, #5
+ 800765c:	f7fa f83c 	bl	80016d8 <BSP_LCD_ClearStringLine>
 
-	BSP_LCD_Clear(LCD_COLOR_BLACK);
- 8007670:	f04f 407f 	mov.w	r0, #4278190080	; 0xff000000
- 8007674:	f7fa f808 	bl	8001688 <BSP_LCD_Clear>
-	BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
- 8007678:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
- 800767c:	f7f9 ffd2 	bl	8001624 <BSP_LCD_SetTextColor>
+	BSP_LCD_Clear(LCD_COLOR_WHITE);
+ 8007660:	f04f 30ff 	mov.w	r0, #4294967295
+ 8007664:	f7fa f810 	bl	8001688 <BSP_LCD_Clear>
+	BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+ 8007668:	f04f 407f 	mov.w	r0, #4278190080	; 0xff000000
+ 800766c:	f7f9 ffda 	bl	8001624 <BSP_LCD_SetTextColor>
 	BSP_LCD_FillRect(0, 0, 240, 15);
- 8007680:	230f      	movs	r3, #15
- 8007682:	22f0      	movs	r2, #240	; 0xf0
- 8007684:	2100      	movs	r1, #0
- 8007686:	2000      	movs	r0, #0
- 8007688:	f7fa fa4c 	bl	8001b24 <BSP_LCD_FillRect>
+ 8007670:	230f      	movs	r3, #15
+ 8007672:	22f0      	movs	r2, #240	; 0xf0
+ 8007674:	2100      	movs	r1, #0
+ 8007676:	2000      	movs	r0, #0
+ 8007678:	f7fa fa54 	bl	8001b24 <BSP_LCD_FillRect>
 	BSP_LCD_FillRect(0, 305, 240, 15);
- 800768c:	230f      	movs	r3, #15
- 800768e:	22f0      	movs	r2, #240	; 0xf0
- 8007690:	f240 1131 	movw	r1, #305	; 0x131
- 8007694:	2000      	movs	r0, #0
- 8007696:	f7fa fa45 	bl	8001b24 <BSP_LCD_FillRect>
+ 800767c:	230f      	movs	r3, #15
+ 800767e:	22f0      	movs	r2, #240	; 0xf0
+ 8007680:	f240 1131 	movw	r1, #305	; 0x131
+ 8007684:	2000      	movs	r0, #0
+ 8007686:	f7fa fa4d 	bl	8001b24 <BSP_LCD_FillRect>
 	BSP_LCD_FillRect(0, 15, 15, 290);
- 800769a:	f44f 7391 	mov.w	r3, #290	; 0x122
- 800769e:	220f      	movs	r2, #15
- 80076a0:	210f      	movs	r1, #15
- 80076a2:	2000      	movs	r0, #0
- 80076a4:	f7fa fa3e 	bl	8001b24 <BSP_LCD_FillRect>
+ 800768a:	f44f 7391 	mov.w	r3, #290	; 0x122
+ 800768e:	220f      	movs	r2, #15
+ 8007690:	210f      	movs	r1, #15
+ 8007692:	2000      	movs	r0, #0
+ 8007694:	f7fa fa46 	bl	8001b24 <BSP_LCD_FillRect>
 	BSP_LCD_FillRect(225, 15, 15, 290);
- 80076a8:	f44f 7391 	mov.w	r3, #290	; 0x122
- 80076ac:	220f      	movs	r2, #15
- 80076ae:	210f      	movs	r1, #15
- 80076b0:	20e1      	movs	r0, #225	; 0xe1
- 80076b2:	f7fa fa37 	bl	8001b24 <BSP_LCD_FillRect>
+ 8007698:	f44f 7391 	mov.w	r3, #290	; 0x122
+ 800769c:	220f      	movs	r2, #15
+ 800769e:	210f      	movs	r1, #15
+ 80076a0:	20e1      	movs	r0, #225	; 0xe1
+ 80076a2:	f7fa fa3f 	bl	8001b24 <BSP_LCD_FillRect>
 
+	OurL3GD20_Init();
+ 80076a6:	f7ff febb 	bl	8007420 <OurL3GD20_Init>
+
+	HAL_TIM_Base_Start_IT(&htim10);
+ 80076aa:	482c      	ldr	r0, [pc, #176]	; (800775c <main+0x1ec>)
+ 80076ac:	f7fe f97e 	bl	80059ac <HAL_TIM_Base_Start_IT>
+	HAL_TIM_Base_Start_IT(&htim11);
+ 80076b0:	482b      	ldr	r0, [pc, #172]	; (8007760 <main+0x1f0>)
+ 80076b2:	f7fe f97b 	bl	80059ac <HAL_TIM_Base_Start_IT>
 
 	Animacja = 1;
- 80076b6:	4b1d      	ldr	r3, [pc, #116]	; (800772c <main+0x1bc>)
+ 80076b6:	4b1b      	ldr	r3, [pc, #108]	; (8007724 <main+0x1b4>)
  80076b8:	2201      	movs	r2, #1
  80076ba:	701a      	strb	r2, [r3, #0]
 
@@ -19073,14 +19073,14 @@ int main(void)
  80076da:	4827      	ldr	r0, [pc, #156]	; (8007778 <main+0x208>)
  80076dc:	f001 fb72 	bl	8008dc4 <iprintf>
 		printf("CzasX: %d\n\r", ResetTimeX);
- 80076e0:	4b1a      	ldr	r3, [pc, #104]	; (800774c <main+0x1dc>)
+ 80076e0:	4b18      	ldr	r3, [pc, #96]	; (8007744 <main+0x1d4>)
  80076e2:	881b      	ldrh	r3, [r3, #0]
  80076e4:	b29b      	uxth	r3, r3
  80076e6:	4619      	mov	r1, r3
  80076e8:	4824      	ldr	r0, [pc, #144]	; (800777c <main+0x20c>)
  80076ea:	f001 fb6b 	bl	8008dc4 <iprintf>
 		printf("CzasY: %d\n\r", ResetTimeY);
- 80076ee:	4b18      	ldr	r3, [pc, #96]	; (8007750 <main+0x1e0>)
+ 80076ee:	4b16      	ldr	r3, [pc, #88]	; (8007748 <main+0x1d8>)
  80076f0:	881b      	ldrh	r3, [r3, #0]
  80076f2:	b29b      	uxth	r3, r3
  80076f4:	4619      	mov	r1, r3
@@ -19108,23 +19108,23 @@ int main(void)
  800771a:	f7fa fe91 	bl	8002440 <HAL_Delay>
 		printf("Angle X: %li\n\r", AngleX);
  800771e:	e7cd      	b.n	80076bc <main+0x14c>
- 8007720:	20000574 	.word	0x20000574
- 8007724:	200005b4 	.word	0x200005b4
- 8007728:	200004b4 	.word	0x200004b4
- 800772c:	20000521 	.word	0x20000521
- 8007730:	200004b2 	.word	0x200004b2
- 8007734:	20000530 	.word	0x20000530
- 8007738:	20000510 	.word	0x20000510
- 800773c:	2000050c 	.word	0x2000050c
- 8007740:	3a83126f 	.word	0x3a83126f
- 8007744:	20000520 	.word	0x20000520
- 8007748:	2000052c 	.word	0x2000052c
- 800774c:	2000051e 	.word	0x2000051e
- 8007750:	2000052e 	.word	0x2000052e
- 8007754:	0800b6fc 	.word	0x0800b6fc
- 8007758:	0805673c 	.word	0x0805673c
- 800775c:	08030f1c 	.word	0x08030f1c
- 8007760:	0807bf5c 	.word	0x0807bf5c
+ 8007720:	200004b4 	.word	0x200004b4
+ 8007724:	20000521 	.word	0x20000521
+ 8007728:	200004b2 	.word	0x200004b2
+ 800772c:	20000530 	.word	0x20000530
+ 8007730:	20000510 	.word	0x20000510
+ 8007734:	2000050c 	.word	0x2000050c
+ 8007738:	3a83126f 	.word	0x3a83126f
+ 800773c:	20000520 	.word	0x20000520
+ 8007740:	2000052c 	.word	0x2000052c
+ 8007744:	2000051e 	.word	0x2000051e
+ 8007748:	2000052e 	.word	0x2000052e
+ 800774c:	0800b6fc 	.word	0x0800b6fc
+ 8007750:	0805673c 	.word	0x0805673c
+ 8007754:	08030f1c 	.word	0x08030f1c
+ 8007758:	0807bf5c 	.word	0x0807bf5c
+ 800775c:	20000574 	.word	0x20000574
+ 8007760:	200005b4 	.word	0x200005b4
  8007764:	20000514 	.word	0x20000514
  8007768:	08009bcc 	.word	0x08009bcc
  800776c:	20000528 	.word	0x20000528
@@ -19348,8 +19348,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  80078dc:	2000      	movs	r0, #0
  80078de:	f7f9 fe91 	bl	8001604 <BSP_LCD_SelectLayer>
 
-				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
- 80078e2:	f04f 407f 	mov.w	r0, #4278190080	; 0xff000000
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+ 80078e2:	f04f 30ff 	mov.w	r0, #4294967295
  80078e6:	f7f9 fe9d 	bl	8001624 <BSP_LCD_SetTextColor>
 
 				if(X <= 25 && Y <= 25)
@@ -19558,8 +19558,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 
 
-				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
- 8007a74:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+ 8007a74:	f04f 407f 	mov.w	r0, #4278190080	; 0xff000000
  8007a78:	f7f9 fdd4 	bl	8001624 <BSP_LCD_SetTextColor>
 
 				//Y += 10;
@@ -19619,8 +19619,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8007ae8:	2000      	movs	r0, #0
  8007aea:	f7f9 fd8b 	bl	8001604 <BSP_LCD_SelectLayer>
 
-				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
- 8007aee:	f04f 407f 	mov.w	r0, #4278190080	; 0xff000000
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+ 8007aee:	f04f 30ff 	mov.w	r0, #4294967295
  8007af2:	f7f9 fd97 	bl	8001624 <BSP_LCD_SetTextColor>
 				if(X <= 25 && Y <= 25)
  8007af6:	4b10      	ldr	r3, [pc, #64]	; (8007b38 <HAL_TIM_PeriodElapsedCallback+0x294>)
@@ -19832,8 +19832,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8007c90:	f7f9 ff48 	bl	8001b24 <BSP_LCD_FillRect>
 
 
-				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
- 8007c94:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+ 8007c94:	f04f 407f 	mov.w	r0, #4278190080	; 0xff000000
  8007c98:	f7f9 fcc4 	bl	8001624 <BSP_LCD_SetTextColor>
 
 				//Y -= 10;
@@ -19889,8 +19889,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8007d00:	2000      	movs	r0, #0
  8007d02:	f7f9 fc7f 	bl	8001604 <BSP_LCD_SelectLayer>
 
-				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
- 8007d06:	f04f 407f 	mov.w	r0, #4278190080	; 0xff000000
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+ 8007d06:	f04f 30ff 	mov.w	r0, #4294967295
  8007d0a:	f7f9 fc8b 	bl	8001624 <BSP_LCD_SetTextColor>
 				if(X <= 25 && Y <= 25)
  8007d0e:	4b26      	ldr	r3, [pc, #152]	; (8007da8 <HAL_TIM_PeriodElapsedCallback+0x504>)
@@ -20099,8 +20099,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8007e9e:	2228      	movs	r2, #40	; 0x28
  8007ea0:	f7f9 fe40 	bl	8001b24 <BSP_LCD_FillRect>
 
-				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
- 8007ea4:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+ 8007ea4:	f04f 407f 	mov.w	r0, #4278190080	; 0xff000000
  8007ea8:	f7f9 fbbc 	bl	8001624 <BSP_LCD_SetTextColor>
 
 				//Y -= 10;
@@ -20160,8 +20160,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8007f16:	2000      	movs	r0, #0
  8007f18:	f7f9 fb74 	bl	8001604 <BSP_LCD_SelectLayer>
 
-				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
- 8007f1c:	f04f 407f 	mov.w	r0, #4278190080	; 0xff000000
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+ 8007f1c:	f04f 30ff 	mov.w	r0, #4294967295
  8007f20:	f7f9 fb80 	bl	8001624 <BSP_LCD_SetTextColor>
 				if(X <= 25 && Y <= 25)
  8007f24:	4b3c      	ldr	r3, [pc, #240]	; (8008018 <HAL_TIM_PeriodElapsedCallback+0x774>)
@@ -20370,8 +20370,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  80080b4:	2228      	movs	r2, #40	; 0x28
  80080b6:	f7f9 fd35 	bl	8001b24 <BSP_LCD_FillRect>
 
-				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
- 80080ba:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+ 80080ba:	f04f 407f 	mov.w	r0, #4278190080	; 0xff000000
  80080be:	f7f9 fab1 	bl	8001624 <BSP_LCD_SetTextColor>
 
 				//Y += 10;
@@ -21819,7 +21819,7 @@ caddr_t _sbrk(int incr)
  8008924:	230c      	movs	r3, #12
  8008926:	6013      	str	r3, [r2, #0]
 		return (caddr_t) -1;
- 8008928:	f04f 33ff 	mov.w	r3, #4294967295	; 0xffffffff
+ 8008928:	f04f 33ff 	mov.w	r3, #4294967295
  800892c:	e006      	b.n	800893c <_sbrk+0x48>
 	}
 
@@ -21850,7 +21850,7 @@ int _close(int file)
  8008950:	af00      	add	r7, sp, #0
  8008952:	6078      	str	r0, [r7, #4]
 	return -1;
- 8008954:	f04f 33ff 	mov.w	r3, #4294967295	; 0xffffffff
+ 8008954:	f04f 33ff 	mov.w	r3, #4294967295
 }
  8008958:	4618      	mov	r0, r3
  800895a:	370c      	adds	r7, #12
@@ -22999,7 +22999,7 @@ Infinite_Loop:
  8009106:	2b00      	cmp	r3, #0
  8009108:	f000 80bc 	beq.w	8009284 <_vfiprintf_r+0x1ec>
  800910c:	2300      	movs	r3, #0
- 800910e:	f04f 32ff 	mov.w	r2, #4294967295	; 0xffffffff
+ 800910e:	f04f 32ff 	mov.w	r2, #4294967295
  8009112:	9304      	str	r3, [sp, #16]
  8009114:	9307      	str	r3, [sp, #28]
  8009116:	9205      	str	r2, [sp, #20]
@@ -23051,7 +23051,7 @@ Infinite_Loop:
  800917e:	f000 faef 	bl	8009760 <__swsetup_r>
  8009182:	2800      	cmp	r0, #0
  8009184:	d09e      	beq.n	80090c4 <_vfiprintf_r+0x2c>
- 8009186:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+ 8009186:	f04f 30ff 	mov.w	r0, #4294967295
  800918a:	b01d      	add	sp, #116	; 0x74
  800918c:	e8bd 8ff0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, pc}
  8009190:	2b25      	cmp	r3, #37	; 0x25
@@ -23090,7 +23090,7 @@ Infinite_Loop:
  80091dc:	9203      	str	r2, [sp, #12]
  80091de:	2b00      	cmp	r3, #0
  80091e0:	bfb8      	it	lt
- 80091e2:	f04f 33ff 	movlt.w	r3, #4294967295	; 0xffffffff
+ 80091e2:	f04f 33ff 	movlt.w	r3, #4294967295
  80091e6:	f108 0802 	add.w	r8, r8, #2
  80091ea:	9305      	str	r3, [sp, #20]
  80091ec:	4d31      	ldr	r5, [pc, #196]	; (80092b4 <_vfiprintf_r+0x21c>)
@@ -23152,7 +23152,7 @@ Infinite_Loop:
  8009274:	a904      	add	r1, sp, #16
  8009276:	4630      	mov	r0, r6
  8009278:	f3af 8000 	nop.w
- 800927c:	f1b0 3fff 	cmp.w	r0, #4294967295	; 0xffffffff
+ 800927c:	f1b0 3fff 	cmp.w	r0, #4294967295
  8009280:	4681      	mov	r9, r0
  8009282:	d1d8      	bne.n	8009236 <_vfiprintf_r+0x19e>
  8009284:	89a3      	ldrh	r3, [r4, #12]
@@ -23252,7 +23252,7 @@ Infinite_Loop:
  8009372:	47c0      	blx	r8
  8009374:	3001      	adds	r0, #1
  8009376:	d103      	bne.n	8009380 <_printf_common+0xbc>
- 8009378:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+ 8009378:	f04f 30ff 	mov.w	r0, #4294967295
  800937c:	e8bd 87f0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, pc}
  8009380:	3501      	adds	r5, #1
  8009382:	e7c2      	b.n	800930a <_printf_common+0x46>
@@ -23393,7 +23393,7 @@ Infinite_Loop:
  80094c4:	bfde      	ittt	le
  80094c6:	2330      	movle	r3, #48	; 0x30
  80094c8:	f805 3c01 	strble.w	r3, [r5, #-1]
- 80094cc:	f105 35ff 	addle.w	r5, r5, #4294967295	; 0xffffffff
+ 80094cc:	f105 35ff 	addle.w	r5, r5, #4294967295
  80094d0:	ebae 0305 	sub.w	r3, lr, r5
  80094d4:	6123      	str	r3, [r4, #16]
  80094d6:	f8cd 8000 	str.w	r8, [sp]
@@ -23404,7 +23404,7 @@ Infinite_Loop:
  80094e2:	f7ff feef 	bl	80092c4 <_printf_common>
  80094e6:	3001      	adds	r0, #1
  80094e8:	d155      	bne.n	8009596 <_printf_i+0x1e6>
- 80094ea:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+ 80094ea:	f04f 30ff 	mov.w	r0, #4294967295
  80094ee:	b005      	add	sp, #20
  80094f0:	e8bd 83f0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, pc}
  80094f4:	f881 2045 	strb.w	r2, [r1, #69]	; 0x45
@@ -23660,7 +23660,7 @@ Infinite_Loop:
  800971e:	f000 f81f 	bl	8009760 <__swsetup_r>
  8009722:	2800      	cmp	r0, #0
  8009724:	d0cc      	beq.n	80096c0 <__swbuf_r+0x28>
- 8009726:	f04f 37ff 	mov.w	r7, #4294967295	; 0xffffffff
+ 8009726:	f04f 37ff 	mov.w	r7, #4294967295
  800972a:	4638      	mov	r0, r7
  800972c:	bdf8      	pop	{r3, r4, r5, r6, r7, pc}
  800972e:	bf00      	nop
@@ -23711,7 +23711,7 @@ Infinite_Loop:
  800978e:	6032      	str	r2, [r6, #0]
  8009790:	f043 0340 	orr.w	r3, r3, #64	; 0x40
  8009794:	81a3      	strh	r3, [r4, #12]
- 8009796:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+ 8009796:	f04f 30ff 	mov.w	r0, #4294967295
  800979a:	bd70      	pop	{r4, r5, r6, pc}
  800979c:	4b25      	ldr	r3, [pc, #148]	; (8009834 <__swsetup_r+0xd4>)
  800979e:	429c      	cmp	r4, r3
@@ -23912,7 +23912,7 @@ Infinite_Loop:
  8009950:	89a3      	ldrh	r3, [r4, #12]
  8009952:	f043 0340 	orr.w	r3, r3, #64	; 0x40
  8009956:	81a3      	strh	r3, [r4, #12]
- 8009958:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
+ 8009958:	f04f 30ff 	mov.w	r0, #4294967295
  800995c:	e8bd 81f0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, pc}
  8009960:	4407      	add	r7, r0
  8009962:	eba8 0800 	sub.w	r8, r8, r0
