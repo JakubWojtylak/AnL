@@ -36,7 +36,7 @@
 #include "../Drivers/BSP/STM32F429I-Discovery/stm32f429i_discovery_lcd.h"
 #include "../Drivers/BSP/STM32F429I-Discovery/stm32f429i_discovery_gyroscope.h"
 #include "../Drivers/BSP/STM32F429I-Discovery/Fonts/fonts.h"
-#include "hehe.h"
+#include "Hehe.h"
 #include "Menu.h"
 #include "Menu_kontynuuj.h"
 #include "Menu_nowagra.h"
@@ -62,15 +62,15 @@
 
 /* USER CODE BEGIN PV */
 volatile ZyroskopDane DataOld, DataNow;
-volatile int32_t CalkaX, CalkaY, CalkaZ;
+volatile int32_t AngleX, AngleY, AngleZ;
 float dT;
 uint8_t Animacja;
 volatile uint16_t X, Y;
-volatile uint8_t Kierunek;
-volatile uint8_t fPoruszonoX;
-volatile uint8_t fPoruszonoY;
-volatile uint16_t CzasZerowaniaX;
-volatile uint16_t CzasZerowaniaY;
+volatile uint8_t Direction;
+volatile uint8_t fMovedX;
+volatile uint8_t fMovedY;
+volatile uint16_t ResetTimeX;
+volatile uint16_t ResetTimeY;
 
 DMA2D_HandleTypeDef hdma2d;
 I2C_HandleTypeDef hi2c3;
@@ -132,19 +132,7 @@ uint8_t OurL3GD20_Init() {
 	//Enable high-pass filter
 	SPI5_write(0x24, 0x10);
 
-	//SPI5_write(0x22, 0b10000000);
-	//SPI5_write(0x30, 0b01010101);
 
-	//SPI5_write(0x32, 0b00000100);
-	//SPI5_write(0x33, 0b01111110);
-
-	//SPI5_write(0x34, 0b00000100);
-	//SPI5_write(0x35, 0b01111110);
-
-	//SPI5_write(0x36, 0b00000100);
-	//SPI5_write(0x37, 0b01111110);
-
-	//printf("Konf: %d", SPI5_read(0x31));
 
 	//Everything OK
 	return 0;
@@ -226,14 +214,14 @@ int main(void)
 	__HAL_SPI_ENABLE(&hspi5);
 
 	Animacja = 0;
-	Kierunek = 1;
+	Direction = 1;
 	X = 120;
 	Y = 170;
 	dT = 0.001;
-	fPoruszonoX = 0;
-	fPoruszonoY = 0;
-	CzasZerowaniaX = 0;
-	CzasZerowaniaY = 0;
+	fMovedX = 0;
+	fMovedY = 0;
+	ResetTimeX = 0;
+	ResetTimeY = 0;
 
 	OurL3GD20_Init();
 
@@ -267,9 +255,6 @@ int main(void)
 
 
 	Animacja = 1;
-	//long CalkaX = 0;
-	//long CalkaY = 0;
-	//long CalkaZ = 0;
 
   /* USER CODE END 2 */
 
@@ -277,15 +262,11 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 	while (1) {
 
-		//OurL3GD20_Read();
-		/*CalkaX += (long)Data.OsX;
-		CalkaY += (long)Data.OsY;
-		CalkaZ += (long)Data.OsZ;*/
-		printf("Calka X: %li\n\r", CalkaX);
-		printf("Calka Y: %li\n\r", CalkaY);
-		printf("Calka Z: %li\n\r", CalkaZ);
-		printf("CzasX: %d\n\r", CzasZerowaniaX);
-		printf("CzasY: %d\n\r", CzasZerowaniaY);
+		printf("Angle X: %li\n\r", AngleX);
+		printf("Angle Y: %li\n\r", AngleY);
+		printf("Angle Z: %li\n\r", AngleZ);
+		printf("CzasX: %d\n\r", ResetTimeX);
+		printf("CzasY: %d\n\r", ResetTimeY);
 		printf("Predkosc X: %d\n\r", DataNow.OsX);
 		printf("Predkosc Y: %d\n\r", DataNow.OsY);
 		//printf("OsX: %d\n\r", Data.OsX);
@@ -376,7 +357,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	{
 		if (Animacja == 1)
 		{
-			if ((Y < 300) && (Kierunek == 1)) {
+			if ((Y < 300) && (Direction == 1)) {
 
 				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
 
@@ -412,8 +393,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				BSP_LCD_FillRect(0, 15, 15, 290);
 				BSP_LCD_FillRect(225, 15, 15, 290);
 
-			} else if ((Y >= 300) && (Kierunek == 1)) {
-				Kierunek = 0;
+			} else if ((Y >= 300) && (Direction == 1)) {
+				Direction = 0;
 
 				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
 
@@ -447,7 +428,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				BSP_LCD_FillRect(0, 15, 15, 290);
 				BSP_LCD_FillRect(225, 15, 15, 290);
 
-			} else if ((Y > 20) && (Kierunek == 0)) {
+			} else if ((Y > 20) && (Direction == 0)) {
 
 				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
 
@@ -480,8 +461,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				BSP_LCD_FillRect(0, 15, 15, 290);
 				BSP_LCD_FillRect(225, 15, 15, 290);
 
-			} else if ((Y <= 20) && (Kierunek == 0)) {
-				Kierunek = 1;
+			} else if ((Y <= 20) && (Direction == 0)) {
+				Direction = 1;
 
 				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
 
@@ -503,7 +484,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 				else if(Y <= 25)
 					BSP_LCD_FillRect(X-20, Y - 10, 40, 40);
 				else
-					BSP_LCD_FillRect(X-20, Y - 20, 40, 40);
+					BSP_LCD_FillRect(X-20, Y - 2co0, 40, 40);
 
 				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
 
@@ -520,88 +501,88 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 	if (htim->Instance == TIM11) {
 		OurL3GD20_Read();
-
+//
 		if((DataNow.OsX >= 25 && DataNow.OsY <= 20) || (DataNow.OsX <= -25 && DataNow.OsY >= -20))
-			CalkaX += (long)(DataNow.OsX + ((DataOld.OsX - DataNow.OsX)*0.5));
+			AngleX += (long)(DataNow.OsX + ((DataOld.OsX - DataNow.OsX)*0.5));
 		else if((DataNow.OsX >= 25 && DataNow.OsY >= 25) || (DataNow.OsX <= -25 && DataNow.OsY <= -25))
-			CalkaX += (long)(DataNow.OsX + ((DataOld.OsX - DataNow.OsX)*0.5));
+			AngleX += (long)(DataNow.OsX + ((DataOld.OsX - DataNow.OsX)*0.5));
 
 		if((DataNow.OsY >= 25 && DataNow.OsX <= 20) || (DataNow.OsY <= -25 && DataNow.OsX >= -20))
-			CalkaY += (long)(DataNow.OsY + ((DataOld.OsY - DataNow.OsY)*0.5));
+			AngleY += (long)(DataNow.OsY + ((DataOld.OsY - DataNow.OsY)*0.5));
 		else if((DataNow.OsX >= 25 && DataNow.OsY >= 25) || (DataNow.OsX <= -25 && DataNow.OsY <= -25))
-			CalkaY += (long)(DataNow.OsY + ((DataOld.OsY - DataNow.OsY)*0.5));
+			AngleY += (long)(DataNow.OsY + ((DataOld.OsY - DataNow.OsY)*0.5));
 
 		DataOld = DataNow;
-
-		if(CalkaY > 10000)
+// movement of the ball
+		if(AngleY > 10000)
 		{
-			fPoruszonoX = 1;
-			fPoruszonoY = 1;
+			fMovedX = 1;
+			fMovedY = 1;
 
 			if(X < 215)
 				X += 1;
 
-		}else if(CalkaY < -10000)
+		}else if(AngleY < -10000)
 		{
-			fPoruszonoX = 1;
-			fPoruszonoY = 1;
+			fMovedX = 1;
+			fMovedY = 1;
 
 			if(X > 25)
 				X -= 1;
 
 		}
 
-		if(CalkaX > 10000)
+		if(AngleX > 10000)
 		{
-			fPoruszonoX = 1;
-			fPoruszonoY = 1;
+			fMovedX = 1;
+			fMovedY = 1;
 
 			if(Y < 295)
 				Y += 1;
 
-		}else if(CalkaX < -10000)
+		}else if(AngleX < -10000)
 		{
-			fPoruszonoX = 1;
-			fPoruszonoY = 1;
+			fMovedX = 1;
+			fMovedY = 1;
 
 			if(Y > 25)
 				Y -= 1;
 
 		}
 
-		if(fPoruszonoY == 1 && (CalkaY <= 10000 && CalkaY >= -10000)||(CalkaY>20000 ||CalkaY<-20000))
+		if(fMovedY == 1 && (AngleY <= 10000 && AngleY >= -10000)||(AngleY>20000 ||AngleY<-20000))
 		{
-			CzasZerowaniaY += 1;
+			ResetTimeY += 1;
 
-		}else if(fPoruszonoY == 1 && (CalkaY > 10000 || CalkaY < -10000))
+		}else if(fMovedY == 1 && (AngleY > 10000 || AngleY < -10000))
 		{
-			CzasZerowaniaY = 0;
+			ResetTimeY = 0;
 		}
 
 
-		if(fPoruszonoX == 1 && (CalkaX <= 10000 && CalkaX >= -10000)||(CalkaX>20000 ||CalkaX<-20000))
+		if(fMovedX == 1 && (AngleX <= 10000 && AngleX >= -10000)||(AngleX>20000 ||AngleX<-20000))
 		{
-			CzasZerowaniaX += 1;
+			ResetTimeX += 1;
 
-		}else if(fPoruszonoX == 1 && (CalkaX > 10000 || CalkaX < -10000))
+		}else if(fMovedX == 1 && (AngleX > 10000 || AngleX < -10000))
 		{
-			CzasZerowaniaX = 0;
+			ResetTimeX = 0;
 		}
 
-		if(CzasZerowaniaX >= 1000)
+		if(ResetTimeX >= 1000)
 		{
-			CalkaX = 0;
+			AngleX = 0;
 
-			CzasZerowaniaX = 0;
-			fPoruszonoX = 0;
+			ResetTimeX = 0;
+			fMovedX = 0;
 		}
 
-		if(CzasZerowaniaY >= 1000)
+		if(ResetTimeY >= 1000)
 		{
-			CalkaY = 0;
+			AngleY = 0;
 
-			CzasZerowaniaY = 0;
-			fPoruszonoY = 0;
+			ResetTimeY = 0;
+			fMovedY = 0;
 		}
 
 
