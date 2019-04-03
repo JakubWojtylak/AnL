@@ -25,21 +25,21 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  10 .ARM.attributes 00000030  00000000  00000000  000c00b0  2**0
                   CONTENTS, READONLY
- 11 .debug_info   00026807  00000000  00000000  000c00e0  2**0
+ 11 .debug_info   00026802  00000000  00000000  000c00e0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_abbrev 00004cc6  00000000  00000000  000e68e7  2**0
+ 12 .debug_abbrev 00004cc6  00000000  00000000  000e68e2  2**0
                   CONTENTS, READONLY, DEBUGGING
- 13 .debug_aranges 00001c50  00000000  00000000  000eb5b0  2**3
+ 13 .debug_aranges 00001c50  00000000  00000000  000eb5a8  2**3
                   CONTENTS, READONLY, DEBUGGING
- 14 .debug_ranges 000019f0  00000000  00000000  000ed200  2**3
+ 14 .debug_ranges 000019f0  00000000  00000000  000ed1f8  2**3
                   CONTENTS, READONLY, DEBUGGING
- 15 .debug_line   0000d7d3  00000000  00000000  000eebf0  2**0
+ 15 .debug_line   0000d413  00000000  00000000  000eebe8  2**0
                   CONTENTS, READONLY, DEBUGGING
- 16 .debug_str    00007d4d  00000000  00000000  000fc3c3  2**0
+ 16 .debug_str    00007d2f  00000000  00000000  000fbffb  2**0
                   CONTENTS, READONLY, DEBUGGING
- 17 .comment      0000007c  00000000  00000000  00104110  2**0
+ 17 .comment      0000007c  00000000  00000000  00103d2a  2**0
                   CONTENTS, READONLY
- 18 .debug_frame  00007c84  00000000  00000000  0010418c  2**2
+ 18 .debug_frame  00007c84  00000000  00000000  00103da8  2**2
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -790,8 +790,8 @@ Disassembly of section .text:
  8000a7a:	bf08      	it	eq
  8000a7c:	2800      	cmpeq	r0, #0
  8000a7e:	bf1c      	itt	ne
- 8000a80:	f04f 31ff 	movne.w	r1, #4294967295
- 8000a84:	f04f 30ff 	movne.w	r0, #4294967295
+ 8000a80:	f04f 31ff 	movne.w	r1, #4294967295	; 0xffffffff
+ 8000a84:	f04f 30ff 	movne.w	r0, #4294967295	; 0xffffffff
  8000a88:	f000 b97a 	b.w	8000d80 <__aeabi_idiv0>
  8000a8c:	f1ad 0c08 	sub.w	ip, sp, #8
  8000a90:	e96d ce04 	strd	ip, lr, [sp, #-16]!
@@ -831,7 +831,7 @@ Disassembly of section .text:
  8000af6:	42ab      	cmp	r3, r5
  8000af8:	d90a      	bls.n	8000b10 <__udivmoddi4+0x6c>
  8000afa:	19ed      	adds	r5, r5, r7
- 8000afc:	f108 32ff 	add.w	r2, r8, #4294967295
+ 8000afc:	f108 32ff 	add.w	r2, r8, #4294967295	; 0xffffffff
  8000b00:	f080 8123 	bcs.w	8000d4a <__udivmoddi4+0x2a6>
  8000b04:	42ab      	cmp	r3, r5
  8000b06:	f240 8120 	bls.w	8000d4a <__udivmoddi4+0x2a6>
@@ -846,7 +846,7 @@ Disassembly of section .text:
  8000b24:	45a1      	cmp	r9, r4
  8000b26:	d909      	bls.n	8000b3c <__udivmoddi4+0x98>
  8000b28:	19e4      	adds	r4, r4, r7
- 8000b2a:	f100 33ff 	add.w	r3, r0, #4294967295
+ 8000b2a:	f100 33ff 	add.w	r3, r0, #4294967295	; 0xffffffff
  8000b2e:	f080 810a 	bcs.w	8000d46 <__udivmoddi4+0x2a2>
  8000b32:	45a1      	cmp	r9, r4
  8000b34:	f240 8107 	bls.w	8000d46 <__udivmoddi4+0x2a2>
@@ -903,7 +903,7 @@ Disassembly of section .text:
  8000bc4:	42ab      	cmp	r3, r5
  8000bc6:	d907      	bls.n	8000bd8 <__udivmoddi4+0x134>
  8000bc8:	19ed      	adds	r5, r5, r7
- 8000bca:	f108 30ff 	add.w	r0, r8, #4294967295
+ 8000bca:	f108 30ff 	add.w	r0, r8, #4294967295	; 0xffffffff
  8000bce:	d202      	bcs.n	8000bd6 <__udivmoddi4+0x132>
  8000bd0:	42ab      	cmp	r3, r5
  8000bd2:	f200 80d1 	bhi.w	8000d78 <__udivmoddi4+0x2d4>
@@ -917,7 +917,7 @@ Disassembly of section .text:
  8000bec:	45a4      	cmp	ip, r4
  8000bee:	d907      	bls.n	8000c00 <__udivmoddi4+0x15c>
  8000bf0:	19e4      	adds	r4, r4, r7
- 8000bf2:	f100 33ff 	add.w	r3, r0, #4294967295
+ 8000bf2:	f100 33ff 	add.w	r3, r0, #4294967295	; 0xffffffff
  8000bf6:	d202      	bcs.n	8000bfe <__udivmoddi4+0x15a>
  8000bf8:	45a4      	cmp	ip, r4
  8000bfa:	f200 80b8 	bhi.w	8000d6e <__udivmoddi4+0x2ca>
@@ -945,7 +945,7 @@ Disassembly of section .text:
  8000c46:	fa00 f40e 	lsl.w	r4, r0, lr
  8000c4a:	d909      	bls.n	8000c60 <__udivmoddi4+0x1bc>
  8000c4c:	19ed      	adds	r5, r5, r7
- 8000c4e:	f101 30ff 	add.w	r0, r1, #4294967295
+ 8000c4e:	f101 30ff 	add.w	r0, r1, #4294967295	; 0xffffffff
  8000c52:	f080 808a 	bcs.w	8000d6a <__udivmoddi4+0x2c6>
  8000c56:	42ab      	cmp	r3, r5
  8000c58:	f240 8087 	bls.w	8000d6a <__udivmoddi4+0x2c6>
@@ -960,7 +960,7 @@ Disassembly of section .text:
  8000c76:	42ab      	cmp	r3, r5
  8000c78:	d907      	bls.n	8000c8a <__udivmoddi4+0x1e6>
  8000c7a:	19ed      	adds	r5, r5, r7
- 8000c7c:	f100 38ff 	add.w	r8, r0, #4294967295
+ 8000c7c:	f100 38ff 	add.w	r8, r0, #4294967295	; 0xffffffff
  8000c80:	d26f      	bcs.n	8000d62 <__udivmoddi4+0x2be>
  8000c82:	42ab      	cmp	r3, r5
  8000c84:	d96d      	bls.n	8000d62 <__udivmoddi4+0x2be>
@@ -989,7 +989,7 @@ Disassembly of section .text:
  8000cd0:	fa00 fa01 	lsl.w	sl, r0, r1
  8000cd4:	d908      	bls.n	8000ce8 <__udivmoddi4+0x244>
  8000cd6:	18ed      	adds	r5, r5, r3
- 8000cd8:	f109 30ff 	add.w	r0, r9, #4294967295
+ 8000cd8:	f109 30ff 	add.w	r0, r9, #4294967295	; 0xffffffff
  8000cdc:	d243      	bcs.n	8000d66 <__udivmoddi4+0x2c2>
  8000cde:	42ac      	cmp	r4, r5
  8000ce0:	d941      	bls.n	8000d66 <__udivmoddi4+0x2c2>
@@ -1004,7 +1004,7 @@ Disassembly of section .text:
  8000cfe:	45a0      	cmp	r8, r4
  8000d00:	d907      	bls.n	8000d12 <__udivmoddi4+0x26e>
  8000d02:	18e4      	adds	r4, r4, r3
- 8000d04:	f100 35ff 	add.w	r5, r0, #4294967295
+ 8000d04:	f100 35ff 	add.w	r5, r0, #4294967295	; 0xffffffff
  8000d08:	d229      	bcs.n	8000d5e <__udivmoddi4+0x2ba>
  8000d0a:	45a0      	cmp	r8, r4
  8000d0c:	d927      	bls.n	8000d5e <__udivmoddi4+0x2ba>
@@ -2461,7 +2461,7 @@ void BSP_LCD_LayerDefaultInit(uint16_t LayerIndex, uint32_t FB_Address)
  80015b4:	009b      	lsls	r3, r3, #2
  80015b6:	440b      	add	r3, r1
  80015b8:	3304      	adds	r3, #4
- 80015ba:	f04f 32ff 	mov.w	r2, #4294967295
+ 80015ba:	f04f 32ff 	mov.w	r2, #4294967295	; 0xffffffff
  80015be:	601a      	str	r2, [r3, #0]
   DrawProp[LayerIndex].pFont     = &Font24;
  80015c0:	88fa      	ldrh	r2, [r7, #6]
@@ -4786,7 +4786,7 @@ __weak void HAL_Delay(uint32_t Delay)
   /* Add a freq to guarantee minimum wait */
   if (wait < HAL_MAX_DELAY)
  8002452:	68fb      	ldr	r3, [r7, #12]
- 8002454:	f1b3 3fff 	cmp.w	r3, #4294967295
+ 8002454:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
  8002458:	d005      	beq.n	8002466 <HAL_Delay+0x26>
   {
     wait += (uint32_t)(uwTickFreq);
@@ -6181,7 +6181,7 @@ HAL_StatusTypeDef HAL_DMA2D_PollForTransfer(DMA2D_HandleTypeDef *hdma2d, uint32_
       /* Check for the Timeout */
       if(Timeout != HAL_MAX_DELAY)
  8002b62:	683b      	ldr	r3, [r7, #0]
- 8002b64:	f1b3 3fff 	cmp.w	r3, #4294967295
+ 8002b64:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
  8002b68:	d01a      	beq.n	8002ba0 <HAL_DMA2D_PollForTransfer+0xbc>
       {
         if(((HAL_GetTick() - tickstart ) > Timeout)||(Timeout == 0U))
@@ -6334,7 +6334,7 @@ HAL_StatusTypeDef HAL_DMA2D_PollForTransfer(DMA2D_HandleTypeDef *hdma2d, uint32_
       /* Check for the Timeout */
       if(Timeout != HAL_MAX_DELAY)
  8002c48:	683b      	ldr	r3, [r7, #0]
- 8002c4a:	f1b3 3fff 	cmp.w	r3, #4294967295
+ 8002c4a:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
  8002c4e:	d01a      	beq.n	8002c86 <HAL_DMA2D_PollForTransfer+0x1a2>
       {
         if(((HAL_GetTick() - tickstart ) > Timeout)||(Timeout == 0U))
@@ -12717,7 +12717,7 @@ HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint
  800515c:	429a      	cmp	r2, r3
  800515e:	d303      	bcc.n	8005168 <HAL_SPI_Transmit+0x158>
  8005160:	683b      	ldr	r3, [r7, #0]
- 8005162:	f1b3 3fff 	cmp.w	r3, #4294967295
+ 8005162:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
  8005166:	d102      	bne.n	800516e <HAL_SPI_Transmit+0x15e>
  8005168:	683b      	ldr	r3, [r7, #0]
  800516a:	2b00      	cmp	r3, #0
@@ -12820,7 +12820,7 @@ HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint
  80051f8:	429a      	cmp	r2, r3
  80051fa:	d303      	bcc.n	8005204 <HAL_SPI_Transmit+0x1f4>
  80051fc:	683b      	ldr	r3, [r7, #0]
- 80051fe:	f1b3 3fff 	cmp.w	r3, #4294967295
+ 80051fe:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
  8005202:	d102      	bne.n	800520a <HAL_SPI_Transmit+0x1fa>
  8005204:	683b      	ldr	r3, [r7, #0]
  8005206:	2b00      	cmp	r3, #0
@@ -13143,7 +13143,7 @@ HAL_StatusTypeDef HAL_SPI_Receive(SPI_HandleTypeDef *hspi, uint8_t *pData, uint1
  80053bc:	429a      	cmp	r2, r3
  80053be:	d303      	bcc.n	80053c8 <HAL_SPI_Receive+0x154>
  80053c0:	683b      	ldr	r3, [r7, #0]
- 80053c2:	f1b3 3fff 	cmp.w	r3, #4294967295
+ 80053c2:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
  80053c6:	d102      	bne.n	80053ce <HAL_SPI_Receive+0x15a>
  80053c8:	683b      	ldr	r3, [r7, #0]
  80053ca:	2b00      	cmp	r3, #0
@@ -13210,7 +13210,7 @@ HAL_StatusTypeDef HAL_SPI_Receive(SPI_HandleTypeDef *hspi, uint8_t *pData, uint1
  8005422:	429a      	cmp	r2, r3
  8005424:	d303      	bcc.n	800542e <HAL_SPI_Receive+0x1ba>
  8005426:	683b      	ldr	r3, [r7, #0]
- 8005428:	f1b3 3fff 	cmp.w	r3, #4294967295
+ 8005428:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
  800542c:	d102      	bne.n	8005434 <HAL_SPI_Receive+0x1c0>
  800542e:	683b      	ldr	r3, [r7, #0]
  8005430:	2b00      	cmp	r3, #0
@@ -13592,7 +13592,7 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
  8005644:	429a      	cmp	r2, r3
  8005646:	d307      	bcc.n	8005658 <HAL_SPI_TransmitReceive+0x1d8>
  8005648:	6bbb      	ldr	r3, [r7, #56]	; 0x38
- 800564a:	f1b3 3fff 	cmp.w	r3, #4294967295
+ 800564a:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
  800564e:	d003      	beq.n	8005658 <HAL_SPI_TransmitReceive+0x1d8>
       {
         errorcode = HAL_TIMEOUT;
@@ -13749,7 +13749,7 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
  800573a:	429a      	cmp	r2, r3
  800573c:	d303      	bcc.n	8005746 <HAL_SPI_TransmitReceive+0x2c6>
  800573e:	6bbb      	ldr	r3, [r7, #56]	; 0x38
- 8005740:	f1b3 3fff 	cmp.w	r3, #4294967295
+ 8005740:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
  8005744:	d102      	bne.n	800574c <HAL_SPI_TransmitReceive+0x2cc>
  8005746:	6bbb      	ldr	r3, [r7, #56]	; 0x38
  8005748:	2b00      	cmp	r3, #0
@@ -13877,7 +13877,7 @@ static HAL_StatusTypeDef SPI_WaitFlagStateUntilTimeout(SPI_HandleTypeDef *hspi, 
   {
     if (Timeout != HAL_MAX_DELAY)
  80057ee:	683b      	ldr	r3, [r7, #0]
- 80057f0:	f1b3 3fff 	cmp.w	r3, #4294967295
+ 80057f0:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
  80057f4:	d048      	beq.n	8005888 <SPI_WaitFlagStateUntilTimeout+0xac>
     {
       if (((HAL_GetTick() - Tickstart) >= Timeout) || (Timeout == 0U))
@@ -15895,7 +15895,7 @@ static HAL_StatusTypeDef UART_WaitOnFlagUntilTimeout(UART_HandleTypeDef *huart, 
     /* Check for the Timeout */
     if (Timeout != HAL_MAX_DELAY)
  80062c6:	69bb      	ldr	r3, [r7, #24]
- 80062c8:	f1b3 3fff 	cmp.w	r3, #4294967295
+ 80062c8:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
  80062cc:	d028      	beq.n	8006320 <UART_WaitOnFlagUntilTimeout+0x6c>
     {
       if ((Timeout == 0U) || ((HAL_GetTick() - Tickstart) > Timeout))
@@ -16915,7 +16915,7 @@ HAL_StatusTypeDef FMC_SDRAM_SendCommand(FMC_SDRAM_TypeDef *Device, FMC_SDRAM_Com
     /* Check for the Timeout */
     if(Timeout != HAL_MAX_DELAY)
  8006980:	687b      	ldr	r3, [r7, #4]
- 8006982:	f1b3 3fff 	cmp.w	r3, #4294967295
+ 8006982:	f1b3 3fff 	cmp.w	r3, #4294967295	; 0xffffffff
  8006986:	d00c      	beq.n	80069a2 <FMC_SDRAM_SendCommand+0x62>
     {
       if((Timeout == 0U)||((HAL_GetTick() - tickstart ) > Timeout))
@@ -18563,7 +18563,7 @@ uint8_t spi5_sendrecv(uint8_t byte) {
 	HAL_SPI_TransmitReceive(&hspi5, &byte, &answer, 1, HAL_MAX_DELAY);
  8007376:	f107 020f 	add.w	r2, r7, #15
  800737a:	1df9      	adds	r1, r7, #7
- 800737c:	f04f 33ff 	mov.w	r3, #4294967295
+ 800737c:	f04f 33ff 	mov.w	r3, #4294967295	; 0xffffffff
  8007380:	9300      	str	r3, [sp, #0]
  8007382:	2301      	movs	r3, #1
  8007384:	4803      	ldr	r0, [pc, #12]	; (8007394 <spi5_sendrecv+0x28>)
@@ -18576,7 +18576,7 @@ uint8_t spi5_sendrecv(uint8_t byte) {
  800738e:	3710      	adds	r7, #16
  8007390:	46bd      	mov	sp, r7
  8007392:	bd80      	pop	{r7, pc}
- 8007394:	200004bc 	.word	0x200004bc
+ 8007394:	200004b4 	.word	0x200004b4
 
 08007398 <SPI5_read>:
 
@@ -18698,9 +18698,8 @@ uint8_t OurL3GD20_Init() {
  800744c:	2110      	movs	r1, #16
  800744e:	2024      	movs	r0, #36	; 0x24
  8007450:	f7ff ffc4 	bl	80073dc <SPI5_write>
-	//SPI5_write(0x37, 0b01111110);
 
-	//printf("Konf: %d", SPI5_read(0x31));
+
 
 	//Everything OK
 	return 0;
@@ -18806,7 +18805,7 @@ void OurL3GD20_Read() {
  8007524:	46bd      	mov	sp, r7
  8007526:	bd90      	pop	{r4, r7, pc}
  8007528:	3c0f5c29 	.word	0x3c0f5c29
- 800752c:	20000520 	.word	0x20000520
+ 800752c:	20000518 	.word	0x20000518
 
 08007530 <send_char>:
 
@@ -18922,7 +18921,7 @@ int main(void)
  80075c8:	4b58      	ldr	r3, [pc, #352]	; (800772c <main+0x1bc>)
  80075ca:	2200      	movs	r2, #0
  80075cc:	701a      	strb	r2, [r3, #0]
-	Kierunek = 1;
+	Direction = 1;
  80075ce:	4b58      	ldr	r3, [pc, #352]	; (8007730 <main+0x1c0>)
  80075d0:	2201      	movs	r2, #1
  80075d2:	701a      	strb	r2, [r3, #0]
@@ -18938,19 +18937,19 @@ int main(void)
  80075e0:	4b56      	ldr	r3, [pc, #344]	; (800773c <main+0x1cc>)
  80075e2:	4a57      	ldr	r2, [pc, #348]	; (8007740 <main+0x1d0>)
  80075e4:	601a      	str	r2, [r3, #0]
-	fPoruszonoX = 0;
+	fMovedX = 0;
  80075e6:	4b57      	ldr	r3, [pc, #348]	; (8007744 <main+0x1d4>)
  80075e8:	2200      	movs	r2, #0
  80075ea:	701a      	strb	r2, [r3, #0]
-	fPoruszonoY = 0;
+	fMovedY = 0;
  80075ec:	4b56      	ldr	r3, [pc, #344]	; (8007748 <main+0x1d8>)
  80075ee:	2200      	movs	r2, #0
  80075f0:	701a      	strb	r2, [r3, #0]
-	CzasZerowaniaX = 0;
+	ResetTimeX = 0;
  80075f2:	4b56      	ldr	r3, [pc, #344]	; (800774c <main+0x1dc>)
  80075f4:	2200      	movs	r2, #0
  80075f6:	801a      	strh	r2, [r3, #0]
-	CzasZerowaniaY = 0;
+	ResetTimeY = 0;
  80075f8:	4b55      	ldr	r3, [pc, #340]	; (8007750 <main+0x1e0>)
  80075fa:	2200      	movs	r2, #0
  80075fc:	801a      	strh	r2, [r3, #0]
@@ -19018,7 +19017,7 @@ int main(void)
  8007670:	f04f 407f 	mov.w	r0, #4278190080	; 0xff000000
  8007674:	f7fa f808 	bl	8001688 <BSP_LCD_Clear>
 	BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
- 8007678:	f04f 30ff 	mov.w	r0, #4294967295
+ 8007678:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
  800767c:	f7f9 ffd2 	bl	8001624 <BSP_LCD_SetTextColor>
 	BSP_LCD_FillRect(0, 0, 240, 15);
  8007680:	230f      	movs	r3, #15
@@ -19051,36 +19050,36 @@ int main(void)
  80076b8:	2201      	movs	r2, #1
  80076ba:	701a      	strb	r2, [r3, #0]
 
-		//OurL3GD20_Read();
-		/*CalkaX += (long)Data.OsX;
-		CalkaY += (long)Data.OsY;
-		CalkaZ += (long)Data.OsZ;*/
-		printf("Calka X: %li\n\r", CalkaX);
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+	while (1) {
+
+		printf("Angle X: %li\n\r", AngleX);
  80076bc:	4b29      	ldr	r3, [pc, #164]	; (8007764 <main+0x1f4>)
  80076be:	681b      	ldr	r3, [r3, #0]
  80076c0:	4619      	mov	r1, r3
  80076c2:	4829      	ldr	r0, [pc, #164]	; (8007768 <main+0x1f8>)
  80076c4:	f001 fb7e 	bl	8008dc4 <iprintf>
-		printf("Calka Y: %li\n\r", CalkaY);
+		printf("Angle Y: %li\n\r", AngleY);
  80076c8:	4b28      	ldr	r3, [pc, #160]	; (800776c <main+0x1fc>)
  80076ca:	681b      	ldr	r3, [r3, #0]
  80076cc:	4619      	mov	r1, r3
  80076ce:	4828      	ldr	r0, [pc, #160]	; (8007770 <main+0x200>)
  80076d0:	f001 fb78 	bl	8008dc4 <iprintf>
-		printf("Calka Z: %li\n\r", CalkaZ);
+		printf("Angle Z: %li\n\r", AngleZ);
  80076d4:	4b27      	ldr	r3, [pc, #156]	; (8007774 <main+0x204>)
  80076d6:	681b      	ldr	r3, [r3, #0]
  80076d8:	4619      	mov	r1, r3
  80076da:	4827      	ldr	r0, [pc, #156]	; (8007778 <main+0x208>)
  80076dc:	f001 fb72 	bl	8008dc4 <iprintf>
-		printf("CzasX: %d\n\r", CzasZerowaniaX);
+		printf("CzasX: %d\n\r", ResetTimeX);
  80076e0:	4b1a      	ldr	r3, [pc, #104]	; (800774c <main+0x1dc>)
  80076e2:	881b      	ldrh	r3, [r3, #0]
  80076e4:	b29b      	uxth	r3, r3
  80076e6:	4619      	mov	r1, r3
  80076e8:	4824      	ldr	r0, [pc, #144]	; (800777c <main+0x20c>)
  80076ea:	f001 fb6b 	bl	8008dc4 <iprintf>
-		printf("CzasY: %d\n\r", CzasZerowaniaY);
+		printf("CzasY: %d\n\r", ResetTimeY);
  80076ee:	4b18      	ldr	r3, [pc, #96]	; (8007750 <main+0x1e0>)
  80076f0:	881b      	ldrh	r3, [r3, #0]
  80076f2:	b29b      	uxth	r3, r3
@@ -19107,34 +19106,34 @@ int main(void)
 		HAL_Delay(200);
  8007718:	20c8      	movs	r0, #200	; 0xc8
  800771a:	f7fa fe91 	bl	8002440 <HAL_Delay>
-		printf("Calka X: %li\n\r", CalkaX);
+		printf("Angle X: %li\n\r", AngleX);
  800771e:	e7cd      	b.n	80076bc <main+0x14c>
  8007720:	20000574 	.word	0x20000574
  8007724:	200005b4 	.word	0x200005b4
- 8007728:	200004bc 	.word	0x200004bc
- 800772c:	2000052d 	.word	0x2000052d
- 8007730:	200004b8 	.word	0x200004b8
- 8007734:	20000532 	.word	0x20000532
- 8007738:	2000051e 	.word	0x2000051e
- 800773c:	20000518 	.word	0x20000518
+ 8007728:	200004b4 	.word	0x200004b4
+ 800772c:	20000521 	.word	0x20000521
+ 8007730:	200004b2 	.word	0x200004b2
+ 8007734:	20000530 	.word	0x20000530
+ 8007738:	20000510 	.word	0x20000510
+ 800773c:	2000050c 	.word	0x2000050c
  8007740:	3a83126f 	.word	0x3a83126f
- 8007744:	2000052c 	.word	0x2000052c
- 8007748:	20000530 	.word	0x20000530
- 800774c:	2000052e 	.word	0x2000052e
- 8007750:	2000051c 	.word	0x2000051c
+ 8007744:	20000520 	.word	0x20000520
+ 8007748:	2000052c 	.word	0x2000052c
+ 800774c:	2000051e 	.word	0x2000051e
+ 8007750:	2000052e 	.word	0x2000052e
  8007754:	0800b6fc 	.word	0x0800b6fc
  8007758:	0805673c 	.word	0x0805673c
  800775c:	08030f1c 	.word	0x08030f1c
  8007760:	0807bf5c 	.word	0x0807bf5c
- 8007764:	20000528 	.word	0x20000528
+ 8007764:	20000514 	.word	0x20000514
  8007768:	08009bcc 	.word	0x08009bcc
- 800776c:	200004b4 	.word	0x200004b4
+ 800776c:	20000528 	.word	0x20000528
  8007770:	08009bdc 	.word	0x08009bdc
- 8007774:	20000514 	.word	0x20000514
+ 8007774:	20000524 	.word	0x20000524
  8007778:	08009bec 	.word	0x08009bec
  800777c:	08009bfc 	.word	0x08009bfc
  8007780:	08009c08 	.word	0x08009c08
- 8007784:	20000520 	.word	0x20000520
+ 8007784:	20000518 	.word	0x20000518
  8007788:	08009c14 	.word	0x08009c14
  800778c:	08009c28 	.word	0x08009c28
 
@@ -19333,7 +19332,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  80078bc:	2b01      	cmp	r3, #1
  80078be:	f040 8425 	bne.w	800810c <HAL_TIM_PeriodElapsedCallback+0x868>
 		{
-			if ((Y < 300) && (Kierunek == 1)) {
+			if ((Y < 300) && (Direction == 1)) {
  80078c2:	4b9b      	ldr	r3, [pc, #620]	; (8007b30 <HAL_TIM_PeriodElapsedCallback+0x28c>)
  80078c4:	881b      	ldrh	r3, [r3, #0]
  80078c6:	b29b      	uxth	r3, r3
@@ -19560,7 +19559,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 
 				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
- 8007a74:	f04f 30ff 	mov.w	r0, #4294967295
+ 8007a74:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
  8007a78:	f7f9 fdd4 	bl	8001624 <BSP_LCD_SetTextColor>
 
 				//Y += 10;
@@ -19600,7 +19599,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8007ac2:	f7fa f82f 	bl	8001b24 <BSP_LCD_FillRect>
  8007ac6:	e321      	b.n	800810c <HAL_TIM_PeriodElapsedCallback+0x868>
 
-			} else if ((Y >= 300) && (Kierunek == 1)) {
+			} else if ((Y >= 300) && (Direction == 1)) {
  8007ac8:	4b19      	ldr	r3, [pc, #100]	; (8007b30 <HAL_TIM_PeriodElapsedCallback+0x28c>)
  8007aca:	881b      	ldrh	r3, [r3, #0]
  8007acc:	b29b      	uxth	r3, r3
@@ -19611,7 +19610,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8007ada:	b2db      	uxtb	r3, r3
  8007adc:	2b01      	cmp	r3, #1
  8007ade:	f040 8103 	bne.w	8007ce8 <HAL_TIM_PeriodElapsedCallback+0x444>
-				Kierunek = 0;
+				Direction = 0;
  8007ae2:	4b14      	ldr	r3, [pc, #80]	; (8007b34 <HAL_TIM_PeriodElapsedCallback+0x290>)
  8007ae4:	2200      	movs	r2, #0
  8007ae6:	701a      	strb	r2, [r3, #0]
@@ -19650,10 +19649,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8007b22:	f7f9 ffff 	bl	8001b24 <BSP_LCD_FillRect>
  8007b26:	e0b5      	b.n	8007c94 <HAL_TIM_PeriodElapsedCallback+0x3f0>
  8007b28:	40014400 	.word	0x40014400
- 8007b2c:	2000052d 	.word	0x2000052d
- 8007b30:	2000051e 	.word	0x2000051e
- 8007b34:	200004b8 	.word	0x200004b8
- 8007b38:	20000532 	.word	0x20000532
+ 8007b2c:	20000521 	.word	0x20000521
+ 8007b30:	20000510 	.word	0x20000510
+ 8007b34:	200004b2 	.word	0x200004b2
+ 8007b38:	20000530 	.word	0x20000530
 				else if(X >= 215 && Y >= 295)
  8007b3c:	4b9a      	ldr	r3, [pc, #616]	; (8007da8 <HAL_TIM_PeriodElapsedCallback+0x504>)
  8007b3e:	881b      	ldrh	r3, [r3, #0]
@@ -19834,7 +19833,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 
 				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
- 8007c94:	f04f 30ff 	mov.w	r0, #4294967295
+ 8007c94:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
  8007c98:	f7f9 fcc4 	bl	8001624 <BSP_LCD_SetTextColor>
 
 				//Y -= 10;
@@ -19874,7 +19873,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8007ce2:	f7f9 ff1f 	bl	8001b24 <BSP_LCD_FillRect>
  8007ce6:	e211      	b.n	800810c <HAL_TIM_PeriodElapsedCallback+0x868>
 
-			} else if ((Y > 20) && (Kierunek == 0)) {
+			} else if ((Y > 20) && (Direction == 0)) {
  8007ce8:	4b30      	ldr	r3, [pc, #192]	; (8007dac <HAL_TIM_PeriodElapsedCallback+0x508>)
  8007cea:	881b      	ldrh	r3, [r3, #0]
  8007cec:	b29b      	uxth	r3, r3
@@ -19971,9 +19970,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8007da0:	2228      	movs	r2, #40	; 0x28
  8007da2:	f7f9 febf 	bl	8001b24 <BSP_LCD_FillRect>
  8007da6:	e07d      	b.n	8007ea4 <HAL_TIM_PeriodElapsedCallback+0x600>
- 8007da8:	20000532 	.word	0x20000532
- 8007dac:	2000051e 	.word	0x2000051e
- 8007db0:	200004b8 	.word	0x200004b8
+ 8007da8:	20000530 	.word	0x20000530
+ 8007dac:	20000510 	.word	0x20000510
+ 8007db0:	200004b2 	.word	0x200004b2
 				else if(X >= 215 && Y <= 25)
  8007db4:	4b98      	ldr	r3, [pc, #608]	; (8008018 <HAL_TIM_PeriodElapsedCallback+0x774>)
  8007db6:	881b      	ldrh	r3, [r3, #0]
@@ -20101,7 +20100,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8007ea0:	f7f9 fe40 	bl	8001b24 <BSP_LCD_FillRect>
 
 				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
- 8007ea4:	f04f 30ff 	mov.w	r0, #4294967295
+ 8007ea4:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
  8007ea8:	f7f9 fbbc 	bl	8001624 <BSP_LCD_SetTextColor>
 
 				//Y -= 10;
@@ -20141,7 +20140,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8007ef2:	f7f9 fe17 	bl	8001b24 <BSP_LCD_FillRect>
  8007ef6:	e109      	b.n	800810c <HAL_TIM_PeriodElapsedCallback+0x868>
 
-			} else if ((Y <= 20) && (Kierunek == 0)) {
+			} else if ((Y <= 20) && (Direction == 0)) {
  8007ef8:	4b48      	ldr	r3, [pc, #288]	; (800801c <HAL_TIM_PeriodElapsedCallback+0x778>)
  8007efa:	881b      	ldrh	r3, [r3, #0]
  8007efc:	b29b      	uxth	r3, r3
@@ -20152,7 +20151,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8007f08:	b2db      	uxtb	r3, r3
  8007f0a:	2b00      	cmp	r3, #0
  8007f0c:	f040 80fe 	bne.w	800810c <HAL_TIM_PeriodElapsedCallback+0x868>
-				Kierunek = 1;
+				Direction = 1;
  8007f10:	4b43      	ldr	r3, [pc, #268]	; (8008020 <HAL_TIM_PeriodElapsedCallback+0x77c>)
  8007f12:	2201      	movs	r2, #1
  8007f14:	701a      	strb	r2, [r3, #0]
@@ -20289,9 +20288,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8008010:	2228      	movs	r2, #40	; 0x28
  8008012:	f7f9 fd87 	bl	8001b24 <BSP_LCD_FillRect>
  8008016:	e050      	b.n	80080ba <HAL_TIM_PeriodElapsedCallback+0x816>
- 8008018:	20000532 	.word	0x20000532
- 800801c:	2000051e 	.word	0x2000051e
- 8008020:	200004b8 	.word	0x200004b8
+ 8008018:	20000530 	.word	0x20000530
+ 800801c:	20000510 	.word	0x20000510
+ 8008020:	200004b2 	.word	0x200004b2
 				else if(X >= 215)
  8008024:	4b9e      	ldr	r3, [pc, #632]	; (80082a0 <HAL_TIM_PeriodElapsedCallback+0x9fc>)
  8008026:	881b      	ldrh	r3, [r3, #0]
@@ -20372,7 +20371,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  80080b6:	f7f9 fd35 	bl	8001b24 <BSP_LCD_FillRect>
 
 				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
- 80080ba:	f04f 30ff 	mov.w	r0, #4294967295
+ 80080ba:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
  80080be:	f7f9 fab1 	bl	8001624 <BSP_LCD_SetTextColor>
 
 				//Y += 10;
@@ -20423,7 +20422,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8008114:	f040 8205 	bne.w	8008522 <HAL_TIM_PeriodElapsedCallback+0xc7e>
 		OurL3GD20_Read();
  8008118:	f7ff f9a0 	bl	800745c <OurL3GD20_Read>
-
+//
 		if((DataNow.OsX >= 25 && DataNow.OsY <= 20) || (DataNow.OsX <= -25 && DataNow.OsY >= -20))
  800811c:	4b63      	ldr	r3, [pc, #396]	; (80082ac <HAL_TIM_PeriodElapsedCallback+0xa08>)
  800811e:	881b      	ldrh	r3, [r3, #0]
@@ -20445,7 +20444,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8008140:	b21b      	sxth	r3, r3
  8008142:	f113 0f14 	cmn.w	r3, #20
  8008146:	db2a      	blt.n	800819e <HAL_TIM_PeriodElapsedCallback+0x8fa>
-			CalkaX += (long)(DataNow.OsX + ((DataOld.OsX - DataNow.OsX)*0.5));
+			AngleX += (long)(DataNow.OsX + ((DataOld.OsX - DataNow.OsX)*0.5));
  8008148:	4b58      	ldr	r3, [pc, #352]	; (80082ac <HAL_TIM_PeriodElapsedCallback+0xa08>)
  800814a:	881b      	ldrh	r3, [r3, #0]
  800814c:	b21b      	sxth	r3, r3
@@ -20504,7 +20503,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  80081c2:	b21b      	sxth	r3, r3
  80081c4:	f113 0f18 	cmn.w	r3, #24
  80081c8:	da29      	bge.n	800821e <HAL_TIM_PeriodElapsedCallback+0x97a>
-			CalkaX += (long)(DataNow.OsX + ((DataOld.OsX - DataNow.OsX)*0.5));
+			AngleX += (long)(DataNow.OsX + ((DataOld.OsX - DataNow.OsX)*0.5));
  80081ca:	4b38      	ldr	r3, [pc, #224]	; (80082ac <HAL_TIM_PeriodElapsedCallback+0xa08>)
  80081cc:	881b      	ldrh	r3, [r3, #0]
  80081ce:	b21b      	sxth	r3, r3
@@ -20563,7 +20562,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8008242:	b21b      	sxth	r3, r3
  8008244:	f113 0f14 	cmn.w	r3, #20
  8008248:	db3a      	blt.n	80082c0 <HAL_TIM_PeriodElapsedCallback+0xa1c>
-			CalkaY += (long)(DataNow.OsY + ((DataOld.OsY - DataNow.OsY)*0.5));
+			AngleY += (long)(DataNow.OsY + ((DataOld.OsY - DataNow.OsY)*0.5));
  800824a:	4b18      	ldr	r3, [pc, #96]	; (80082ac <HAL_TIM_PeriodElapsedCallback+0xa08>)
  800824c:	885b      	ldrh	r3, [r3, #2]
  800824e:	b21b      	sxth	r3, r3
@@ -20601,14 +20600,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  800829a:	4a08      	ldr	r2, [pc, #32]	; (80082bc <HAL_TIM_PeriodElapsedCallback+0xa18>)
  800829c:	6013      	str	r3, [r2, #0]
  800829e:	e04f      	b.n	8008340 <HAL_TIM_PeriodElapsedCallback+0xa9c>
- 80082a0:	20000532 	.word	0x20000532
- 80082a4:	2000051e 	.word	0x2000051e
+ 80082a0:	20000530 	.word	0x20000530
+ 80082a4:	20000510 	.word	0x20000510
  80082a8:	40014800 	.word	0x40014800
- 80082ac:	20000520 	.word	0x20000520
+ 80082ac:	20000518 	.word	0x20000518
  80082b0:	200004ac 	.word	0x200004ac
  80082b4:	3fe00000 	.word	0x3fe00000
- 80082b8:	20000528 	.word	0x20000528
- 80082bc:	200004b4 	.word	0x200004b4
+ 80082b8:	20000514 	.word	0x20000514
+ 80082bc:	20000528 	.word	0x20000528
 		else if((DataNow.OsX >= 25 && DataNow.OsY >= 25) || (DataNow.OsX <= -25 && DataNow.OsY <= -25))
  80082c0:	4b9d      	ldr	r3, [pc, #628]	; (8008538 <HAL_TIM_PeriodElapsedCallback+0xc94>)
  80082c2:	881b      	ldrh	r3, [r3, #0]
@@ -20630,7 +20629,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  80082e4:	b21b      	sxth	r3, r3
  80082e6:	f113 0f18 	cmn.w	r3, #24
  80082ea:	da29      	bge.n	8008340 <HAL_TIM_PeriodElapsedCallback+0xa9c>
-			CalkaY += (long)(DataNow.OsY + ((DataOld.OsY - DataNow.OsY)*0.5));
+			AngleY += (long)(DataNow.OsY + ((DataOld.OsY - DataNow.OsY)*0.5));
  80082ec:	4b92      	ldr	r3, [pc, #584]	; (8008538 <HAL_TIM_PeriodElapsedCallback+0xc94>)
  80082ee:	885b      	ldrh	r3, [r3, #2]
  80082f0:	b21b      	sxth	r3, r3
@@ -20675,19 +20674,19 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8008346:	6019      	str	r1, [r3, #0]
  8008348:	8892      	ldrh	r2, [r2, #4]
  800834a:	809a      	strh	r2, [r3, #4]
-
-		if(CalkaY > 10000)
+// movement of the ball
+		if(AngleY > 10000)
  800834c:	4b7d      	ldr	r3, [pc, #500]	; (8008544 <HAL_TIM_PeriodElapsedCallback+0xca0>)
  800834e:	681b      	ldr	r3, [r3, #0]
  8008350:	f242 7210 	movw	r2, #10000	; 0x2710
  8008354:	4293      	cmp	r3, r2
  8008356:	dd12      	ble.n	800837e <HAL_TIM_PeriodElapsedCallback+0xada>
 		{
-			fPoruszonoX = 1;
+			fMovedX = 1;
  8008358:	4b7b      	ldr	r3, [pc, #492]	; (8008548 <HAL_TIM_PeriodElapsedCallback+0xca4>)
  800835a:	2201      	movs	r2, #1
  800835c:	701a      	strb	r2, [r3, #0]
-			fPoruszonoY = 1;
+			fMovedY = 1;
  800835e:	4b7b      	ldr	r3, [pc, #492]	; (800854c <HAL_TIM_PeriodElapsedCallback+0xca8>)
  8008360:	2201      	movs	r2, #1
  8008362:	701a      	strb	r2, [r3, #0]
@@ -20708,18 +20707,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  800837a:	801a      	strh	r2, [r3, #0]
  800837c:	e016      	b.n	80083ac <HAL_TIM_PeriodElapsedCallback+0xb08>
 
-		}else if(CalkaY < -10000)
+		}else if(AngleY < -10000)
  800837e:	4b71      	ldr	r3, [pc, #452]	; (8008544 <HAL_TIM_PeriodElapsedCallback+0xca0>)
  8008380:	681b      	ldr	r3, [r3, #0]
  8008382:	4a74      	ldr	r2, [pc, #464]	; (8008554 <HAL_TIM_PeriodElapsedCallback+0xcb0>)
  8008384:	4293      	cmp	r3, r2
  8008386:	da11      	bge.n	80083ac <HAL_TIM_PeriodElapsedCallback+0xb08>
 		{
-			fPoruszonoX = 1;
+			fMovedX = 1;
  8008388:	4b6f      	ldr	r3, [pc, #444]	; (8008548 <HAL_TIM_PeriodElapsedCallback+0xca4>)
  800838a:	2201      	movs	r2, #1
  800838c:	701a      	strb	r2, [r3, #0]
-			fPoruszonoY = 1;
+			fMovedY = 1;
  800838e:	4b6f      	ldr	r3, [pc, #444]	; (800854c <HAL_TIM_PeriodElapsedCallback+0xca8>)
  8008390:	2201      	movs	r2, #1
  8008392:	701a      	strb	r2, [r3, #0]
@@ -20741,18 +20740,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 		}
 
-		if(CalkaX > 10000)
+		if(AngleX > 10000)
  80083ac:	4b6a      	ldr	r3, [pc, #424]	; (8008558 <HAL_TIM_PeriodElapsedCallback+0xcb4>)
  80083ae:	681b      	ldr	r3, [r3, #0]
  80083b0:	f242 7210 	movw	r2, #10000	; 0x2710
  80083b4:	4293      	cmp	r3, r2
  80083b6:	dd13      	ble.n	80083e0 <HAL_TIM_PeriodElapsedCallback+0xb3c>
 		{
-			fPoruszonoX = 1;
+			fMovedX = 1;
  80083b8:	4b63      	ldr	r3, [pc, #396]	; (8008548 <HAL_TIM_PeriodElapsedCallback+0xca4>)
  80083ba:	2201      	movs	r2, #1
  80083bc:	701a      	strb	r2, [r3, #0]
-			fPoruszonoY = 1;
+			fMovedY = 1;
  80083be:	4b63      	ldr	r3, [pc, #396]	; (800854c <HAL_TIM_PeriodElapsedCallback+0xca8>)
  80083c0:	2201      	movs	r2, #1
  80083c2:	701a      	strb	r2, [r3, #0]
@@ -20773,18 +20772,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  80083dc:	801a      	strh	r2, [r3, #0]
  80083de:	e016      	b.n	800840e <HAL_TIM_PeriodElapsedCallback+0xb6a>
 
-		}else if(CalkaX < -10000)
+		}else if(AngleX < -10000)
  80083e0:	4b5d      	ldr	r3, [pc, #372]	; (8008558 <HAL_TIM_PeriodElapsedCallback+0xcb4>)
  80083e2:	681b      	ldr	r3, [r3, #0]
  80083e4:	4a5b      	ldr	r2, [pc, #364]	; (8008554 <HAL_TIM_PeriodElapsedCallback+0xcb0>)
  80083e6:	4293      	cmp	r3, r2
  80083e8:	da11      	bge.n	800840e <HAL_TIM_PeriodElapsedCallback+0xb6a>
 		{
-			fPoruszonoX = 1;
+			fMovedX = 1;
  80083ea:	4b57      	ldr	r3, [pc, #348]	; (8008548 <HAL_TIM_PeriodElapsedCallback+0xca4>)
  80083ec:	2201      	movs	r2, #1
  80083ee:	701a      	strb	r2, [r3, #0]
-			fPoruszonoY = 1;
+			fMovedY = 1;
  80083f0:	4b56      	ldr	r3, [pc, #344]	; (800854c <HAL_TIM_PeriodElapsedCallback+0xca8>)
  80083f2:	2201      	movs	r2, #1
  80083f4:	701a      	strb	r2, [r3, #0]
@@ -20806,7 +20805,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 		}
 
-		if(fPoruszonoY == 1 && (CalkaY <= 10000 && CalkaY >= -10000)||(CalkaY>20000 ||CalkaY<-20000))
+		if(fMovedY == 1 && (AngleY <= 10000 && AngleY >= -10000)||(AngleY>20000 ||AngleY<-20000))
  800840e:	4b4f      	ldr	r3, [pc, #316]	; (800854c <HAL_TIM_PeriodElapsedCallback+0xca8>)
  8008410:	781b      	ldrb	r3, [r3, #0]
  8008412:	b2db      	uxtb	r3, r3
@@ -20833,7 +20832,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8008440:	4293      	cmp	r3, r2
  8008442:	da07      	bge.n	8008454 <HAL_TIM_PeriodElapsedCallback+0xbb0>
 		{
-			CzasZerowaniaY += 1;
+			ResetTimeY += 1;
  8008444:	4b47      	ldr	r3, [pc, #284]	; (8008564 <HAL_TIM_PeriodElapsedCallback+0xcc0>)
  8008446:	881b      	ldrh	r3, [r3, #0]
  8008448:	b29b      	uxth	r3, r3
@@ -20843,7 +20842,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8008450:	801a      	strh	r2, [r3, #0]
  8008452:	e012      	b.n	800847a <HAL_TIM_PeriodElapsedCallback+0xbd6>
 
-		}else if(fPoruszonoY == 1 && (CalkaY > 10000 || CalkaY < -10000))
+		}else if(fMovedY == 1 && (AngleY > 10000 || AngleY < -10000))
  8008454:	4b3d      	ldr	r3, [pc, #244]	; (800854c <HAL_TIM_PeriodElapsedCallback+0xca8>)
  8008456:	781b      	ldrb	r3, [r3, #0]
  8008458:	b2db      	uxtb	r3, r3
@@ -20860,14 +20859,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8008470:	4293      	cmp	r3, r2
  8008472:	da02      	bge.n	800847a <HAL_TIM_PeriodElapsedCallback+0xbd6>
 		{
-			CzasZerowaniaY = 0;
+			ResetTimeY = 0;
  8008474:	4b3b      	ldr	r3, [pc, #236]	; (8008564 <HAL_TIM_PeriodElapsedCallback+0xcc0>)
  8008476:	2200      	movs	r2, #0
  8008478:	801a      	strh	r2, [r3, #0]
 		}
 
 
-		if(fPoruszonoX == 1 && (CalkaX <= 10000 && CalkaX >= -10000)||(CalkaX>20000 ||CalkaX<-20000))
+		if(fMovedX == 1 && (AngleX <= 10000 && AngleX >= -10000)||(AngleX>20000 ||AngleX<-20000))
  800847a:	4b33      	ldr	r3, [pc, #204]	; (8008548 <HAL_TIM_PeriodElapsedCallback+0xca4>)
  800847c:	781b      	ldrb	r3, [r3, #0]
  800847e:	b2db      	uxtb	r3, r3
@@ -20894,7 +20893,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  80084ac:	4293      	cmp	r3, r2
  80084ae:	da07      	bge.n	80084c0 <HAL_TIM_PeriodElapsedCallback+0xc1c>
 		{
-			CzasZerowaniaX += 1;
+			ResetTimeX += 1;
  80084b0:	4b2d      	ldr	r3, [pc, #180]	; (8008568 <HAL_TIM_PeriodElapsedCallback+0xcc4>)
  80084b2:	881b      	ldrh	r3, [r3, #0]
  80084b4:	b29b      	uxth	r3, r3
@@ -20904,7 +20903,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  80084bc:	801a      	strh	r2, [r3, #0]
  80084be:	e012      	b.n	80084e6 <HAL_TIM_PeriodElapsedCallback+0xc42>
 
-		}else if(fPoruszonoX == 1 && (CalkaX > 10000 || CalkaX < -10000))
+		}else if(fMovedX == 1 && (AngleX > 10000 || AngleX < -10000))
  80084c0:	4b21      	ldr	r3, [pc, #132]	; (8008548 <HAL_TIM_PeriodElapsedCallback+0xca4>)
  80084c2:	781b      	ldrb	r3, [r3, #0]
  80084c4:	b2db      	uxtb	r3, r3
@@ -20921,51 +20920,51 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  80084dc:	4293      	cmp	r3, r2
  80084de:	da02      	bge.n	80084e6 <HAL_TIM_PeriodElapsedCallback+0xc42>
 		{
-			CzasZerowaniaX = 0;
+			ResetTimeX = 0;
  80084e0:	4b21      	ldr	r3, [pc, #132]	; (8008568 <HAL_TIM_PeriodElapsedCallback+0xcc4>)
  80084e2:	2200      	movs	r2, #0
  80084e4:	801a      	strh	r2, [r3, #0]
 		}
 
-		if(CzasZerowaniaX >= 1000)
+		if(ResetTimeX >= 1000)
  80084e6:	4b20      	ldr	r3, [pc, #128]	; (8008568 <HAL_TIM_PeriodElapsedCallback+0xcc4>)
  80084e8:	881b      	ldrh	r3, [r3, #0]
  80084ea:	b29b      	uxth	r3, r3
  80084ec:	f5b3 7f7a 	cmp.w	r3, #1000	; 0x3e8
  80084f0:	d308      	bcc.n	8008504 <HAL_TIM_PeriodElapsedCallback+0xc60>
 		{
-			CalkaX = 0;
+			AngleX = 0;
  80084f2:	4b19      	ldr	r3, [pc, #100]	; (8008558 <HAL_TIM_PeriodElapsedCallback+0xcb4>)
  80084f4:	2200      	movs	r2, #0
  80084f6:	601a      	str	r2, [r3, #0]
 
-			CzasZerowaniaX = 0;
+			ResetTimeX = 0;
  80084f8:	4b1b      	ldr	r3, [pc, #108]	; (8008568 <HAL_TIM_PeriodElapsedCallback+0xcc4>)
  80084fa:	2200      	movs	r2, #0
  80084fc:	801a      	strh	r2, [r3, #0]
-			fPoruszonoX = 0;
+			fMovedX = 0;
  80084fe:	4b12      	ldr	r3, [pc, #72]	; (8008548 <HAL_TIM_PeriodElapsedCallback+0xca4>)
  8008500:	2200      	movs	r2, #0
  8008502:	701a      	strb	r2, [r3, #0]
 		}
 
-		if(CzasZerowaniaY >= 1000)
+		if(ResetTimeY >= 1000)
  8008504:	4b17      	ldr	r3, [pc, #92]	; (8008564 <HAL_TIM_PeriodElapsedCallback+0xcc0>)
  8008506:	881b      	ldrh	r3, [r3, #0]
  8008508:	b29b      	uxth	r3, r3
  800850a:	f5b3 7f7a 	cmp.w	r3, #1000	; 0x3e8
  800850e:	d308      	bcc.n	8008522 <HAL_TIM_PeriodElapsedCallback+0xc7e>
 		{
-			CalkaY = 0;
+			AngleY = 0;
  8008510:	4b0c      	ldr	r3, [pc, #48]	; (8008544 <HAL_TIM_PeriodElapsedCallback+0xca0>)
  8008512:	2200      	movs	r2, #0
  8008514:	601a      	str	r2, [r3, #0]
 
-			CzasZerowaniaY = 0;
+			ResetTimeY = 0;
  8008516:	4b13      	ldr	r3, [pc, #76]	; (8008564 <HAL_TIM_PeriodElapsedCallback+0xcc0>)
  8008518:	2200      	movs	r2, #0
  800851a:	801a      	strh	r2, [r3, #0]
-			fPoruszonoY = 0;
+			fMovedY = 0;
  800851c:	4b0b      	ldr	r3, [pc, #44]	; (800854c <HAL_TIM_PeriodElapsedCallback+0xca8>)
  800851e:	2200      	movs	r2, #0
  8008520:	701a      	strb	r2, [r3, #0]
@@ -20991,19 +20990,19 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  8008532:	3708      	adds	r7, #8
  8008534:	46bd      	mov	sp, r7
  8008536:	bdb0      	pop	{r4, r5, r7, pc}
- 8008538:	20000520 	.word	0x20000520
+ 8008538:	20000518 	.word	0x20000518
  800853c:	200004ac 	.word	0x200004ac
  8008540:	3fe00000 	.word	0x3fe00000
- 8008544:	200004b4 	.word	0x200004b4
- 8008548:	2000052c 	.word	0x2000052c
- 800854c:	20000530 	.word	0x20000530
- 8008550:	20000532 	.word	0x20000532
+ 8008544:	20000528 	.word	0x20000528
+ 8008548:	20000520 	.word	0x20000520
+ 800854c:	2000052c 	.word	0x2000052c
+ 8008550:	20000530 	.word	0x20000530
  8008554:	ffffd8f0 	.word	0xffffd8f0
- 8008558:	20000528 	.word	0x20000528
- 800855c:	2000051e 	.word	0x2000051e
+ 8008558:	20000514 	.word	0x20000514
+ 800855c:	20000510 	.word	0x20000510
  8008560:	ffffb1e0 	.word	0xffffb1e0
- 8008564:	2000051c 	.word	0x2000051c
- 8008568:	2000052e 	.word	0x2000052e
+ 8008564:	2000052e 	.word	0x2000052e
+ 8008568:	2000051e 	.word	0x2000051e
  800856c:	40001000 	.word	0x40001000
 
 08008570 <Error_Handler>:
@@ -21098,7 +21097,7 @@ void MX_SPI5_Init(void)
 }
  80085e0:	bf00      	nop
  80085e2:	bd80      	pop	{r7, pc}
- 80085e4:	200004bc 	.word	0x200004bc
+ 80085e4:	200004b4 	.word	0x200004b4
  80085e8:	40015000 	.word	0x40015000
 
 080085ec <HAL_SPI_MspInit>:
@@ -21820,7 +21819,7 @@ caddr_t _sbrk(int incr)
  8008924:	230c      	movs	r3, #12
  8008926:	6013      	str	r3, [r2, #0]
 		return (caddr_t) -1;
- 8008928:	f04f 33ff 	mov.w	r3, #4294967295
+ 8008928:	f04f 33ff 	mov.w	r3, #4294967295	; 0xffffffff
  800892c:	e006      	b.n	800893c <_sbrk+0x48>
 	}
 
@@ -21851,7 +21850,7 @@ int _close(int file)
  8008950:	af00      	add	r7, sp, #0
  8008952:	6078      	str	r0, [r7, #4]
 	return -1;
- 8008954:	f04f 33ff 	mov.w	r3, #4294967295
+ 8008954:	f04f 33ff 	mov.w	r3, #4294967295	; 0xffffffff
 }
  8008958:	4618      	mov	r0, r3
  800895a:	370c      	adds	r7, #12
@@ -23000,7 +22999,7 @@ Infinite_Loop:
  8009106:	2b00      	cmp	r3, #0
  8009108:	f000 80bc 	beq.w	8009284 <_vfiprintf_r+0x1ec>
  800910c:	2300      	movs	r3, #0
- 800910e:	f04f 32ff 	mov.w	r2, #4294967295
+ 800910e:	f04f 32ff 	mov.w	r2, #4294967295	; 0xffffffff
  8009112:	9304      	str	r3, [sp, #16]
  8009114:	9307      	str	r3, [sp, #28]
  8009116:	9205      	str	r2, [sp, #20]
@@ -23052,7 +23051,7 @@ Infinite_Loop:
  800917e:	f000 faef 	bl	8009760 <__swsetup_r>
  8009182:	2800      	cmp	r0, #0
  8009184:	d09e      	beq.n	80090c4 <_vfiprintf_r+0x2c>
- 8009186:	f04f 30ff 	mov.w	r0, #4294967295
+ 8009186:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
  800918a:	b01d      	add	sp, #116	; 0x74
  800918c:	e8bd 8ff0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, pc}
  8009190:	2b25      	cmp	r3, #37	; 0x25
@@ -23091,7 +23090,7 @@ Infinite_Loop:
  80091dc:	9203      	str	r2, [sp, #12]
  80091de:	2b00      	cmp	r3, #0
  80091e0:	bfb8      	it	lt
- 80091e2:	f04f 33ff 	movlt.w	r3, #4294967295
+ 80091e2:	f04f 33ff 	movlt.w	r3, #4294967295	; 0xffffffff
  80091e6:	f108 0802 	add.w	r8, r8, #2
  80091ea:	9305      	str	r3, [sp, #20]
  80091ec:	4d31      	ldr	r5, [pc, #196]	; (80092b4 <_vfiprintf_r+0x21c>)
@@ -23153,7 +23152,7 @@ Infinite_Loop:
  8009274:	a904      	add	r1, sp, #16
  8009276:	4630      	mov	r0, r6
  8009278:	f3af 8000 	nop.w
- 800927c:	f1b0 3fff 	cmp.w	r0, #4294967295
+ 800927c:	f1b0 3fff 	cmp.w	r0, #4294967295	; 0xffffffff
  8009280:	4681      	mov	r9, r0
  8009282:	d1d8      	bne.n	8009236 <_vfiprintf_r+0x19e>
  8009284:	89a3      	ldrh	r3, [r4, #12]
@@ -23253,7 +23252,7 @@ Infinite_Loop:
  8009372:	47c0      	blx	r8
  8009374:	3001      	adds	r0, #1
  8009376:	d103      	bne.n	8009380 <_printf_common+0xbc>
- 8009378:	f04f 30ff 	mov.w	r0, #4294967295
+ 8009378:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
  800937c:	e8bd 87f0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, sl, pc}
  8009380:	3501      	adds	r5, #1
  8009382:	e7c2      	b.n	800930a <_printf_common+0x46>
@@ -23394,7 +23393,7 @@ Infinite_Loop:
  80094c4:	bfde      	ittt	le
  80094c6:	2330      	movle	r3, #48	; 0x30
  80094c8:	f805 3c01 	strble.w	r3, [r5, #-1]
- 80094cc:	f105 35ff 	addle.w	r5, r5, #4294967295
+ 80094cc:	f105 35ff 	addle.w	r5, r5, #4294967295	; 0xffffffff
  80094d0:	ebae 0305 	sub.w	r3, lr, r5
  80094d4:	6123      	str	r3, [r4, #16]
  80094d6:	f8cd 8000 	str.w	r8, [sp]
@@ -23405,7 +23404,7 @@ Infinite_Loop:
  80094e2:	f7ff feef 	bl	80092c4 <_printf_common>
  80094e6:	3001      	adds	r0, #1
  80094e8:	d155      	bne.n	8009596 <_printf_i+0x1e6>
- 80094ea:	f04f 30ff 	mov.w	r0, #4294967295
+ 80094ea:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
  80094ee:	b005      	add	sp, #20
  80094f0:	e8bd 83f0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, r9, pc}
  80094f4:	f881 2045 	strb.w	r2, [r1, #69]	; 0x45
@@ -23661,7 +23660,7 @@ Infinite_Loop:
  800971e:	f000 f81f 	bl	8009760 <__swsetup_r>
  8009722:	2800      	cmp	r0, #0
  8009724:	d0cc      	beq.n	80096c0 <__swbuf_r+0x28>
- 8009726:	f04f 37ff 	mov.w	r7, #4294967295
+ 8009726:	f04f 37ff 	mov.w	r7, #4294967295	; 0xffffffff
  800972a:	4638      	mov	r0, r7
  800972c:	bdf8      	pop	{r3, r4, r5, r6, r7, pc}
  800972e:	bf00      	nop
@@ -23712,7 +23711,7 @@ Infinite_Loop:
  800978e:	6032      	str	r2, [r6, #0]
  8009790:	f043 0340 	orr.w	r3, r3, #64	; 0x40
  8009794:	81a3      	strh	r3, [r4, #12]
- 8009796:	f04f 30ff 	mov.w	r0, #4294967295
+ 8009796:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
  800979a:	bd70      	pop	{r4, r5, r6, pc}
  800979c:	4b25      	ldr	r3, [pc, #148]	; (8009834 <__swsetup_r+0xd4>)
  800979e:	429c      	cmp	r4, r3
@@ -23913,7 +23912,7 @@ Infinite_Loop:
  8009950:	89a3      	ldrh	r3, [r4, #12]
  8009952:	f043 0340 	orr.w	r3, r3, #64	; 0x40
  8009956:	81a3      	strh	r3, [r4, #12]
- 8009958:	f04f 30ff 	mov.w	r0, #4294967295
+ 8009958:	f04f 30ff 	mov.w	r0, #4294967295	; 0xffffffff
  800995c:	e8bd 81f0 	ldmia.w	sp!, {r4, r5, r6, r7, r8, pc}
  8009960:	4407      	add	r7, r0
  8009962:	eba8 0800 	sub.w	r8, r8, r0
