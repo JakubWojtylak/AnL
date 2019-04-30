@@ -63,6 +63,27 @@
 /* USER CODE BEGIN PV */
 volatile ZyroskopDane DataOld, DataNow;
 volatile int32_t AngleX, AngleY, AngleZ;
+
+//Dane dla czesci testowej*****************
+volatile ZyroskopDane DataTempRom[4];
+volatile ZyroskopDane DataTempRich;
+
+volatile int32_t CalkaTrapX, CalkaTrapY;
+volatile int32_t CalkaRichaX, CalkaRichaY;
+volatile int32_t CalkaRombX, CalkaRombY;
+volatile int32_t CalkaPosrednia1X, CalkaPosrednia1Y;
+volatile int32_t CalkaPosrednia2X, CalkaPosrednia2Y;
+volatile int32_t CalkaPosredniaRomX[4];
+volatile int32_t CalkaPosredniaRomY[4];
+volatile int32_t CalkaPomocniczaRomX[3];
+volatile int32_t CalkaPomocniczaRomY[3];
+volatile int32_t CalkaPomocnicza2RomX[2];
+volatile int32_t CalkaPomocnicza2RomY[2];
+
+volatile uint8_t LicznikPomocniczy;
+volatile uint8_t LicznikPomocniczyRomberg;
+//*****************************************
+
 float dT;
 uint8_t Animacja;
 volatile uint16_t X, Y;
@@ -211,6 +232,11 @@ int main(void)
 
 	__HAL_SPI_ENABLE(&hspi5);
 
+	//Do testu*************
+	LicznikPomocniczy = 0;
+	LicznikPomocniczyRomberg = 0;
+	//*********************
+
 	Animacja = 0;
 	Direction = 1;
 	X = 120;
@@ -269,6 +295,18 @@ int main(void)
 		printf("CzasY: %d\n\r", ResetTimeY);
 		printf("Predkosc X: %d\n\r", DataNow.OsX);
 		printf("Predkosc Y: %d\n\r", DataNow.OsY);
+
+		//Do testu************************************
+		printf("CalkaTrap X: %li\n\r", CalkaTrapX);
+		printf("CalkaTrap Y: %li\n\r", CalkaTrapY);
+
+		printf("CalkaRicha X: %li\n\r", CalkaRichaX);
+		printf("CalkaRicha Y: %li\n\r", CalkaRichaY);
+
+		printf("CalkaRomb X: %li\n\r", CalkaRombX);
+		printf("CalkaRomb Y: %li\n\r", CalkaRombY);
+		//********************************************
+
 		//printf("OsX: %d\n\r", Data.OsX);
 		//printf("OsY: %d\n\r", Data.OsY);
 		//printf("OsZ: %d\n\r", Data.OsZ);
@@ -511,6 +549,150 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			AngleY += (long)(DataNow.OsY + ((DataOld.OsY - DataNow.OsY)*0.5));
 		else if((DataNow.OsX >= 25 && DataNow.OsY >= 25) || (DataNow.OsX <= -25 && DataNow.OsY <= -25))
 			AngleY += (long)(DataNow.OsY + ((DataOld.OsY - DataNow.OsY)*0.5));
+
+
+//*************TESTOWA CZESC*****************************************************************************************
+
+		//Liczenie calki metoda wietu trapezow
+		CalkaTrapX += (long)(4*((DataOld.OsX + DataNow.OsX)*0.5)); //Czas miedzy kolejnymi pomiarami rowny 0.004 s, pomnozony przez 1000 zeby nie miec liczby z przecinkiem
+		CalkaTrapY += (long)(4*((DataOld.OsY + DataNow.OsY)*0.5));
+		//koniec
+
+
+
+		//Liczenie calki za pomoca ekstrapolacji Richardsona
+		if(LicznikPomocniczy == 0)
+		{
+			CalkaPosrednia2X = (long)(4*((DataOld.OsX + DataNow.OsX)*0.5));
+			CalkaPosrednia2Y = (long)(4*((DataOld.OsY + DataNow.OsY)*0.5));
+
+			DataTempRich = DataOld;
+
+			LicznikPomocniczy = 1;
+
+		}else
+		{
+			CalkaPosrednia2X += (long)(4*((DataOld.OsX + DataNow.OsX)*0.5));
+			CalkaPosrednia2Y += (long)(4*((DataOld.OsY + DataNow.OsY)*0.5));
+
+			CalkaPosrednia1X = (long)(8*((DataTempRich.OsX + DataNow.OsX)*0.5));
+			CalkaPosrednia1Y = (long)(8*((DataTempRich.OsY + DataNow.OsY)*0.5));
+
+			CalkaRichaX += (long)(CalkaPosrednia2X) +  ((CalkaPosrednia2X - CalkaPosrednia1X)/3);
+			CalkaRichaY += (long)(CalkaPosrednia2Y) +  ((CalkaPosrednia2Y - CalkaPosrednia1Y)/3);
+			LicznikPomocniczy = 0;
+		}
+
+		//koniec
+
+		//Liczenie calki za pomoca metody Romberga
+		if(LicznikPomocniczyRomberg == 0)
+		{
+			DataTempRom[0] = DataOld;
+
+			CalkaPosredniaRomX[3] = (long)(4*((DataOld.OsX + DataNow.OsX)*0.5));
+			CalkaPosredniaRomY[3] = (long)(4*((DataOld.OsY + DataNow.OsY)*0.5));
+
+			LicznikPomocniczyRomberg = 1;
+
+		}else if(LicznikPomocniczyRomberg == 1)
+		{
+			CalkaPosredniaRomX[3] += (long)(4*((DataOld.OsX + DataNow.OsX)*0.5));
+			CalkaPosredniaRomY[3] += (long)(4*((DataOld.OsY + DataNow.OsY)*0.5));
+
+			CalkaPosredniaRomX[2] = (long)(8*((DataTempRom[0].OsX + DataNow.OsX)*0.5));
+			CalkaPosredniaRomY[2] = (long)(8*((DataTempRom[0].OsY + DataNow.OsY)*0.5));
+
+			LicznikPomocniczyRomberg = 2;
+
+		}else if(LicznikPomocniczyRomberg == 2)
+		{
+			DataTempRom[2] = DataOld;
+
+			CalkaPosredniaRomX[3] += (long)(4*((DataOld.OsX + DataNow.OsX)*0.5));
+			CalkaPosredniaRomY[3] += (long)(4*((DataOld.OsY + DataNow.OsY)*0.5));
+
+			LicznikPomocniczyRomberg = 3;
+
+		}else if(LicznikPomocniczyRomberg == 3)
+		{
+			CalkaPosredniaRomX[3] += (long)(4*((DataOld.OsX + DataNow.OsX)*0.5));
+			CalkaPosredniaRomY[3] += (long)(4*((DataOld.OsY + DataNow.OsY)*0.5));
+
+			CalkaPosredniaRomX[2] += (long)(8*((DataTempRom[2].OsX + DataNow.OsX)*0.5));
+			CalkaPosredniaRomY[2] += (long)(8*((DataTempRom[2].OsY + DataNow.OsY)*0.5));
+
+			CalkaPosredniaRomX[1] = (long)(16*((DataTempRom[0].OsX + DataNow.OsX)*0.5));
+			CalkaPosredniaRomY[1] = (long)(16*((DataTempRom[0].OsY + DataNow.OsY)*0.5));
+
+			LicznikPomocniczyRomberg = 4;
+
+		}else if(LicznikPomocniczyRomberg == 4)
+		{
+			DataTempRom[1] = DataOld;
+
+			CalkaPosredniaRomX[3] += (long)(4*((DataOld.OsX + DataNow.OsX)*0.5));
+			CalkaPosredniaRomY[3] += (long)(4*((DataOld.OsY + DataNow.OsY)*0.5));
+
+			LicznikPomocniczyRomberg = 5;
+
+		}else if(LicznikPomocniczyRomberg == 5)
+		{
+			CalkaPosredniaRomX[3] += (long)(4*((DataOld.OsX + DataNow.OsX)*0.5));
+			CalkaPosredniaRomY[3] += (long)(4*((DataOld.OsY + DataNow.OsY)*0.5));
+
+			CalkaPosredniaRomX[2] += (long)(8*((DataTempRom[1].OsX + DataNow.OsX)*0.5));
+			CalkaPosredniaRomY[2] += (long)(8*((DataTempRom[1].OsY + DataNow.OsY)*0.5));
+
+			LicznikPomocniczyRomberg = 6;
+
+		}else if(LicznikPomocniczyRomberg == 6)
+		{
+			DataTempRom[3] = DataOld;
+
+			CalkaPosredniaRomX[3] += (long)(4*((DataOld.OsX + DataNow.OsX)*0.5));
+			CalkaPosredniaRomY[3] += (long)(4*((DataOld.OsY + DataNow.OsY)*0.5));
+
+			LicznikPomocniczyRomberg = 7;
+
+		}else if(LicznikPomocniczyRomberg == 7)
+		{
+			CalkaPosredniaRomX[3] += (long)(4*((DataOld.OsX + DataNow.OsX)*0.5));
+			CalkaPosredniaRomY[3] += (long)(4*((DataOld.OsY + DataNow.OsY)*0.5));
+
+			CalkaPosredniaRomX[2] += (long)(8*((DataTempRom[3].OsX + DataNow.OsX)*0.5));
+			CalkaPosredniaRomY[2] += (long)(8*((DataTempRom[3].OsY + DataNow.OsY)*0.5));
+
+			CalkaPosredniaRomX[1] += (long)(16*((DataTempRom[1].OsX + DataNow.OsX)*0.5));
+			CalkaPosredniaRomY[1] += (long)(16*((DataTempRom[1].OsY + DataNow.OsY)*0.5));
+
+			CalkaPosredniaRomX[0] = (long)(32*((DataTempRom[0].OsX + DataNow.OsX)*0.5));
+			CalkaPosredniaRomY[0] = (long)(32*((DataTempRom[0].OsY + DataNow.OsY)*0.5));
+
+			CalkaPomocniczaRomX[0] = (long)(CalkaPosredniaRomX[1] + ((CalkaPosredniaRomX[1] - CalkaPosredniaRomX[0])/3));
+			CalkaPomocniczaRomX[1] = (long)(CalkaPosredniaRomX[2] + ((CalkaPosredniaRomX[2] - CalkaPosredniaRomX[1])/3));
+			CalkaPomocniczaRomX[2] = (long)(CalkaPosredniaRomX[3] + ((CalkaPosredniaRomX[3] - CalkaPosredniaRomX[2])/3));
+
+			CalkaPomocniczaRomY[0] = (long)(CalkaPosredniaRomY[1] + ((CalkaPosredniaRomY[1] - CalkaPosredniaRomY[0])/3));
+			CalkaPomocniczaRomY[1] = (long)(CalkaPosredniaRomY[2] + ((CalkaPosredniaRomY[2] - CalkaPosredniaRomY[1])/3));
+			CalkaPomocniczaRomY[2] = (long)(CalkaPosredniaRomY[3] + ((CalkaPosredniaRomY[3] - CalkaPosredniaRomY[2])/3));
+
+			CalkaPomocnicza2RomX[0] = (long)(CalkaPomocniczaRomX[1] + ((CalkaPomocniczaRomX[1] - CalkaPomocniczaRomX[0])/15));
+			CalkaPomocnicza2RomX[1] = (long)(CalkaPomocniczaRomX[2] + ((CalkaPomocniczaRomX[2] - CalkaPomocniczaRomX[1])/15));
+
+			CalkaPomocnicza2RomY[0] = (long)(CalkaPomocniczaRomY[1] + ((CalkaPomocniczaRomY[1] - CalkaPomocniczaRomY[0])/15));
+			CalkaPomocnicza2RomY[1] = (long)(CalkaPomocniczaRomY[2] + ((CalkaPomocniczaRomY[2] - CalkaPomocniczaRomY[1])/15));
+
+			CalkaRombX = (long)(CalkaPomocnicza2RomX[1] + ((CalkaPomocnicza2RomX[1] - CalkaPomocnicza2RomX[0])/63));
+			CalkaRombY = (long)(CalkaPomocnicza2RomY[1] + ((CalkaPomocnicza2RomY[1] - CalkaPomocnicza2RomY[0])/63));
+
+			LicznikPomocniczyRomberg = 0;
+		}
+		//koniec
+
+
+//*************KONIEC TESTOWEJ CZESCI*****************************************************************************************
+
 
 		DataOld = DataNow;
 // movement of the ball
