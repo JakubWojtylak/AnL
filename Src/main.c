@@ -348,6 +348,7 @@ int main(void)
 					if(HAL_GetTick() - PoprzedniCzasPrzycisku > 500)
 					{
 						StanGry = (StanGry+1)%2;
+						PoprzedniCzasPrzycisku = HAL_GetTick();
 					}
 				}
 			}
