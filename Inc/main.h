@@ -89,6 +89,8 @@ void Error_Handler(void);
 #define NCS_MEMS_SPI_GPIO_Port GPIOC
 #define CSX_Pin GPIO_PIN_2
 #define CSX_GPIO_Port GPIOC
+#define BB_Pin GPIO_PIN_0
+#define BB_GPIO_Port GPIOA
 #define B5_Pin GPIO_PIN_3
 #define B5_GPIO_Port GPIOA
 #define VSYNC_Pin GPIO_PIN_4
@@ -226,6 +228,20 @@ typedef struct
 	short OsZ;
 }ZyroskopDane;
 
+typedef enum
+{
+	NowaGra = 0,
+	KontynuujGre = 1,
+	ZmienPoziom = 2
+
+}eStanMenu;
+
+typedef enum
+{
+	Menu = 0,
+	Gra = 1
+
+}eStanGry;
 
 /* USER CODE END Private defines */
 

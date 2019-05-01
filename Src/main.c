@@ -84,6 +84,18 @@ volatile uint8_t LicznikPomocniczy;
 volatile uint8_t LicznikPomocniczyRomberg;
 //*****************************************
 
+//Zmienne stanu gry************************
+volatile eStanGry StanGry;
+volatile eStanMenu StanMenu;
+volatile uint8_t ZmienionoStanMenu;
+//*****************************************
+
+//Zmiana stanu przycisku*******************
+GPIO_PinState StanPrzycisku;
+GPIO_PinState PoprzedniStanPrzycisku = GPIO_PIN_RESET;
+uint32_t PoprzedniCzasPrzycisku;
+//*****************************************
+
 float dT;
 uint8_t Animacja;
 volatile uint16_t X, Y;
@@ -220,7 +232,6 @@ int main(void)
   MX_CRC_Init();
   MX_DMA2D_Init();
   MX_FMC_Init();
-  MX_GFXSIMULATOR_Init();
   MX_LTDC_Init();
   MX_SPI5_Init();
   MX_TIM1_Init();
@@ -228,6 +239,7 @@ int main(void)
   MX_I2C3_Init();
   MX_TIM10_Init();
   MX_TIM11_Init();
+  MX_GFXSIMULATOR_Init();
   /* USER CODE BEGIN 2 */
 
 	__HAL_SPI_ENABLE(&hspi5);
@@ -235,6 +247,12 @@ int main(void)
 	//Do testu*************
 	LicznikPomocniczy = 0;
 	LicznikPomocniczyRomberg = 0;
+	//*********************
+
+	//Poczatkowy stan gry**
+	StanGry = Menu;
+	StanMenu = NowaGra;
+	ZmienionoStanMenu = 1;
 	//*********************
 
 	Animacja = 0;
@@ -255,6 +273,8 @@ int main(void)
 
 	BSP_LCD_DisplayOn();
 	BSP_LCD_Clear(LCD_COLOR_BLACK);
+
+	//Zakomentowac po uruchomieniu menu
 	BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Menu);
 	HAL_Delay(2000);
 	BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Menu_nowagra);
@@ -262,6 +282,8 @@ int main(void)
 	BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Menu_kontynuuj);
 	HAL_Delay(2000);
 	BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Menu_poziomy);
+	//*********************************
+
 	//BSP_LCD_SetTextColor(LCD_COLOR_DARKGRAY);
 	//BSP_LCD_DisplayStringAtLine(5, (uint8_t*) "Hello");
 
@@ -269,24 +291,95 @@ int main(void)
 	BSP_LCD_ClearStringLine(5);
 
 	BSP_LCD_Clear(LCD_COLOR_WHITE);
+
+	//Zakomentowac po uruchomieniu menu
 	BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 	BSP_LCD_FillRect(0, 0, 240, 15);
 	BSP_LCD_FillRect(0, 305, 240, 15);
 	BSP_LCD_FillRect(0, 15, 15, 290);
 	BSP_LCD_FillRect(225, 15, 15, 290);
+	//*********************************
 
 	OurL3GD20_Init();
 
 	HAL_TIM_Base_Start_IT(&htim10);
 	HAL_TIM_Base_Start_IT(&htim11);
 
+	//Zakomentuj przy sprawdzaniu menu !!!!!!!!!!!!!!!!!
 	Animacja = 1;
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+	GPIO_PinState OdczytanyStanPrzycisku;
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	while (1) {
+
+		//Sprawdzanie stanu przycisku*****************
+/*		OdczytanyStanPrzycisku = HAL_GPIO_ReadPin(BB_GPIO_Port, BB_Pin);
+
+		if(OdczytanyStanPrzycisku != PoprzedniStanPrzycisku)
+		{
+			PoprzedniCzasPrzycisku = HAL_GetTick();
+		}
+
+		if(HAL_GetTick() - PoprzedniCzasPrzycisku > 10)
+		{
+			if(OdczytanyStanPrzycisku != StanPrzycisku)
+			{
+				StanPrzycisku = OdczytanyStanPrzycisku;
+
+				if(StanPrzycisku == GPIO_PIN_RESET)
+				{
+					if(StanGry == Menu)
+					{
+						StanMenu = (StanMenu+1)%3;
+						ZmienionoStanMenu = 1;
+					}
+				}
+
+				//Przetestowac !!!!!!!!!!!!!!!!!
+				//Jezeli przytrzymamy przycisk dluzej nastapi przejscie miedzy gra, a menu
+				if(StanPrzycisku == GPIO_PIN_SET)
+				{
+					if(HAL_GetTick() - PoprzedniCzasPrzycisku > 500)
+					{
+						StanGry = (StanGry+1)%2;
+					}
+				}
+			}
+		}
+
+		PoprzedniStanPrzycisku = OdczytanyStanPrzycisku;*/
+		//Koniec sprawdzania stanu przycisku**********
+
+		//Petla gry***********************************
+/*		if(StanGry == Menu)
+		{
+			if(ZmienionoStanMenu == 1)
+			{
+				switch(StanMenu)
+				{
+					case NowaGra:
+						BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Menu_nowagra);
+					break;
+
+					case KontynuujGre:
+						BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Menu_kontynuuj);
+					break;
+
+					case ZmienPoziom:
+						BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Menu_poziomy);
+					break;
+				}
+
+				ZmienionoStanMenu = 0;
+			}
+		}*/
+		//Koniec petli gry****************************
 
 		printf("Angle X: %li\n\r", AngleX);
 		printf("Angle Y: %li\n\r", AngleY);
@@ -393,6 +486,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 0 */
 	if (htim->Instance == TIM10) //Przerwanie pochodzi od timera 10
 	{
+		//Zamienic na if(StanGry == Gra) przy uruchomieniu menu
 		if (Animacja == 1)
 		{
 			if ((Y < 300) && (Direction == 1)) {
@@ -539,7 +633,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 	if (htim->Instance == TIM11) {
 		OurL3GD20_Read();
-//
+
+		//To mozna wsumie przy testowaniu wywalic za czesc testowa
 		if((DataNow.OsX >= 25 && DataNow.OsY <= 20) || (DataNow.OsX <= -25 && DataNow.OsY >= -20))
 			AngleX += (long)(DataNow.OsX + ((DataOld.OsX - DataNow.OsX)*0.5));
 		else if((DataNow.OsX >= 25 && DataNow.OsY >= 25) || (DataNow.OsX <= -25 && DataNow.OsY <= -25))
