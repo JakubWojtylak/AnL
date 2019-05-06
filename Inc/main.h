@@ -239,7 +239,8 @@ typedef enum
 typedef enum
 {
 	Menu = 0,
-	Gra = 1
+	Gra = 1,
+	WyborPoziomu = 2
 
 }eStanGry;
 

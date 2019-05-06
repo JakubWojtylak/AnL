@@ -88,6 +88,8 @@ volatile uint8_t LicznikPomocniczyRomberg;
 volatile eStanGry StanGry;
 volatile eStanMenu StanMenu;
 volatile uint8_t ZmienionoStanMenu;
+volatile uint8_t ZmienionoStanPoziomow;
+volatile uint8_t WybranyPoziom;
 //*****************************************
 
 //Zmiana stanu przycisku*******************
@@ -253,6 +255,8 @@ int main(void)
 	StanGry = Menu;
 	StanMenu = NowaGra;
 	ZmienionoStanMenu = 1;
+	ZmienionoStanPoziomow = 1;
+	WybranyPoziom = 0;
 	//*********************
 
 	Animacja = 0;
@@ -318,8 +322,9 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 	while (1) {
 
+/*
 		//Sprawdzanie stanu przycisku*****************
-/*		OdczytanyStanPrzycisku = HAL_GPIO_ReadPin(BB_GPIO_Port, BB_Pin);
+		OdczytanyStanPrzycisku = HAL_GPIO_ReadPin(BB_GPIO_Port, BB_Pin);
 
 		if(OdczytanyStanPrzycisku != PoprzedniStanPrzycisku)
 		{
@@ -338,6 +343,11 @@ int main(void)
 					{
 						StanMenu = (StanMenu+1)%3;
 						ZmienionoStanMenu = 1;
+
+					}else if(StanGry == WyborPoziomu)
+					{
+						WybranyPoziom = (WybranyPoziom+1)%3;
+						ZmienionoStanPoziomow = 1;
 					}
 				}
 
@@ -347,18 +357,38 @@ int main(void)
 				{
 					if(HAL_GetTick() - PoprzedniCzasPrzycisku > 500)
 					{
-						StanGry = (StanGry+1)%2;
+
+						if(StanGry == Menu && StanMenu == NowaGra)
+						{
+							StanGry = Gra;
+
+						}else if(StanGry == Menu && StanMenu == ZmienPoziom)
+						{
+							StanGry = WyborPoziomu;
+
+						}else if(StanGry == WyborPoziomu)
+						{
+							StanGry = Menu;
+
+						}else if(StanGry == Gra)
+						{
+							StanGry = Menu;
+						}
+
 						PoprzedniCzasPrzycisku = HAL_GetTick();
 					}
 				}
 			}
 		}
 
-		PoprzedniStanPrzycisku = OdczytanyStanPrzycisku;*/
+		PoprzedniStanPrzycisku = OdczytanyStanPrzycisku;
+*/
+
 		//Koniec sprawdzania stanu przycisku**********
 
 		//Petla gry***********************************
-/*		if(StanGry == Menu)
+/*
+		if(StanGry == Menu)
 		{
 			if(ZmienionoStanMenu == 1)
 			{
@@ -379,7 +409,36 @@ int main(void)
 
 				ZmienionoStanMenu = 0;
 			}
-		}*/
+
+		}else if(StanGry == WyborPoziomu)
+		{
+			if(ZmienionoStanPoziomow == 1)
+			{
+				switch(WybranyPoziom)
+				{
+					case 0:
+						//BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Poziomy1);
+					break;
+
+					case 1:
+						//BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Poziomy2);
+					break;
+
+					case 2:
+						//BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_Poziomy3);
+					break;
+
+					default:
+					break;
+				}
+
+				ZmienionoStanPoziomow = 0;
+			}
+		}
+*/
+
+
+
 		//Koniec petli gry****************************
 
 		printf("Angle X: %li\n\r", AngleX);
