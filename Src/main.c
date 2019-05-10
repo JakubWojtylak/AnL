@@ -42,6 +42,8 @@
 #include "Menu_nowagra.h"
 #include "Menu_poziomy.h"
 #include "mapa1.h"
+#include "mapa2.h"
+#include "SciezkaMapy1.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -92,6 +94,7 @@ volatile uint8_t ZmienionoStanMenu;
 volatile uint8_t ZmienionoStanPoziomow;
 volatile uint8_t WybranyPoziom;
 volatile uint32_t czasZmiany;
+volatile uint8_t RozpoczetoNowaGre;
 //*****************************************
 
 //Zmiana stanu przycisku*******************
@@ -256,6 +259,7 @@ int main(void) {
 	ZmienionoStanMenu = 1;
 	ZmienionoStanPoziomow = 1;
 	WybranyPoziom = 0;
+	RozpoczetoNowaGre = 0;
 	//*********************
 
 	Animacja = 0;
@@ -304,8 +308,8 @@ int main(void) {
 	//*********************************
 
 	OurL3GD20_Init();
-czasZmiany=0;
-	//HAL_TIM_Base_Start_IT(&htim10);
+	czasZmiany=0;
+	HAL_TIM_Base_Start_IT(&htim10);
 	HAL_TIM_Base_Start_IT(&htim11);
 
 	//Zakomentuj przy sprawdzaniu menu !!!!!!!!!!!!!!!!!
@@ -361,6 +365,7 @@ if(HAL_GetTick()-czasZmiany > 2000){
 
 					if (StanGry == Menu && StanMenu == NowaGra) {
 						StanGry = Gra;
+						RozpoczetoNowaGre = 1;
 
 					} else if (StanGry == Menu && StanMenu == ZmienPoziom) {
 						StanGry = WyborPoziomu;
@@ -464,9 +469,6 @@ if(HAL_GetTick()-czasZmiany > 2000){
 
 				ZmienionoStanPoziomow = 0;
 			}
-		} else if (StanGry == Gra) {
-			BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_mapa1);
-
 		}
 
 		//Koniec petli gry****************************
@@ -480,11 +482,11 @@ if(HAL_GetTick()-czasZmiany > 2000){
 		printf("Predkosc Y: %d\n\r", DataNow.OsY);
 
 		//Do testu************************************
-		printf("CalkaTrap X: %li\n\r", CalkaTrapX);
+		/*printf("CalkaTrap X: %li\n\r", CalkaTrapX);
 		printf("CalkaTrap Y: %li\n\r", CalkaTrapY);
 
 		printf("CalkaRicha X: %li\n\r", CalkaRichaX);
-		printf("CalkaRicha Y: %li\n\r", CalkaRichaY);
+		printf("CalkaRicha Y: %li\n\r", CalkaRichaY);*/
 
 		printf("CalkaRomb X: %li\n\r", CalkaRombX);
 		printf("CalkaRomb Y: %li\n\r", CalkaRombY);
@@ -493,7 +495,7 @@ if(HAL_GetTick()-czasZmiany > 2000){
 		//printf("OsX: %d\n\r", Data.OsX);
 		//printf("OsY: %d\n\r", Data.OsY);
 		//printf("OsZ: %d\n\r", Data.OsZ);
-		HAL_Delay(200);
+		//HAL_Delay(200);
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
@@ -572,8 +574,82 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	if (htim->Instance == TIM10) //Przerwanie pochodzi od timera 10
 	{
 		//Zamienic na if(StanGry == Gra) przy uruchomieniu menu
-		if (StanGry == Gra) {
-			if ((Y < 300) && (Direction == 1)) {
+		if (StanGry == Gra)
+		{
+			if(WybranyPoziom == 0 && RozpoczetoNowaGre == 1)
+			{
+				BSP_LCD_Clear(LCD_COLOR_BLACK);
+				for(int i = 1; i < 1790; i++)
+					for(int j = -6; j < 7; j++)
+					{
+						if(i < 1788)
+						{
+							if(Sciezka1[i].X != Sciezka1[i+1].X)
+								BSP_LCD_DrawPixel(Sciezka1[i].X, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
+							else
+								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y, LCD_COLOR_WHITE);
+
+							if(Sciezka1[i-1].X != Sciezka1[i].X && Sciezka1[i].X == Sciezka1[i+1].X)
+							{
+								BSP_LCD_DrawPixel(Sciezka1[i].X, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X+1, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X+2, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X+3, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X+4, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X+5, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X+6, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
+
+							}else if(Sciezka1[i-1].Y != Sciezka1[i].Y && Sciezka1[i].Y == Sciezka1[i+1].Y)
+							{
+								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y+1, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y+2, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y+3, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y+4, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y+5, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y+6, LCD_COLOR_WHITE);
+
+							}else if(Sciezka1[i-1].X == Sciezka1[i].X && Sciezka1[i].X != Sciezka1[i+1].X)
+							{
+								BSP_LCD_DrawPixel(Sciezka1[i].X, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X-1, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X-2, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X-3, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X-4, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X-5, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X-6, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
+
+
+							}else if(Sciezka1[i-1].Y == Sciezka1[i].Y && Sciezka1[i].Y != Sciezka1[i+1].Y)
+							{
+								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y-1, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y-2, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y-3, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y-4, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y-5, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y-6, LCD_COLOR_WHITE);
+							}
+						}
+
+					}
+				//BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_mapa1);
+
+				BSP_LCD_SetTextColor(LCD_COLOR_RED);
+
+				BSP_LCD_FillCircle(Sciezka1[0].X, Sciezka1[0].Y, 8);
+
+				RozpoczetoNowaGre = 0;
+
+			}else if (WybranyPoziom == 1 && RozpoczetoNowaGre == 1)
+			{
+				BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_mapa2);
+
+				RozpoczetoNowaGre = 0;
+			}
+
+
+			/*if ((Y < 300) && (Direction == 1)) {
 
 				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
 
@@ -708,7 +784,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 				BSP_LCD_FillRect(0, 15, 15, 290);
 				BSP_LCD_FillRect(225, 15, 15, 290);
 			}
-
+*/
 		}
 	}
 
@@ -736,7 +812,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 //*************TESTOWA CZESC*****************************************************************************************
 
-		//Liczenie calki metoda wietu trapezow
+		/*//Liczenie calki metoda wietu trapezow
 		CalkaTrapX += (long) (4 * ((DataOld.OsX + DataNow.OsX) * 0.5)); //Czas miedzy kolejnymi pomiarami rowny 0.004 s, pomnozony przez 1000 zeby nie miec liczby z przecinkiem
 		CalkaTrapY += (long) (4 * ((DataOld.OsY + DataNow.OsY) * 0.5));
 		//koniec
@@ -767,7 +843,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 					+ ((CalkaPosrednia2Y - CalkaPosrednia1Y) / 3);
 			LicznikPomocniczy = 0;
 		}
-
+*/
 		//koniec
 
 		//Liczenie calki za pomoca metody Romberga
