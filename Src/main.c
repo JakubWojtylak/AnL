@@ -42,7 +42,9 @@
 #include "Menu_poziomy.h"
 //#include "mapa1.h"
 #include "mapa2.h"
-#include "SciezkaMapy1.h"
+//#include "SciezkaMapy1.h"
+#include "PunktySciezki.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,6 +54,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define SPOWOLNIENIE_KULKI 5
 
 /* USER CODE END PD */
 
@@ -103,7 +106,11 @@ uint32_t PoprzedniCzasPrzycisku;
 //*****************************************
 
 //Zmiana rozgrywki*************************
-uint32_t PozycjaNaSciezce;
+volatile uint32_t PozycjaNaSciezce;
+volatile uint8_t OpoznienieDodatniX;
+volatile uint8_t OpoznienieDodatniY;
+volatile uint8_t OpoznienieUjemnyX;
+volatile uint8_t OpoznienieUjemnyY;
 //*****************************************
 
 float dT;
@@ -274,6 +281,11 @@ int main(void)
 	WybranyPoziom = 0;
 	RozpoczetoNowaGre = 0;
 	//*********************
+
+	OpoznienieDodatniX = 0;
+	OpoznienieDodatniY = 0;
+	OpoznienieUjemnyX = 0;
+	OpoznienieUjemnyY = 0;
 
 	Animacja = 0;
 	Direction = 1;
@@ -517,8 +529,29 @@ int main(void)
 			if (WybranyPoziom == 0 && RozpoczetoNowaGre == 1)
 			{
 				BSP_LCD_Clear(LCD_COLOR_BLACK);
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
 
-				for (int i = 1; i < 1780; i++)
+				for(uint32_t i = 1; i <= IloscPunktowSciezki1; i++)
+				{
+					if(PunktySciezki1[i].SasiedniePunkty[0] != 0)
+					{
+						for(int j = -6; j < 7; j++)
+						{
+							BSP_LCD_DrawLine(PunktySciezki1[i].X-6, PunktySciezki1[i].Y+j, PunktySciezki1[PunktySciezki1[i].SasiedniePunkty[0]].X+6, PunktySciezki1[PunktySciezki1[i].SasiedniePunkty[0]].Y+j);
+						}
+
+					}
+
+					if(PunktySciezki1[i].SasiedniePunkty[2] != 0)
+					{
+						for(int j = -6; j < 7; j++)
+						{
+							BSP_LCD_DrawLine(PunktySciezki1[i].X+j, PunktySciezki1[i].Y-6, PunktySciezki1[PunktySciezki1[i].SasiedniePunkty[2]].X+j, PunktySciezki1[PunktySciezki1[i].SasiedniePunkty[2]].Y+6);
+						}
+					}
+				}
+
+				/*for (int i = 1; i < 1780; i++)
 				{
 					for (int j = -6; j < 7; j++)
 					{
@@ -595,17 +628,17 @@ int main(void)
 						}
 
 					}
-				}
+				}*/
 				//BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_mapa1);
 
-				PozycjaNaSciezce = 0;
+				PozycjaNaSciezce = 1;
 
 				BSP_LCD_SetTextColor(LCD_COLOR_RED);
 
-				BSP_LCD_FillCircle(Sciezka1[PozycjaNaSciezce].X, Sciezka1[PozycjaNaSciezce].Y, 5);
+				BSP_LCD_FillCircle(PunktySciezki1[PozycjaNaSciezce].X, PunktySciezki1[PozycjaNaSciezce].Y, 5);
 
-				X = Sciezka1[PozycjaNaSciezce].X;
-				Y = Sciezka1[PozycjaNaSciezce].Y;
+				X = PunktySciezki1[PozycjaNaSciezce].X;
+				Y = PunktySciezki1[PozycjaNaSciezce].Y;
 
 				PoprzednieX = X;
 				PoprzednieY = Y;
@@ -615,22 +648,42 @@ int main(void)
 			}
 			else if (WybranyPoziom == 1 && RozpoczetoNowaGre == 1)
 			{
+				BSP_LCD_Clear(LCD_COLOR_BLACK);
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
 
-				BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_mapa2);
+				for(uint32_t i = 1; i <= IloscPunktowSciezki2; i++)
+				{
+					if(PunktySciezki2[i].SasiedniePunkty[0] != 0)
+					{
+						for(int j = -6; j < 7; j++)
+						{
+							BSP_LCD_DrawLine(PunktySciezki2[i].X-6, PunktySciezki2[i].Y+j, PunktySciezki2[PunktySciezki2[i].SasiedniePunkty[0]].X+6, PunktySciezki2[PunktySciezki2[i].SasiedniePunkty[0]].Y+j);
+						}
 
-				RozpoczetoNowaGre = 0;
-			}
+					}
 
-			if (WybranyPoziom == 0)
-			{
-/*				PoprzednieX = X;
+					if(PunktySciezki2[i].SasiedniePunkty[2] != 0)
+					{
+						for(int j = -6; j < 7; j++)
+						{
+							BSP_LCD_DrawLine(PunktySciezki2[i].X+j, PunktySciezki2[i].Y-6, PunktySciezki2[PunktySciezki2[i].SasiedniePunkty[2]].X+j, PunktySciezki2[PunktySciezki2[i].SasiedniePunkty[2]].Y+6);
+						}
+					}
+				}
+
+				PozycjaNaSciezce = 1;
+
+				BSP_LCD_SetTextColor(LCD_COLOR_RED);
+
+				BSP_LCD_FillCircle(PunktySciezki2[PozycjaNaSciezce].X, PunktySciezki2[PozycjaNaSciezce].Y, 5);
+
+				X = PunktySciezki2[PozycjaNaSciezce].X;
+				Y = PunktySciezki2[PozycjaNaSciezce].Y;
+
+				PoprzednieX = X;
 				PoprzednieY = Y;
 
-				X = Sciezka1[i].X;
-				Y = Sciezka1[i].Y;
-
-				i = (i + 1)%1000;
-				HAL_Delay(100);*/
+				RozpoczetoNowaGre = 0;
 			}
 
 		}
@@ -652,14 +705,14 @@ int main(void)
 		 printf("CalkaRicha X: %li\n\r", CalkaRichaX);
 		 printf("CalkaRicha Y: %li\n\r", CalkaRichaY);*/
 
-		printf("CalkaRomb X: %li\n\r", CalkaRombX);
-		printf("CalkaRomb Y: %li\n\r", CalkaRombY);
+		//printf("CalkaRomb X: %li\n\r", CalkaRombX);
+		//printf("CalkaRomb Y: %li\n\r", CalkaRombY);
 		//********************************************
 
 		//printf("OsX: %d\n\r", Data.OsX);
 		//printf("OsY: %d\n\r", Data.OsY);
 		//printf("OsZ: %d\n\r", Data.OsZ);
-		HAL_Delay(300);
+		HAL_Delay(200);
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
@@ -1114,7 +1167,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 		DataOld = DataNow;
 // movement of the ball
-		if (AngleY > 10000)
+		if (AngleY > 8000) //bylo 10000
 		{
 			fMovedX = 1;
 			fMovedY = 1;
@@ -1122,30 +1175,50 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			/*if (X < 215)
 				X += 1;*/
 
-			if(Sciezka1[PozycjaNaSciezce].X < Sciezka1[PozycjaNaSciezce+1].X)
+
+			if(WybranyPoziom == 0)
 			{
-				PoprzednieX = X;
-				PoprzednieY = Y;
+				if(PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[0] != 0 && X < PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[0]].X
+					&& Y == PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[0]].Y)
+				{
+					if(OpoznienieDodatniX > SPOWOLNIENIE_KULKI)
+					{
+						PoprzednieX = X;
+						X+=1;
+						if(X == PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[0]].X)
+						{
+							PozycjaNaSciezce = PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[0]].NumerPunktu;
+						}
 
-				X = Sciezka1[PozycjaNaSciezce + 1].X;
-				Y = Sciezka1[PozycjaNaSciezce + 1].Y;
+						OpoznienieDodatniX = 0;
+					}
 
-				PozycjaNaSciezce += 1;
+					OpoznienieDodatniX += 1;
+				}
 
-			}else if(Sciezka1[PozycjaNaSciezce].X < Sciezka1[PozycjaNaSciezce-1].X)
+			}else if(WybranyPoziom == 1)
 			{
-				PoprzednieX = X;
-				PoprzednieY = Y;
+				if(PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[0] != 0 && X < PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[0]].X
+					&& Y == PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[0]].Y)
+				{
+					if(OpoznienieDodatniX > SPOWOLNIENIE_KULKI)
+					{
+						PoprzednieX = X;
+						X+=1;
+						if(X == PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[0]].X)
+						{
+							PozycjaNaSciezce = PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[0]].NumerPunktu;
+						}
 
-				X = Sciezka1[PozycjaNaSciezce - 1].X;
-				Y = Sciezka1[PozycjaNaSciezce - 1].Y;
+						OpoznienieDodatniX = 0;
+					}
 
-				if(PozycjaNaSciezce > 1)
-					PozycjaNaSciezce -= 1;
+					OpoznienieDodatniX += 1;
+				}
 			}
 
 		}
-		else if (AngleY < -10000)
+		else if (AngleY < -8000) //bylo -10000
 		{
 			fMovedX = 1;
 			fMovedY = 1;
@@ -1153,31 +1226,49 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			/*if (X > 25)
 				X -= 1;*/
 
-			if(Sciezka1[PozycjaNaSciezce].X > Sciezka1[PozycjaNaSciezce+1].X)
+			if(WybranyPoziom == 0)
 			{
-				PoprzednieX = X;
-				PoprzednieY = Y;
+				if(PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[1] != 0 && X > PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[1]].X
+					&& Y == PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[1]].Y)
+				{
+					if(OpoznienieUjemnyX > SPOWOLNIENIE_KULKI)
+					{
+						PoprzednieX = X;
+						X-=1;
+						if(X == PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[1]].X)
+						{
+							PozycjaNaSciezce = PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[1]].NumerPunktu;
+						}
 
-				X = Sciezka1[PozycjaNaSciezce + 1].X;
-				Y = Sciezka1[PozycjaNaSciezce + 1].Y;
+						OpoznienieUjemnyX = 0;
+					}
 
-				PozycjaNaSciezce += 1;
+					OpoznienieUjemnyX += 1;
+				}
 
-			}else if(Sciezka1[PozycjaNaSciezce].X > Sciezka1[PozycjaNaSciezce-1].X)
+			}else if(WybranyPoziom == 1)
 			{
-				PoprzednieX = X;
-				PoprzednieY = Y;
+				if(PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[1] != 0 && X > PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[1]].X
+					&& Y == PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[1]].Y)
+				{
+					if(OpoznienieUjemnyX > SPOWOLNIENIE_KULKI)
+					{
+						PoprzednieX = X;
+						X-=1;
+						if(X == PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[1]].X)
+						{
+							PozycjaNaSciezce = PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[1]].NumerPunktu;
+						}
 
-				X = Sciezka1[PozycjaNaSciezce - 1].X;
-				Y = Sciezka1[PozycjaNaSciezce - 1].Y;
+						OpoznienieUjemnyX = 0;
+					}
 
-				if(PozycjaNaSciezce > 1)
-					PozycjaNaSciezce -= 1;
+					OpoznienieUjemnyX += 1;
+				}
 			}
-
 		}
 
-		if (AngleX > 10000)
+		if (AngleX > 8000) //bylo 10000
 		{
 			fMovedX = 1;
 			fMovedY = 1;
@@ -1185,30 +1276,50 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			/*if (Y < 295)
 				Y += 1;*/
 
-			if(Sciezka1[PozycjaNaSciezce].Y < Sciezka1[PozycjaNaSciezce+1].Y)
+			if(WybranyPoziom == 0)
 			{
-				PoprzednieX = X;
-				PoprzednieY = Y;
+				if(PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[2] != 0 && Y < PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[2]].Y
+					&& X == PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[2]].X)
+				{
+					if(OpoznienieDodatniY > SPOWOLNIENIE_KULKI)
+					{
+						PoprzednieY = Y;
+						Y+=1;
+						if(Y == PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[2]].Y)
+						{
+							PozycjaNaSciezce = PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[2]].NumerPunktu;
+						}
 
-				X = Sciezka1[PozycjaNaSciezce + 1].X;
-				Y = Sciezka1[PozycjaNaSciezce + 1].Y;
+						OpoznienieDodatniY = 0;
+					}
 
-				PozycjaNaSciezce += 1;
+					OpoznienieDodatniY += 1;
 
-			}else if(Sciezka1[PozycjaNaSciezce].Y < Sciezka1[PozycjaNaSciezce-1].Y)
+				}
+
+			}else if(WybranyPoziom == 1)
 			{
-				PoprzednieX = X;
-				PoprzednieY = Y;
+				if(PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[2] != 0 && Y < PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[2]].Y
+					&& X == PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[2]].X)
+				{
+					if(OpoznienieDodatniY > SPOWOLNIENIE_KULKI)
+					{
+						PoprzednieY = Y;
+						Y+=1;
+						if(Y == PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[2]].Y)
+						{
+							PozycjaNaSciezce = PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[2]].NumerPunktu;
+						}
 
-				X = Sciezka1[PozycjaNaSciezce - 1].X;
-				Y = Sciezka1[PozycjaNaSciezce - 1].Y;
+						OpoznienieDodatniY = 0;
+					}
 
-				if(PozycjaNaSciezce > 1)
-					PozycjaNaSciezce -= 1;
+					OpoznienieDodatniY += 1;
+				}
 			}
 
 		}
-		else if (AngleX < -10000)
+		else if (AngleX < -8000) //bylo -10000
 		{
 			fMovedX = 1;
 			fMovedY = 1;
@@ -1216,48 +1327,67 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			/*if (Y > 25)
 				Y -= 1;*/
 
-			if(Sciezka1[PozycjaNaSciezce].Y > Sciezka1[PozycjaNaSciezce+1].Y)
+			if(WybranyPoziom == 0)
 			{
-				PoprzednieX = X;
-				PoprzednieY = Y;
+				if(PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[3] != 0 && Y > PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[3]].Y
+						&& X == PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[3]].X)
+				{
+					if(OpoznienieUjemnyY > SPOWOLNIENIE_KULKI)
+					{
+						PoprzednieY = Y;
+						Y-=1;
+						if(Y == PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[3]].Y)
+						{
+							PozycjaNaSciezce = PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[3]].NumerPunktu;
+						}
 
-				X = Sciezka1[PozycjaNaSciezce + 1].X;
-				Y = Sciezka1[PozycjaNaSciezce + 1].Y;
+						OpoznienieUjemnyY = 0;
+					}
 
-				PozycjaNaSciezce += 1;
+					OpoznienieUjemnyY += 1;
+				}
 
-			}else if(Sciezka1[PozycjaNaSciezce].Y > Sciezka1[PozycjaNaSciezce-1].Y)
+			}else if(WybranyPoziom == 1)
 			{
-				PoprzednieX = X;
-				PoprzednieY = Y;
+				if(PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[3] != 0 && Y > PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[3]].Y
+						&& X == PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[3]].X)
+				{
+					if(OpoznienieUjemnyY > SPOWOLNIENIE_KULKI)
+					{
+						PoprzednieY = Y;
+						Y-=1;
+						if(Y == PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[3]].Y)
+						{
+							PozycjaNaSciezce = PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[3]].NumerPunktu;
+						}
 
-				X = Sciezka1[PozycjaNaSciezce - 1].X;
-				Y = Sciezka1[PozycjaNaSciezce - 1].Y;
+						OpoznienieUjemnyY = 0;
+					}
 
-				if(PozycjaNaSciezce > 1)
-					PozycjaNaSciezce -= 1;
+					OpoznienieUjemnyY += 1;
+				}
 			}
 
 		}
 
-		if (fMovedY == 1 && (AngleY <= 10000 && AngleY >= -10000)
+		if (fMovedY == 1 && (AngleY <= 8000 && AngleY >= -8000) //bylo 10000
 				|| (AngleY > 20000 || AngleY < -20000))
 		{
 			ResetTimeY += 1;
 
 		}
-		else if (fMovedY == 1 && (AngleY > 10000 || AngleY < -10000))
+		else if (fMovedY == 1 && (AngleY > 8000 || AngleY < -8000)) //bylo 10000
 		{
 			ResetTimeY = 0;
 		}
 
-		if (fMovedX == 1 && (AngleX <= 10000 && AngleX >= -10000)
+		if (fMovedX == 1 && (AngleX <= 8000 && AngleX >= -8000) //bylo 10000
 				|| (AngleX > 20000 || AngleX < -20000))
 		{
 			ResetTimeX += 1;
 
 		}
-		else if (fMovedX == 1 && (AngleX > 10000 || AngleX < -10000))
+		else if (fMovedX == 1 && (AngleX > 8000 || AngleX < -8000)) //bylo 10000
 		{
 			ResetTimeX = 0;
 		}
@@ -1278,10 +1408,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			fMovedY = 0;
 		}
 
-		if (StanGry == Gra)
+		if (StanGry == Gra && RozpoczetoNowaGre == 0)
 		{
 			BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-			BSP_LCD_FillRect(PoprzednieX - 5, PoprzednieY - 6, 12, 12);
+			BSP_LCD_FillRect(PoprzednieX - 6, PoprzednieY - 6, 13, 13);
 
 			BSP_LCD_SetTextColor(LCD_COLOR_RED);
 			BSP_LCD_FillCircle(X, Y, 5);
