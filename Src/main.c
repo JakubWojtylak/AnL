@@ -36,12 +36,11 @@
 #include "../Drivers/BSP/STM32F429I-Discovery/stm32f429i_discovery_lcd.h"
 #include "../Drivers/BSP/STM32F429I-Discovery/stm32f429i_discovery_gyroscope.h"
 #include "../Drivers/BSP/STM32F429I-Discovery/Fonts/fonts.h"
-#include "Hehe.h"
-#include "Menu.h"
+//#include "Menu.h"
 #include "Menu_kontynuuj.h"
 #include "Menu_nowagra.h"
 #include "Menu_poziomy.h"
-#include "mapa1.h"
+//#include "mapa1.h"
 #include "mapa2.h"
 #include "SciezkaMapy1.h"
 /* USER CODE END Includes */
@@ -103,9 +102,14 @@ GPIO_PinState PoprzedniStanPrzycisku = GPIO_PIN_RESET;
 uint32_t PoprzedniCzasPrzycisku;
 //*****************************************
 
+//Zmiana rozgrywki*************************
+uint32_t PozycjaNaSciezce;
+//*****************************************
+
 float dT;
 uint8_t Animacja;
 volatile uint16_t X, Y;
+volatile uint16_t PoprzednieX, PoprzednieY;
 volatile uint8_t Direction;
 volatile uint8_t fMovedX;
 volatile uint8_t fMovedY;
@@ -127,7 +131,8 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-uint8_t spi5_sendrecv(uint8_t byte) {
+uint8_t spi5_sendrecv(uint8_t byte)
+{
 	uint8_t answer;
 
 	HAL_SPI_TransmitReceive(&hspi5, &byte, &answer, 1, HAL_MAX_DELAY);
@@ -135,7 +140,8 @@ uint8_t spi5_sendrecv(uint8_t byte) {
 	return answer;
 }
 
-uint8_t SPI5_read(uint8_t address) {
+uint8_t SPI5_read(uint8_t address)
+{
 	uint8_t dane;
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
 	spi5_sendrecv(address | 0x80);
@@ -145,7 +151,8 @@ uint8_t SPI5_read(uint8_t address) {
 	return dane;
 }
 
-void SPI5_write(uint8_t address, uint8_t data) {
+void SPI5_write(uint8_t address, uint8_t data)
+{
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_1, GPIO_PIN_RESET);
 	spi5_sendrecv(address);
 	data = spi5_sendrecv(data);
@@ -153,8 +160,10 @@ void SPI5_write(uint8_t address, uint8_t data) {
 
 }
 
-uint8_t OurL3GD20_Init() {
-	if (SPI5_read(0x0F) != 0b11010100) {
+uint8_t OurL3GD20_Init()
+{
+	if (SPI5_read(0x0F) != 0b11010100)
+	{
 
 		return 1;
 	}
@@ -176,7 +185,8 @@ uint8_t OurL3GD20_Init() {
 	return 0;
 }
 
-void OurL3GD20_Read() {
+void OurL3GD20_Read()
+{
 	float s;
 	short temp1, temp2, temp3;
 
@@ -195,11 +205,13 @@ void OurL3GD20_Read() {
 
 }
 
-void send_char(char c) {
+void send_char(char c)
+{
 	HAL_UART_Transmit(&huart1, (uint8_t*) &c, 1, 1000);
 }
 
-int __io_putchar(int ch) {
+int __io_putchar(int ch)
+{
 	send_char(ch);
 	return ch;
 }
@@ -210,7 +222,8 @@ int __io_putchar(int ch) {
  * @brief  The application entry point.
  * @retval int
  */
-int main(void) {
+int main(void)
+{
 	/* USER CODE BEGIN 1 */
 
 	/* USER CODE END 1 */
@@ -294,7 +307,7 @@ int main(void) {
 	//BSP_LCD_SetTextColor(LCD_COLOR_DARKGRAY);
 	//BSP_LCD_DisplayStringAtLine(5, (uint8_t*) "Hello");
 
-//	HAL_Delay(2000);
+	HAL_Delay(1000);
 	BSP_LCD_ClearStringLine(5);
 
 	BSP_LCD_Clear(LCD_COLOR_WHITE);
@@ -307,10 +320,17 @@ int main(void) {
 //	BSP_LCD_FillRect(225, 15, 15, 290);
 	//*********************************
 
-	OurL3GD20_Init();
-	czasZmiany=0;
+	if(BSP_GYRO_Init() == GYRO_ERROR)
+	{
+		printf("Nie udalo sie polaczyc z zyroskopem");
+		HAL_Delay(10000);
+	}
+
+
+	czasZmiany = 0;
 	HAL_TIM_Base_Start_IT(&htim10);
 	HAL_TIM_Base_Start_IT(&htim11);
+
 
 	//Zakomentuj przy sprawdzaniu menu !!!!!!!!!!!!!!!!!
 //	Animacja = 1;
@@ -322,30 +342,38 @@ int main(void) {
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
-	while (1) {
+	while (1)
+	{
 
-if(HAL_GetTick()-czasZmiany > 2000){
-		if (StanGry == Menu) {
+		if (HAL_GetTick() - czasZmiany > 2000)
+		{
+			if (StanGry == Menu)
+			{
 
 				StanMenu = (StanMenu + 1) % 3;
 				ZmienionoStanMenu = 1;
 
-			} else if (StanGry == WyborPoziomu) {
+			}
+			else if (StanGry == WyborPoziomu)
+			{
 				WybranyPoziom = (WybranyPoziom + 1) % 3;
 				ZmienionoStanPoziomow = 1;
 			}
 
-		czasZmiany = HAL_GetTick();
-}
+			czasZmiany = HAL_GetTick();
+		}
 		//Sprawdzanie stanu przycisku*****************
 		OdczytanyStanPrzycisku = HAL_GPIO_ReadPin(BB_GPIO_Port, BB_Pin);
 
-		if (OdczytanyStanPrzycisku != PoprzedniStanPrzycisku) {
+		if (OdczytanyStanPrzycisku != PoprzedniStanPrzycisku)
+		{
 			PoprzedniCzasPrzycisku = HAL_GetTick();
 		}
 
-		if ((HAL_GetTick() - PoprzedniCzasPrzycisku) > 10) {
-			if (OdczytanyStanPrzycisku != StanPrzycisku) {
+		if ((HAL_GetTick() - PoprzedniCzasPrzycisku) > 10)
+		{
+			if (OdczytanyStanPrzycisku != StanPrzycisku)
+			{
 				StanPrzycisku = OdczytanyStanPrzycisku;
 
 				//	if (StanPrzycisku == GPIO_PIN_RESET) { //StanGry = Gra;
@@ -361,23 +389,29 @@ if(HAL_GetTick()-czasZmiany > 2000){
 
 				//Przetestowac !!!!!!!!!!!!!!!!!
 				//Jezeli przytrzymamy przycisk dluzej nastapi przejscie miedzy gra, a menu
-				if (StanPrzycisku == GPIO_PIN_SET) {
+				if (StanPrzycisku == GPIO_PIN_SET)
+				{
 
-					if (StanGry == Menu && StanMenu == NowaGra) {
+					if (StanGry == Menu && StanMenu == NowaGra)
+					{
 						StanGry = Gra;
 						RozpoczetoNowaGre = 1;
 
-					} else if (StanGry == Menu && StanMenu == ZmienPoziom) {
+					}
+					else if (StanGry == Menu && StanMenu == ZmienPoziom)
+					{
 						StanGry = WyborPoziomu;
 						WybranyPoziom = 0;
 						ZmienionoStanPoziomow = 1;
 
-
-					} else if (StanGry == WyborPoziomu) {
+					}
+					else if (StanGry == WyborPoziomu)
+					{
 						StanGry = Menu;
 
-
-					} else if (StanGry == Gra) {
+					}
+					else if (StanGry == Gra)
+					{
 						StanGry = Menu;
 					}
 
@@ -393,9 +427,12 @@ if(HAL_GetTick()-czasZmiany > 2000){
 
 		//Petla gry***********************************
 
-		if (StanGry == Menu) {
-			if (ZmienionoStanMenu == 1) {
-				switch (StanMenu) {
+		if (StanGry == Menu)
+		{
+			if (ZmienionoStanMenu == 1)
+			{
+				switch (StanMenu)
+				{
 				case NowaGra:
 					BSP_LCD_DrawBitmap(0, 0,
 							(uint8_t*) image_data_Menu_nowagra);
@@ -416,9 +453,13 @@ if(HAL_GetTick()-czasZmiany > 2000){
 				ZmienionoStanMenu = 0;
 			}
 
-		} else if (StanGry == WyborPoziomu) {
-			if (ZmienionoStanPoziomow == 1) {
-				switch (WybranyPoziom) {
+		}
+		else if (StanGry == WyborPoziomu)
+		{
+			if (ZmienionoStanPoziomow == 1)
+			{
+				switch (WybranyPoziom)
+				{
 				case 0:
 					BSP_LCD_Clear(LCD_COLOR_WHITE);
 					BSP_LCD_SetTextColor(LCD_COLOR_GREEN);
@@ -469,6 +510,129 @@ if(HAL_GetTick()-czasZmiany > 2000){
 
 				ZmienionoStanPoziomow = 0;
 			}
+
+		}
+		else if (StanGry == Gra)
+		{
+			if (WybranyPoziom == 0 && RozpoczetoNowaGre == 1)
+			{
+				BSP_LCD_Clear(LCD_COLOR_BLACK);
+
+				for (int i = 1; i < 1780; i++)
+				{
+					for (int j = -6; j < 7; j++)
+					{
+						if (i < 1778)
+						{
+							if (Sciezka1[i].X != Sciezka1[i + 1].X)
+								BSP_LCD_DrawPixel(Sciezka1[i].X, Sciezka1[i].Y + j, LCD_COLOR_WHITE);
+							else
+								BSP_LCD_DrawPixel(Sciezka1[i].X + j, Sciezka1[i].Y, LCD_COLOR_WHITE);
+
+							if (Sciezka1[i - 1].X != Sciezka1[i].X && Sciezka1[i].X == Sciezka1[i + 1].X)
+							{
+								BSP_LCD_DrawPixel(Sciezka1[i].X, Sciezka1[i].Y + j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X + 1,
+										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X + 2,
+										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X + 3,
+										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X + 4,
+										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X + 5,
+										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X + 6,
+										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
+
+								BSP_LCD_DrawPixel(Sciezka1[i].X, Sciezka1[i].Y + j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X - 1, Sciezka1[i].Y + j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X - 2,
+										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X - 3,
+										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X - 4,
+										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X - 5,
+										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X - 6,
+										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
+
+							}
+							else if (Sciezka1[i - 1].Y != Sciezka1[i].Y && Sciezka1[i].Y == Sciezka1[i + 1].Y)
+							{
+								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
+										Sciezka1[i].Y, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
+										Sciezka1[i].Y + 1, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
+										Sciezka1[i].Y + 2, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
+										Sciezka1[i].Y + 3, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
+										Sciezka1[i].Y + 4, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
+										Sciezka1[i].Y + 5, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
+										Sciezka1[i].Y + 6, LCD_COLOR_WHITE);
+
+								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
+										Sciezka1[i].Y, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
+										Sciezka1[i].Y - 1, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
+										Sciezka1[i].Y - 2, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
+										Sciezka1[i].Y - 3, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
+										Sciezka1[i].Y - 4, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
+										Sciezka1[i].Y - 5, LCD_COLOR_WHITE);
+								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
+										Sciezka1[i].Y - 6, LCD_COLOR_WHITE);
+
+							}
+						}
+
+					}
+				}
+				//BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_mapa1);
+
+				PozycjaNaSciezce = 0;
+
+				BSP_LCD_SetTextColor(LCD_COLOR_RED);
+
+				BSP_LCD_FillCircle(Sciezka1[PozycjaNaSciezce].X, Sciezka1[PozycjaNaSciezce].Y, 5);
+
+				X = Sciezka1[PozycjaNaSciezce].X;
+				Y = Sciezka1[PozycjaNaSciezce].Y;
+
+				PoprzednieX = X;
+				PoprzednieY = Y;
+
+				RozpoczetoNowaGre = 0;
+
+			}
+			else if (WybranyPoziom == 1 && RozpoczetoNowaGre == 1)
+			{
+
+				BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_mapa2);
+
+				RozpoczetoNowaGre = 0;
+			}
+
+			if (WybranyPoziom == 0)
+			{
+/*				PoprzednieX = X;
+				PoprzednieY = Y;
+
+				X = Sciezka1[i].X;
+				Y = Sciezka1[i].Y;
+
+				i = (i + 1)%1000;
+				HAL_Delay(100);*/
+			}
+
 		}
 
 		//Koniec petli gry****************************
@@ -483,10 +647,10 @@ if(HAL_GetTick()-czasZmiany > 2000){
 
 		//Do testu************************************
 		/*printf("CalkaTrap X: %li\n\r", CalkaTrapX);
-		printf("CalkaTrap Y: %li\n\r", CalkaTrapY);
+		 printf("CalkaTrap Y: %li\n\r", CalkaTrapY);
 
-		printf("CalkaRicha X: %li\n\r", CalkaRichaX);
-		printf("CalkaRicha Y: %li\n\r", CalkaRichaY);*/
+		 printf("CalkaRicha X: %li\n\r", CalkaRichaX);
+		 printf("CalkaRicha Y: %li\n\r", CalkaRichaY);*/
 
 		printf("CalkaRomb X: %li\n\r", CalkaRombX);
 		printf("CalkaRomb Y: %li\n\r", CalkaRombY);
@@ -495,7 +659,7 @@ if(HAL_GetTick()-czasZmiany > 2000){
 		//printf("OsX: %d\n\r", Data.OsX);
 		//printf("OsY: %d\n\r", Data.OsY);
 		//printf("OsZ: %d\n\r", Data.OsZ);
-		//HAL_Delay(200);
+		HAL_Delay(300);
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
@@ -508,10 +672,14 @@ if(HAL_GetTick()-czasZmiany > 2000){
  * @brief System Clock Configuration
  * @retval None
  */
-void SystemClock_Config(void) {
-	RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
-	RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0 };
-	RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
+void SystemClock_Config(void)
+{
+	RCC_OscInitTypeDef RCC_OscInitStruct =
+	{ 0 };
+	RCC_ClkInitTypeDef RCC_ClkInitStruct =
+	{ 0 };
+	RCC_PeriphCLKInitTypeDef PeriphClkInitStruct =
+	{ 0 };
 
 	/** Configure the main internal regulator output voltage
 	 */
@@ -528,12 +696,14 @@ void SystemClock_Config(void) {
 	RCC_OscInitStruct.PLL.PLLN = 180;
 	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
 	RCC_OscInitStruct.PLL.PLLQ = 3;
-	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
+	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+	{
 		Error_Handler();
 	}
 	/** Activate the Over-Drive mode
 	 */
-	if (HAL_PWREx_EnableOverDrive() != HAL_OK) {
+	if (HAL_PWREx_EnableOverDrive() != HAL_OK)
+	{
 		Error_Handler();
 	}
 	/** Initializes the CPU, AHB and APB busses clocks
@@ -545,14 +715,16 @@ void SystemClock_Config(void) {
 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
 	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK) {
+	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
+	{
 		Error_Handler();
 	}
 	PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_LTDC;
 	PeriphClkInitStruct.PLLSAI.PLLSAIN = 192;
 	PeriphClkInitStruct.PLLSAI.PLLSAIR = 2;
 	PeriphClkInitStruct.PLLSAIDivR = RCC_PLLSAIDIVR_2;
-	if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
+	if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+	{
 		Error_Handler();
 	}
 }
@@ -569,226 +741,161 @@ void SystemClock_Config(void) {
  * @param  htim : TIM handle
  * @retval None
  */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
 	/* USER CODE BEGIN Callback 0 */
 	if (htim->Instance == TIM10) //Przerwanie pochodzi od timera 10
 	{
 		//Zamienic na if(StanGry == Gra) przy uruchomieniu menu
 		if (StanGry == Gra)
 		{
-			if(WybranyPoziom == 0 && RozpoczetoNowaGre == 1)
-			{
-				BSP_LCD_Clear(LCD_COLOR_BLACK);
-				for(int i = 1; i < 1790; i++)
-					for(int j = -6; j < 7; j++)
-					{
-						if(i < 1788)
-						{
-							if(Sciezka1[i].X != Sciezka1[i+1].X)
-								BSP_LCD_DrawPixel(Sciezka1[i].X, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
-							else
-								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y, LCD_COLOR_WHITE);
+			/*BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+			BSP_LCD_FillRect(PoprzednieX - 5, PoprzednieY - 6, 12, 12);
 
-							if(Sciezka1[i-1].X != Sciezka1[i].X && Sciezka1[i].X == Sciezka1[i+1].X)
-							{
-								BSP_LCD_DrawPixel(Sciezka1[i].X, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X+1, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X+2, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X+3, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X+4, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X+5, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X+6, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
-
-							}else if(Sciezka1[i-1].Y != Sciezka1[i].Y && Sciezka1[i].Y == Sciezka1[i+1].Y)
-							{
-								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y+1, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y+2, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y+3, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y+4, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y+5, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y+6, LCD_COLOR_WHITE);
-
-							}else if(Sciezka1[i-1].X == Sciezka1[i].X && Sciezka1[i].X != Sciezka1[i+1].X)
-							{
-								BSP_LCD_DrawPixel(Sciezka1[i].X, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X-1, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X-2, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X-3, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X-4, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X-5, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X-6, Sciezka1[i].Y+j, LCD_COLOR_WHITE);
-
-
-							}else if(Sciezka1[i-1].Y == Sciezka1[i].Y && Sciezka1[i].Y != Sciezka1[i+1].Y)
-							{
-								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y-1, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y-2, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y-3, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y-4, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y-5, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X+j, Sciezka1[i].Y-6, LCD_COLOR_WHITE);
-							}
-						}
-
-					}
-				//BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_mapa1);
-
-				BSP_LCD_SetTextColor(LCD_COLOR_RED);
-
-				BSP_LCD_FillCircle(Sciezka1[0].X, Sciezka1[0].Y, 8);
-
-				RozpoczetoNowaGre = 0;
-
-			}else if (WybranyPoziom == 1 && RozpoczetoNowaGre == 1)
-			{
-				BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_mapa2);
-
-				RozpoczetoNowaGre = 0;
-			}
-
+			BSP_LCD_SetTextColor(LCD_COLOR_RED);
+			BSP_LCD_FillCircle(X, Y, 5);*/
 
 			/*if ((Y < 300) && (Direction == 1)) {
 
-				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
+			 BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
 
-				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+			 BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
 
-				if (X <= 25 && Y <= 25)
-					BSP_LCD_FillRect(X - 10, Y - 10, 40, 40);
-				else if (X >= 215 && Y >= 295)
-					BSP_LCD_FillRect(X - 20, Y - 20, 30, 30);
-				else if (X <= 25 && Y >= 295)
-					BSP_LCD_FillRect(X - 10, Y - 20, 40, 30);
-				else if (X >= 215 && Y <= 25)
-					BSP_LCD_FillRect(X - 20, Y - 10, 30, 40);
-				else if (X <= 25)
-					BSP_LCD_FillRect(X - 10, Y - 20, 40, 40);
-				else if (X >= 215)
-					BSP_LCD_FillRect(X - 20, Y - 20, 30, 40);
-				else if (Y >= 295)
-					BSP_LCD_FillRect(X - 20, Y - 20, 40, 30);
-				else if (Y <= 25)
-					BSP_LCD_FillRect(X - 20, Y - 10, 40, 40);
-				else
-					BSP_LCD_FillRect(X - 20, Y - 20, 40, 40);
+			 if (X <= 25 && Y <= 25)
+			 BSP_LCD_FillRect(X - 10, Y - 10, 40, 40);
+			 else if (X >= 215 && Y >= 295)
+			 BSP_LCD_FillRect(X - 20, Y - 20, 30, 30);
+			 else if (X <= 25 && Y >= 295)
+			 BSP_LCD_FillRect(X - 10, Y - 20, 40, 30);
+			 else if (X >= 215 && Y <= 25)
+			 BSP_LCD_FillRect(X - 20, Y - 10, 30, 40);
+			 else if (X <= 25)
+			 BSP_LCD_FillRect(X - 10, Y - 20, 40, 40);
+			 else if (X >= 215)
+			 BSP_LCD_FillRect(X - 20, Y - 20, 30, 40);
+			 else if (Y >= 295)
+			 BSP_LCD_FillRect(X - 20, Y - 20, 40, 30);
+			 else if (Y <= 25)
+			 BSP_LCD_FillRect(X - 20, Y - 10, 40, 40);
+			 else
+			 BSP_LCD_FillRect(X - 20, Y - 20, 40, 40);
 
-				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+			 BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 
-				//Y += 10;
-				BSP_LCD_FillCircle(X, Y, 10);
-				BSP_LCD_FillRect(0, 0, 240, 15);
-				BSP_LCD_FillRect(0, 305, 240, 15);
-				BSP_LCD_FillRect(0, 15, 15, 290);
-				BSP_LCD_FillRect(225, 15, 15, 290);
+			 //Y += 10;
+			 BSP_LCD_FillCircle(X, Y, 10);
+			 BSP_LCD_FillRect(0, 0, 240, 15);
+			 BSP_LCD_FillRect(0, 305, 240, 15);
+			 BSP_LCD_FillRect(0, 15, 15, 290);
+			 BSP_LCD_FillRect(225, 15, 15, 290);
 
-			} else if ((Y >= 300) && (Direction == 1)) {
-				Direction = 0;
+			 } else if ((Y >= 300) && (Direction == 1)) {
+			 Direction = 0;
 
-				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
+			 BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
 
-				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-				if (X <= 25 && Y <= 25)
-					BSP_LCD_FillRect(X - 10, Y - 10, 40, 40);
-				else if (X >= 215 && Y >= 295)
-					BSP_LCD_FillRect(X - 20, Y - 20, 30, 30);
-				else if (X <= 25 && Y >= 295)
-					BSP_LCD_FillRect(X - 10, Y - 20, 40, 30);
-				else if (X >= 215 && Y <= 25)
-					BSP_LCD_FillRect(X - 20, Y - 10, 30, 40);
-				else if (X <= 25)
-					BSP_LCD_FillRect(X - 10, Y - 20, 40, 40);
-				else if (X >= 215)
-					BSP_LCD_FillRect(X - 20, Y - 20, 30, 40);
-				else if (Y >= 295)
-					BSP_LCD_FillRect(X - 20, Y - 20, 40, 30);
-				else if (Y <= 25)
-					BSP_LCD_FillRect(X - 20, Y - 10, 40, 40);
-				else
-					BSP_LCD_FillRect(X - 20, Y - 20, 40, 40);
+			 BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+			 if (X <= 25 && Y <= 25)
+			 BSP_LCD_FillRect(X - 10, Y - 10, 40, 40);
+			 else if (X >= 215 && Y >= 295)
+			 BSP_LCD_FillRect(X - 20, Y - 20, 30, 30);
+			 else if (X <= 25 && Y >= 295)
+			 BSP_LCD_FillRect(X - 10, Y - 20, 40, 30);
+			 else if (X >= 215 && Y <= 25)
+			 BSP_LCD_FillRect(X - 20, Y - 10, 30, 40);
+			 else if (X <= 25)
+			 BSP_LCD_FillRect(X - 10, Y - 20, 40, 40);
+			 else if (X >= 215)
+			 BSP_LCD_FillRect(X - 20, Y - 20, 30, 40);
+			 else if (Y >= 295)
+			 BSP_LCD_FillRect(X - 20, Y - 20, 40, 30);
+			 else if (Y <= 25)
+			 BSP_LCD_FillRect(X - 20, Y - 10, 40, 40);
+			 else
+			 BSP_LCD_FillRect(X - 20, Y - 20, 40, 40);
 
-				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+			 BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 
-				//Y -= 10;
-				BSP_LCD_FillCircle(X, Y, 10);
-				BSP_LCD_FillRect(0, 0, 240, 15);
-				BSP_LCD_FillRect(0, 305, 240, 15);
-				BSP_LCD_FillRect(0, 15, 15, 290);
-				BSP_LCD_FillRect(225, 15, 15, 290);
+			 //Y -= 10;
+			 BSP_LCD_FillCircle(X, Y, 10);
+			 BSP_LCD_FillRect(0, 0, 240, 15);
+			 BSP_LCD_FillRect(0, 305, 240, 15);
+			 BSP_LCD_FillRect(0, 15, 15, 290);
+			 BSP_LCD_FillRect(225, 15, 15, 290);
 
-			} else if ((Y > 20) && (Direction == 0)) {
+			 } else if ((Y > 20) && (Direction == 0)) {
 
-				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
+			 BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
 
-				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-				if (X <= 25 && Y <= 25)
-					BSP_LCD_FillRect(X - 10, Y - 10, 40, 40);
-				else if (X >= 215 && Y >= 295)
-					BSP_LCD_FillRect(X - 20, Y - 20, 30, 30);
-				else if (X <= 25 && Y >= 295)
-					BSP_LCD_FillRect(X - 10, Y - 20, 40, 30);
-				else if (X >= 215 && Y <= 25)
-					BSP_LCD_FillRect(X - 20, Y - 10, 30, 40);
-				else if (X <= 25)
-					BSP_LCD_FillRect(X - 10, Y - 20, 40, 40);
-				else if (X >= 215)
-					BSP_LCD_FillRect(X - 20, Y - 20, 30, 40);
-				else if (Y >= 295)
-					BSP_LCD_FillRect(X - 20, Y - 20, 40, 30);
-				else if (Y <= 25)
-					BSP_LCD_FillRect(X - 20, Y - 10, 40, 40);
-				else
-					BSP_LCD_FillRect(X - 20, Y - 20, 40, 40);
+			 BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+			 if (X <= 25 && Y <= 25)
+			 BSP_LCD_FillRect(X - 10, Y - 10, 40, 40);
+			 else if (X >= 215 && Y >= 295)
+			 BSP_LCD_FillRect(X - 20, Y - 20, 30, 30);
+			 else if (X <= 25 && Y >= 295)
+			 BSP_LCD_FillRect(X - 10, Y - 20, 40, 30);
+			 else if (X >= 215 && Y <= 25)
+			 BSP_LCD_FillRect(X - 20, Y - 10, 30, 40);
+			 else if (X <= 25)
+			 BSP_LCD_FillRect(X - 10, Y - 20, 40, 40);
+			 else if (X >= 215)
+			 BSP_LCD_FillRect(X - 20, Y - 20, 30, 40);
+			 else if (Y >= 295)
+			 BSP_LCD_FillRect(X - 20, Y - 20, 40, 30);
+			 else if (Y <= 25)
+			 BSP_LCD_FillRect(X - 20, Y - 10, 40, 40);
+			 else
+			 BSP_LCD_FillRect(X - 20, Y - 20, 40, 40);
 
-				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+			 BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 
-				//Y -= 10;
-				BSP_LCD_FillCircle(X, Y, 10);
-				BSP_LCD_FillRect(0, 0, 240, 15);
-				BSP_LCD_FillRect(0, 305, 240, 15);
-				BSP_LCD_FillRect(0, 15, 15, 290);
-				BSP_LCD_FillRect(225, 15, 15, 290);
+			 //Y -= 10;
+			 BSP_LCD_FillCircle(X, Y, 10);
+			 BSP_LCD_FillRect(0, 0, 240, 15);
+			 BSP_LCD_FillRect(0, 305, 240, 15);
+			 BSP_LCD_FillRect(0, 15, 15, 290);
+			 BSP_LCD_FillRect(225, 15, 15, 290);
 
-			} else if ((Y <= 20) && (Direction == 0)) {
-				Direction = 1;
+			 } else if ((Y <= 20) && (Direction == 0)) {
+			 Direction = 1;
 
-				BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
+			 BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
 
-				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-				if (X <= 25 && Y <= 25)
-					BSP_LCD_FillRect(X - 10, Y - 10, 40, 40);
-				else if (X >= 215 && Y >= 295)
-					BSP_LCD_FillRect(X - 20, Y - 20, 30, 30);
-				else if (X <= 25 && Y >= 295)
-					BSP_LCD_FillRect(X - 10, Y - 20, 40, 30);
-				else if (X >= 215 && Y <= 25)
-					BSP_LCD_FillRect(X - 20, Y - 10, 30, 40);
-				else if (X <= 25)
-					BSP_LCD_FillRect(X - 10, Y - 20, 40, 40);
-				else if (X >= 215)
-					BSP_LCD_FillRect(X - 20, Y - 20, 30, 40);
-				else if (Y >= 295)
-					BSP_LCD_FillRect(X - 20, Y - 20, 40, 30);
-				else if (Y <= 25)
-					BSP_LCD_FillRect(X - 20, Y - 10, 40, 40);
-				else
-					BSP_LCD_FillRect(X - 20, Y - 20, 40, 40);
+			 BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+			 if (X <= 25 && Y <= 25)
+			 BSP_LCD_FillRect(X - 10, Y - 10, 40, 40);
+			 else if (X >= 215 && Y >= 295)
+			 BSP_LCD_FillRect(X - 20, Y - 20, 30, 30);
+			 else if (X <= 25 && Y >= 295)
+			 BSP_LCD_FillRect(X - 10, Y - 20, 40, 30);
+			 else if (X >= 215 && Y <= 25)
+			 BSP_LCD_FillRect(X - 20, Y - 10, 30, 40);
+			 else if (X <= 25)
+			 BSP_LCD_FillRect(X - 10, Y - 20, 40, 40);
+			 else if (X >= 215)
+			 BSP_LCD_FillRect(X - 20, Y - 20, 30, 40);
+			 else if (Y >= 295)
+			 BSP_LCD_FillRect(X - 20, Y - 20, 40, 30);
+			 else if (Y <= 25)
+			 BSP_LCD_FillRect(X - 20, Y - 10, 40, 40);
+			 else
+			 BSP_LCD_FillRect(X - 20, Y - 20, 40, 40);
 
-				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+			 BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 
-				//Y += 10;
-				BSP_LCD_FillCircle(X, Y, 10);
-				BSP_LCD_FillRect(0, 0, 240, 15);
-				BSP_LCD_FillRect(0, 305, 240, 15);
-				BSP_LCD_FillRect(0, 15, 15, 290);
-				BSP_LCD_FillRect(225, 15, 15, 290);
-			}
-*/
+			 //Y += 10;
+			 BSP_LCD_FillCircle(X, Y, 10);
+			 BSP_LCD_FillRect(0, 0, 240, 15);
+			 BSP_LCD_FillRect(0, 305, 240, 15);
+			 BSP_LCD_FillRect(0, 15, 15, 290);
+			 BSP_LCD_FillRect(225, 15, 15, 290);
+			 }
+			 */
 		}
 	}
 
-	if (htim->Instance == TIM11) {
+	if (htim->Instance == TIM11)
+	{
 		OurL3GD20_Read();
 
 		//To mozna wsumie przy testowaniu wywalic za czesc testowa
@@ -813,41 +920,41 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 //*************TESTOWA CZESC*****************************************************************************************
 
 		/*//Liczenie calki metoda wietu trapezow
-		CalkaTrapX += (long) (4 * ((DataOld.OsX + DataNow.OsX) * 0.5)); //Czas miedzy kolejnymi pomiarami rowny 0.004 s, pomnozony przez 1000 zeby nie miec liczby z przecinkiem
-		CalkaTrapY += (long) (4 * ((DataOld.OsY + DataNow.OsY) * 0.5));
+		 CalkaTrapX += (long) (4 * ((DataOld.OsX + DataNow.OsX) * 0.5)); //Czas miedzy kolejnymi pomiarami rowny 0.004 s, pomnozony przez 1000 zeby nie miec liczby z przecinkiem
+		 CalkaTrapY += (long) (4 * ((DataOld.OsY + DataNow.OsY) * 0.5));
+		 //koniec
+
+		 //Liczenie calki za pomoca ekstrapolacji Richardsona
+		 if (LicznikPomocniczy == 0) {
+		 CalkaPosrednia2X = (long) (4 * ((DataOld.OsX + DataNow.OsX) * 0.5));
+		 CalkaPosrednia2Y = (long) (4 * ((DataOld.OsY + DataNow.OsY) * 0.5));
+
+		 DataTempRich = DataOld;
+
+		 LicznikPomocniczy = 1;
+
+		 } else {
+		 CalkaPosrednia2X +=
+		 (long) (4 * ((DataOld.OsX + DataNow.OsX) * 0.5));
+		 CalkaPosrednia2Y +=
+		 (long) (4 * ((DataOld.OsY + DataNow.OsY) * 0.5));
+
+		 CalkaPosrednia1X = (long) (8
+		 * ((DataTempRich.OsX + DataNow.OsX) * 0.5));
+		 CalkaPosrednia1Y = (long) (8
+		 * ((DataTempRich.OsY + DataNow.OsY) * 0.5));
+
+		 CalkaRichaX += (long) (CalkaPosrednia2X)
+		 + ((CalkaPosrednia2X - CalkaPosrednia1X) / 3);
+		 CalkaRichaY += (long) (CalkaPosrednia2Y)
+		 + ((CalkaPosrednia2Y - CalkaPosrednia1Y) / 3);
+		 LicznikPomocniczy = 0;
+		 }
+		 */
 		//koniec
-
-		//Liczenie calki za pomoca ekstrapolacji Richardsona
-		if (LicznikPomocniczy == 0) {
-			CalkaPosrednia2X = (long) (4 * ((DataOld.OsX + DataNow.OsX) * 0.5));
-			CalkaPosrednia2Y = (long) (4 * ((DataOld.OsY + DataNow.OsY) * 0.5));
-
-			DataTempRich = DataOld;
-
-			LicznikPomocniczy = 1;
-
-		} else {
-			CalkaPosrednia2X +=
-					(long) (4 * ((DataOld.OsX + DataNow.OsX) * 0.5));
-			CalkaPosrednia2Y +=
-					(long) (4 * ((DataOld.OsY + DataNow.OsY) * 0.5));
-
-			CalkaPosrednia1X = (long) (8
-					* ((DataTempRich.OsX + DataNow.OsX) * 0.5));
-			CalkaPosrednia1Y = (long) (8
-					* ((DataTempRich.OsY + DataNow.OsY) * 0.5));
-
-			CalkaRichaX += (long) (CalkaPosrednia2X)
-					+ ((CalkaPosrednia2X - CalkaPosrednia1X) / 3);
-			CalkaRichaY += (long) (CalkaPosrednia2Y)
-					+ ((CalkaPosrednia2Y - CalkaPosrednia1Y) / 3);
-			LicznikPomocniczy = 0;
-		}
-*/
-		//koniec
-
 		//Liczenie calki za pomoca metody Romberga
-		if (LicznikPomocniczyRomberg == 0) {
+		if (LicznikPomocniczyRomberg == 0)
+		{
 			DataTempRom[0] = DataOld;
 
 			CalkaPosredniaRomX[3] = (long) (4
@@ -857,7 +964,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 			LicznikPomocniczyRomberg = 1;
 
-		} else if (LicznikPomocniczyRomberg == 1) {
+		}
+		else if (LicznikPomocniczyRomberg == 1)
+		{
 			CalkaPosredniaRomX[3] += (long) (4
 					* ((DataOld.OsX + DataNow.OsX) * 0.5));
 			CalkaPosredniaRomY[3] += (long) (4
@@ -870,7 +979,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 			LicznikPomocniczyRomberg = 2;
 
-		} else if (LicznikPomocniczyRomberg == 2) {
+		}
+		else if (LicznikPomocniczyRomberg == 2)
+		{
 			DataTempRom[2] = DataOld;
 
 			CalkaPosredniaRomX[3] += (long) (4
@@ -880,7 +991,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 			LicznikPomocniczyRomberg = 3;
 
-		} else if (LicznikPomocniczyRomberg == 3) {
+		}
+		else if (LicznikPomocniczyRomberg == 3)
+		{
 			CalkaPosredniaRomX[3] += (long) (4
 					* ((DataOld.OsX + DataNow.OsX) * 0.5));
 			CalkaPosredniaRomY[3] += (long) (4
@@ -898,7 +1011,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 			LicznikPomocniczyRomberg = 4;
 
-		} else if (LicznikPomocniczyRomberg == 4) {
+		}
+		else if (LicznikPomocniczyRomberg == 4)
+		{
 			DataTempRom[1] = DataOld;
 
 			CalkaPosredniaRomX[3] += (long) (4
@@ -908,7 +1023,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 			LicznikPomocniczyRomberg = 5;
 
-		} else if (LicznikPomocniczyRomberg == 5) {
+		}
+		else if (LicznikPomocniczyRomberg == 5)
+		{
 			CalkaPosredniaRomX[3] += (long) (4
 					* ((DataOld.OsX + DataNow.OsX) * 0.5));
 			CalkaPosredniaRomY[3] += (long) (4
@@ -921,7 +1038,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 			LicznikPomocniczyRomberg = 6;
 
-		} else if (LicznikPomocniczyRomberg == 6) {
+		}
+		else if (LicznikPomocniczyRomberg == 6)
+		{
 			DataTempRom[3] = DataOld;
 
 			CalkaPosredniaRomX[3] += (long) (4
@@ -931,7 +1050,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 			LicznikPomocniczyRomberg = 7;
 
-		} else if (LicznikPomocniczyRomberg == 7) {
+		}
+		else if (LicznikPomocniczyRomberg == 7)
+		{
 			CalkaPosredniaRomX[3] += (long) (4
 					* ((DataOld.OsX + DataNow.OsX) * 0.5));
 			CalkaPosredniaRomY[3] += (long) (4
@@ -976,11 +1097,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			CalkaPomocnicza2RomY[1] = (long) (CalkaPomocniczaRomY[2]
 					+ ((CalkaPomocniczaRomY[2] - CalkaPomocniczaRomY[1]) / 15));
 
-			CalkaRombX =
+			CalkaRombX +=
 					(long) (CalkaPomocnicza2RomX[1]
 							+ ((CalkaPomocnicza2RomX[1]
 									- CalkaPomocnicza2RomX[0]) / 63));
-			CalkaRombY =
+			CalkaRombY +=
 					(long) (CalkaPomocnicza2RomY[1]
 							+ ((CalkaPomocnicza2RomY[1]
 									- CalkaPomocnicza2RomY[0]) / 63));
@@ -993,72 +1114,183 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 		DataOld = DataNow;
 // movement of the ball
-		if (AngleY > 10000) {
+		if (AngleY > 10000)
+		{
 			fMovedX = 1;
 			fMovedY = 1;
 
-			if (X < 215)
-				X += 1;
+			/*if (X < 215)
+				X += 1;*/
 
-		} else if (AngleY < -10000) {
+			if(Sciezka1[PozycjaNaSciezce].X < Sciezka1[PozycjaNaSciezce+1].X)
+			{
+				PoprzednieX = X;
+				PoprzednieY = Y;
+
+				X = Sciezka1[PozycjaNaSciezce + 1].X;
+				Y = Sciezka1[PozycjaNaSciezce + 1].Y;
+
+				PozycjaNaSciezce += 1;
+
+			}else if(Sciezka1[PozycjaNaSciezce].X < Sciezka1[PozycjaNaSciezce-1].X)
+			{
+				PoprzednieX = X;
+				PoprzednieY = Y;
+
+				X = Sciezka1[PozycjaNaSciezce - 1].X;
+				Y = Sciezka1[PozycjaNaSciezce - 1].Y;
+
+				if(PozycjaNaSciezce > 1)
+					PozycjaNaSciezce -= 1;
+			}
+
+		}
+		else if (AngleY < -10000)
+		{
 			fMovedX = 1;
 			fMovedY = 1;
 
-			if (X > 25)
-				X -= 1;
+			/*if (X > 25)
+				X -= 1;*/
+
+			if(Sciezka1[PozycjaNaSciezce].X > Sciezka1[PozycjaNaSciezce+1].X)
+			{
+				PoprzednieX = X;
+				PoprzednieY = Y;
+
+				X = Sciezka1[PozycjaNaSciezce + 1].X;
+				Y = Sciezka1[PozycjaNaSciezce + 1].Y;
+
+				PozycjaNaSciezce += 1;
+
+			}else if(Sciezka1[PozycjaNaSciezce].X > Sciezka1[PozycjaNaSciezce-1].X)
+			{
+				PoprzednieX = X;
+				PoprzednieY = Y;
+
+				X = Sciezka1[PozycjaNaSciezce - 1].X;
+				Y = Sciezka1[PozycjaNaSciezce - 1].Y;
+
+				if(PozycjaNaSciezce > 1)
+					PozycjaNaSciezce -= 1;
+			}
 
 		}
 
-		if (AngleX > 10000) {
+		if (AngleX > 10000)
+		{
 			fMovedX = 1;
 			fMovedY = 1;
 
-			if (Y < 295)
-				Y += 1;
+			/*if (Y < 295)
+				Y += 1;*/
 
-		} else if (AngleX < -10000) {
+			if(Sciezka1[PozycjaNaSciezce].Y < Sciezka1[PozycjaNaSciezce+1].Y)
+			{
+				PoprzednieX = X;
+				PoprzednieY = Y;
+
+				X = Sciezka1[PozycjaNaSciezce + 1].X;
+				Y = Sciezka1[PozycjaNaSciezce + 1].Y;
+
+				PozycjaNaSciezce += 1;
+
+			}else if(Sciezka1[PozycjaNaSciezce].Y < Sciezka1[PozycjaNaSciezce-1].Y)
+			{
+				PoprzednieX = X;
+				PoprzednieY = Y;
+
+				X = Sciezka1[PozycjaNaSciezce - 1].X;
+				Y = Sciezka1[PozycjaNaSciezce - 1].Y;
+
+				if(PozycjaNaSciezce > 1)
+					PozycjaNaSciezce -= 1;
+			}
+
+		}
+		else if (AngleX < -10000)
+		{
 			fMovedX = 1;
 			fMovedY = 1;
 
-			if (Y > 25)
-				Y -= 1;
+			/*if (Y > 25)
+				Y -= 1;*/
+
+			if(Sciezka1[PozycjaNaSciezce].Y > Sciezka1[PozycjaNaSciezce+1].Y)
+			{
+				PoprzednieX = X;
+				PoprzednieY = Y;
+
+				X = Sciezka1[PozycjaNaSciezce + 1].X;
+				Y = Sciezka1[PozycjaNaSciezce + 1].Y;
+
+				PozycjaNaSciezce += 1;
+
+			}else if(Sciezka1[PozycjaNaSciezce].Y > Sciezka1[PozycjaNaSciezce-1].Y)
+			{
+				PoprzednieX = X;
+				PoprzednieY = Y;
+
+				X = Sciezka1[PozycjaNaSciezce - 1].X;
+				Y = Sciezka1[PozycjaNaSciezce - 1].Y;
+
+				if(PozycjaNaSciezce > 1)
+					PozycjaNaSciezce -= 1;
+			}
 
 		}
 
 		if (fMovedY == 1 && (AngleY <= 10000 && AngleY >= -10000)
-				|| (AngleY > 20000 || AngleY < -20000)) {
+				|| (AngleY > 20000 || AngleY < -20000))
+		{
 			ResetTimeY += 1;
 
-		} else if (fMovedY == 1 && (AngleY > 10000 || AngleY < -10000)) {
+		}
+		else if (fMovedY == 1 && (AngleY > 10000 || AngleY < -10000))
+		{
 			ResetTimeY = 0;
 		}
 
 		if (fMovedX == 1 && (AngleX <= 10000 && AngleX >= -10000)
-				|| (AngleX > 20000 || AngleX < -20000)) {
+				|| (AngleX > 20000 || AngleX < -20000))
+		{
 			ResetTimeX += 1;
 
-		} else if (fMovedX == 1 && (AngleX > 10000 || AngleX < -10000)) {
+		}
+		else if (fMovedX == 1 && (AngleX > 10000 || AngleX < -10000))
+		{
 			ResetTimeX = 0;
 		}
 
-		if (ResetTimeX >= 1000) {
+		if (ResetTimeX >= 1000)
+		{
 			AngleX = 0;
 
 			ResetTimeX = 0;
 			fMovedX = 0;
 		}
 
-		if (ResetTimeY >= 1000) {
+		if (ResetTimeY >= 1000)
+		{
 			AngleY = 0;
 
 			ResetTimeY = 0;
 			fMovedY = 0;
 		}
 
+		if (StanGry == Gra)
+		{
+			BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+			BSP_LCD_FillRect(PoprzednieX - 5, PoprzednieY - 6, 12, 12);
+
+			BSP_LCD_SetTextColor(LCD_COLOR_RED);
+			BSP_LCD_FillCircle(X, Y, 5);
+		}
 	}
 
 	/* USER CODE END Callback 0 */
-	if (htim->Instance == TIM6) {
+	if (htim->Instance == TIM6)
+	{
 		HAL_IncTick();
 	}
 	/* USER CODE BEGIN Callback 1 */
@@ -1070,7 +1302,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
  * @brief  This function is executed in case of error occurrence.
  * @retval None
  */
-void Error_Handler(void) {
+void Error_Handler(void)
+{
 	/* USER CODE BEGIN Error_Handler_Debug */
 	/* User can add his own implementation to report the HAL error return state */
 
