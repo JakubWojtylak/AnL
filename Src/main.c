@@ -97,6 +97,9 @@ volatile uint8_t ZmienionoStanPoziomow;
 volatile uint8_t WybranyPoziom;
 volatile uint32_t czasZmiany;
 volatile uint8_t RozpoczetoNowaGre;
+volatile uint8_t CzyGra;
+volatile uint8_t KontynuowanaGra;
+volatile uint8_t Wygrana;
 //*****************************************
 
 //Zmiana stanu przycisku*******************
@@ -280,6 +283,9 @@ int main(void)
 	ZmienionoStanPoziomow = 1;
 	WybranyPoziom = 0;
 	RozpoczetoNowaGre = 0;
+	CzyGra = 0;
+	KontynuowanaGra = 0;
+	Wygrana = 0;
 	//*********************
 
 	OpoznienieDodatniX = 0;
@@ -408,7 +414,12 @@ int main(void)
 					{
 						StanGry = Gra;
 						RozpoczetoNowaGre = 1;
+						CzyGra = 1;
 
+					}else if(StanGry == Menu && StanMenu == KontynuujGre && CzyGra == 1)
+					{
+						StanGry = Gra;
+						KontynuowanaGra = 1;
 					}
 					else if (StanGry == Menu && StanMenu == ZmienPoziom)
 					{
@@ -526,6 +537,23 @@ int main(void)
 		}
 		else if (StanGry == Gra)
 		{
+			if(Wygrana == 1)
+			{
+				HAL_TIM_Base_Stop_IT(&htim11);
+				BSP_LCD_Clear(LCD_COLOR_WHITE);
+				BSP_LCD_SetTextColor(LCD_COLOR_RED);
+				BSP_LCD_DisplayStringAt(10, 30, (uint8_t*) "WYGRANA", CENTER_MODE);
+
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+
+				HAL_Delay(2000);
+
+				WybranyPoziom = (WybranyPoziom + 1)%3;
+				RozpoczetoNowaGre = 1;
+				Wygrana = 0;
+				HAL_TIM_Base_Start_IT(&htim11);
+			}
+
 			if (WybranyPoziom == 0 && RozpoczetoNowaGre == 1)
 			{
 				BSP_LCD_Clear(LCD_COLOR_BLACK);
@@ -551,87 +579,8 @@ int main(void)
 					}
 				}
 
-				/*for (int i = 1; i < 1780; i++)
-				{
-					for (int j = -6; j < 7; j++)
-					{
-						if (i < 1778)
-						{
-							if (Sciezka1[i].X != Sciezka1[i + 1].X)
-								BSP_LCD_DrawPixel(Sciezka1[i].X, Sciezka1[i].Y + j, LCD_COLOR_WHITE);
-							else
-								BSP_LCD_DrawPixel(Sciezka1[i].X + j, Sciezka1[i].Y, LCD_COLOR_WHITE);
 
-							if (Sciezka1[i - 1].X != Sciezka1[i].X && Sciezka1[i].X == Sciezka1[i + 1].X)
-							{
-								BSP_LCD_DrawPixel(Sciezka1[i].X, Sciezka1[i].Y + j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X + 1,
-										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X + 2,
-										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X + 3,
-										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X + 4,
-										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X + 5,
-										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X + 6,
-										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
-
-								BSP_LCD_DrawPixel(Sciezka1[i].X, Sciezka1[i].Y + j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X - 1, Sciezka1[i].Y + j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X - 2,
-										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X - 3,
-										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X - 4,
-										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X - 5,
-										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X - 6,
-										Sciezka1[i].Y + j, LCD_COLOR_WHITE);
-
-							}
-							else if (Sciezka1[i - 1].Y != Sciezka1[i].Y && Sciezka1[i].Y == Sciezka1[i + 1].Y)
-							{
-								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
-										Sciezka1[i].Y, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
-										Sciezka1[i].Y + 1, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
-										Sciezka1[i].Y + 2, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
-										Sciezka1[i].Y + 3, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
-										Sciezka1[i].Y + 4, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
-										Sciezka1[i].Y + 5, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
-										Sciezka1[i].Y + 6, LCD_COLOR_WHITE);
-
-								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
-										Sciezka1[i].Y, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
-										Sciezka1[i].Y - 1, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
-										Sciezka1[i].Y - 2, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
-										Sciezka1[i].Y - 3, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
-										Sciezka1[i].Y - 4, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
-										Sciezka1[i].Y - 5, LCD_COLOR_WHITE);
-								BSP_LCD_DrawPixel(Sciezka1[i].X + j,
-										Sciezka1[i].Y - 6, LCD_COLOR_WHITE);
-
-							}
-						}
-
-					}
-				}*/
-				//BSP_LCD_DrawBitmap(0, 0, (uint8_t*) image_data_mapa1);
-
-				PozycjaNaSciezce = 1;
+				PozycjaNaSciezce = 10;
 
 				BSP_LCD_SetTextColor(LCD_COLOR_RED);
 
@@ -642,6 +591,11 @@ int main(void)
 
 				PoprzednieX = X;
 				PoprzednieY = Y;
+
+				BSP_LCD_SetTextColor(LCD_COLOR_CYAN);
+				BSP_LCD_FillRect(PunktySciezki1[IloscPunktowSciezki1].X-6, PunktySciezki1[IloscPunktowSciezki1].Y-6, 13, 13);
+
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
 
 				RozpoczetoNowaGre = 0;
 
@@ -683,7 +637,88 @@ int main(void)
 				PoprzednieX = X;
 				PoprzednieY = Y;
 
+				BSP_LCD_SetTextColor(LCD_COLOR_CYAN);
+				BSP_LCD_FillRect(PunktySciezki2[IloscPunktowSciezki2].X-6, PunktySciezki2[IloscPunktowSciezki2].Y-6, 13, 13);
+
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+
 				RozpoczetoNowaGre = 0;
+
+			}else if (WybranyPoziom == 0 && KontynuowanaGra == 1)
+			{
+				BSP_LCD_Clear(LCD_COLOR_BLACK);
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+
+				for(uint32_t i = 1; i <= IloscPunktowSciezki1; i++)
+				{
+					if(PunktySciezki1[i].SasiedniePunkty[0] != 0)
+					{
+						for(int j = -6; j < 7; j++)
+						{
+							BSP_LCD_DrawLine(PunktySciezki1[i].X-6, PunktySciezki1[i].Y+j, PunktySciezki1[PunktySciezki1[i].SasiedniePunkty[0]].X+6, PunktySciezki1[PunktySciezki1[i].SasiedniePunkty[0]].Y+j);
+						}
+
+					}
+
+					if(PunktySciezki1[i].SasiedniePunkty[2] != 0)
+					{
+						for(int j = -6; j < 7; j++)
+						{
+							BSP_LCD_DrawLine(PunktySciezki1[i].X+j, PunktySciezki1[i].Y-6, PunktySciezki1[PunktySciezki1[i].SasiedniePunkty[2]].X+j, PunktySciezki1[PunktySciezki1[i].SasiedniePunkty[2]].Y+6);
+						}
+					}
+				}
+
+
+
+				BSP_LCD_SetTextColor(LCD_COLOR_RED);
+
+				BSP_LCD_FillCircle(PunktySciezki1[PozycjaNaSciezce].X, PunktySciezki1[PozycjaNaSciezce].Y, 5);
+
+				BSP_LCD_SetTextColor(LCD_COLOR_CYAN);
+				BSP_LCD_FillRect(PunktySciezki1[IloscPunktowSciezki1].X-6, PunktySciezki1[IloscPunktowSciezki1].Y-6, 13, 13);
+
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+
+				KontynuowanaGra = 0;
+
+			}
+			else if (WybranyPoziom == 1 && KontynuowanaGra == 1)
+			{
+				BSP_LCD_Clear(LCD_COLOR_BLACK);
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+
+				for(uint32_t i = 1; i <= IloscPunktowSciezki2; i++)
+				{
+					if(PunktySciezki2[i].SasiedniePunkty[0] != 0)
+					{
+						for(int j = -6; j < 7; j++)
+						{
+							BSP_LCD_DrawLine(PunktySciezki2[i].X-6, PunktySciezki2[i].Y+j, PunktySciezki2[PunktySciezki2[i].SasiedniePunkty[0]].X+6, PunktySciezki2[PunktySciezki2[i].SasiedniePunkty[0]].Y+j);
+						}
+
+					}
+
+					if(PunktySciezki2[i].SasiedniePunkty[2] != 0)
+					{
+						for(int j = -6; j < 7; j++)
+						{
+							BSP_LCD_DrawLine(PunktySciezki2[i].X+j, PunktySciezki2[i].Y-6, PunktySciezki2[PunktySciezki2[i].SasiedniePunkty[2]].X+j, PunktySciezki2[PunktySciezki2[i].SasiedniePunkty[2]].Y+6);
+						}
+					}
+				}
+
+
+				BSP_LCD_SetTextColor(LCD_COLOR_RED);
+
+				BSP_LCD_FillCircle(PunktySciezki2[PozycjaNaSciezce].X, PunktySciezki2[PozycjaNaSciezce].Y, 5);
+
+				BSP_LCD_SetTextColor(LCD_COLOR_CYAN);
+				BSP_LCD_FillRect(PunktySciezki2[IloscPunktowSciezki2].X-6, PunktySciezki2[IloscPunktowSciezki2].Y-6, 13, 13);
+
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+
+				KontynuowanaGra = 0;
 			}
 
 		}
@@ -799,152 +834,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	/* USER CODE BEGIN Callback 0 */
 	if (htim->Instance == TIM10) //Przerwanie pochodzi od timera 10
 	{
-		//Zamienic na if(StanGry == Gra) przy uruchomieniu menu
-		if (StanGry == Gra)
-		{
-			/*BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-			BSP_LCD_FillRect(PoprzednieX - 5, PoprzednieY - 6, 12, 12);
-
-			BSP_LCD_SetTextColor(LCD_COLOR_RED);
-			BSP_LCD_FillCircle(X, Y, 5);*/
-
-			/*if ((Y < 300) && (Direction == 1)) {
-
-			 BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
-
-			 BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-
-			 if (X <= 25 && Y <= 25)
-			 BSP_LCD_FillRect(X - 10, Y - 10, 40, 40);
-			 else if (X >= 215 && Y >= 295)
-			 BSP_LCD_FillRect(X - 20, Y - 20, 30, 30);
-			 else if (X <= 25 && Y >= 295)
-			 BSP_LCD_FillRect(X - 10, Y - 20, 40, 30);
-			 else if (X >= 215 && Y <= 25)
-			 BSP_LCD_FillRect(X - 20, Y - 10, 30, 40);
-			 else if (X <= 25)
-			 BSP_LCD_FillRect(X - 10, Y - 20, 40, 40);
-			 else if (X >= 215)
-			 BSP_LCD_FillRect(X - 20, Y - 20, 30, 40);
-			 else if (Y >= 295)
-			 BSP_LCD_FillRect(X - 20, Y - 20, 40, 30);
-			 else if (Y <= 25)
-			 BSP_LCD_FillRect(X - 20, Y - 10, 40, 40);
-			 else
-			 BSP_LCD_FillRect(X - 20, Y - 20, 40, 40);
-
-			 BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
-
-			 //Y += 10;
-			 BSP_LCD_FillCircle(X, Y, 10);
-			 BSP_LCD_FillRect(0, 0, 240, 15);
-			 BSP_LCD_FillRect(0, 305, 240, 15);
-			 BSP_LCD_FillRect(0, 15, 15, 290);
-			 BSP_LCD_FillRect(225, 15, 15, 290);
-
-			 } else if ((Y >= 300) && (Direction == 1)) {
-			 Direction = 0;
-
-			 BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
-
-			 BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-			 if (X <= 25 && Y <= 25)
-			 BSP_LCD_FillRect(X - 10, Y - 10, 40, 40);
-			 else if (X >= 215 && Y >= 295)
-			 BSP_LCD_FillRect(X - 20, Y - 20, 30, 30);
-			 else if (X <= 25 && Y >= 295)
-			 BSP_LCD_FillRect(X - 10, Y - 20, 40, 30);
-			 else if (X >= 215 && Y <= 25)
-			 BSP_LCD_FillRect(X - 20, Y - 10, 30, 40);
-			 else if (X <= 25)
-			 BSP_LCD_FillRect(X - 10, Y - 20, 40, 40);
-			 else if (X >= 215)
-			 BSP_LCD_FillRect(X - 20, Y - 20, 30, 40);
-			 else if (Y >= 295)
-			 BSP_LCD_FillRect(X - 20, Y - 20, 40, 30);
-			 else if (Y <= 25)
-			 BSP_LCD_FillRect(X - 20, Y - 10, 40, 40);
-			 else
-			 BSP_LCD_FillRect(X - 20, Y - 20, 40, 40);
-
-			 BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
-
-			 //Y -= 10;
-			 BSP_LCD_FillCircle(X, Y, 10);
-			 BSP_LCD_FillRect(0, 0, 240, 15);
-			 BSP_LCD_FillRect(0, 305, 240, 15);
-			 BSP_LCD_FillRect(0, 15, 15, 290);
-			 BSP_LCD_FillRect(225, 15, 15, 290);
-
-			 } else if ((Y > 20) && (Direction == 0)) {
-
-			 BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
-
-			 BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-			 if (X <= 25 && Y <= 25)
-			 BSP_LCD_FillRect(X - 10, Y - 10, 40, 40);
-			 else if (X >= 215 && Y >= 295)
-			 BSP_LCD_FillRect(X - 20, Y - 20, 30, 30);
-			 else if (X <= 25 && Y >= 295)
-			 BSP_LCD_FillRect(X - 10, Y - 20, 40, 30);
-			 else if (X >= 215 && Y <= 25)
-			 BSP_LCD_FillRect(X - 20, Y - 10, 30, 40);
-			 else if (X <= 25)
-			 BSP_LCD_FillRect(X - 10, Y - 20, 40, 40);
-			 else if (X >= 215)
-			 BSP_LCD_FillRect(X - 20, Y - 20, 30, 40);
-			 else if (Y >= 295)
-			 BSP_LCD_FillRect(X - 20, Y - 20, 40, 30);
-			 else if (Y <= 25)
-			 BSP_LCD_FillRect(X - 20, Y - 10, 40, 40);
-			 else
-			 BSP_LCD_FillRect(X - 20, Y - 20, 40, 40);
-
-			 BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
-
-			 //Y -= 10;
-			 BSP_LCD_FillCircle(X, Y, 10);
-			 BSP_LCD_FillRect(0, 0, 240, 15);
-			 BSP_LCD_FillRect(0, 305, 240, 15);
-			 BSP_LCD_FillRect(0, 15, 15, 290);
-			 BSP_LCD_FillRect(225, 15, 15, 290);
-
-			 } else if ((Y <= 20) && (Direction == 0)) {
-			 Direction = 1;
-
-			 BSP_LCD_SelectLayer(LCD_BACKGROUND_LAYER);
-
-			 BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-			 if (X <= 25 && Y <= 25)
-			 BSP_LCD_FillRect(X - 10, Y - 10, 40, 40);
-			 else if (X >= 215 && Y >= 295)
-			 BSP_LCD_FillRect(X - 20, Y - 20, 30, 30);
-			 else if (X <= 25 && Y >= 295)
-			 BSP_LCD_FillRect(X - 10, Y - 20, 40, 30);
-			 else if (X >= 215 && Y <= 25)
-			 BSP_LCD_FillRect(X - 20, Y - 10, 30, 40);
-			 else if (X <= 25)
-			 BSP_LCD_FillRect(X - 10, Y - 20, 40, 40);
-			 else if (X >= 215)
-			 BSP_LCD_FillRect(X - 20, Y - 20, 30, 40);
-			 else if (Y >= 295)
-			 BSP_LCD_FillRect(X - 20, Y - 20, 40, 30);
-			 else if (Y <= 25)
-			 BSP_LCD_FillRect(X - 20, Y - 10, 40, 40);
-			 else
-			 BSP_LCD_FillRect(X - 20, Y - 20, 40, 40);
-
-			 BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
-
-			 //Y += 10;
-			 BSP_LCD_FillCircle(X, Y, 10);
-			 BSP_LCD_FillRect(0, 0, 240, 15);
-			 BSP_LCD_FillRect(0, 305, 240, 15);
-			 BSP_LCD_FillRect(0, 15, 15, 290);
-			 BSP_LCD_FillRect(225, 15, 15, 290);
-			 }
-			 */
-		}
+		;
 	}
 
 	if (htim->Instance == TIM11)
@@ -1188,6 +1078,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 						if(X == PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[0]].X)
 						{
 							PozycjaNaSciezce = PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[0]].NumerPunktu;
+
+							if(PozycjaNaSciezce == IloscPunktowSciezki1)
+							{
+								Wygrana = 1;
+							}
 						}
 
 						OpoznienieDodatniX = 0;
@@ -1208,6 +1103,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 						if(X == PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[0]].X)
 						{
 							PozycjaNaSciezce = PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[0]].NumerPunktu;
+
+							if(PozycjaNaSciezce == IloscPunktowSciezki2)
+							{
+								Wygrana = 1;
+							}
 						}
 
 						OpoznienieDodatniX = 0;
@@ -1238,6 +1138,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 						if(X == PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[1]].X)
 						{
 							PozycjaNaSciezce = PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[1]].NumerPunktu;
+
+							if(PozycjaNaSciezce == IloscPunktowSciezki1)
+							{
+								Wygrana = 1;
+							}
 						}
 
 						OpoznienieUjemnyX = 0;
@@ -1258,6 +1163,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 						if(X == PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[1]].X)
 						{
 							PozycjaNaSciezce = PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[1]].NumerPunktu;
+
+							if(PozycjaNaSciezce == IloscPunktowSciezki2)
+							{
+								Wygrana = 1;
+							}
+
 						}
 
 						OpoznienieUjemnyX = 0;
@@ -1288,6 +1199,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 						if(Y == PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[2]].Y)
 						{
 							PozycjaNaSciezce = PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[2]].NumerPunktu;
+
+							if(PozycjaNaSciezce == IloscPunktowSciezki1)
+							{
+								Wygrana = 1;
+							}
 						}
 
 						OpoznienieDodatniY = 0;
@@ -1309,6 +1225,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 						if(Y == PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[2]].Y)
 						{
 							PozycjaNaSciezce = PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[2]].NumerPunktu;
+
+							if(PozycjaNaSciezce == IloscPunktowSciezki2)
+							{
+								Wygrana = 1;
+							}
 						}
 
 						OpoznienieDodatniY = 0;
@@ -1339,6 +1260,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 						if(Y == PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[3]].Y)
 						{
 							PozycjaNaSciezce = PunktySciezki1[PunktySciezki1[PozycjaNaSciezce].SasiedniePunkty[3]].NumerPunktu;
+
+							if(PozycjaNaSciezce == IloscPunktowSciezki1)
+							{
+								Wygrana = 1;
+							}
 						}
 
 						OpoznienieUjemnyY = 0;
@@ -1359,6 +1285,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 						if(Y == PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[3]].Y)
 						{
 							PozycjaNaSciezce = PunktySciezki2[PunktySciezki2[PozycjaNaSciezce].SasiedniePunkty[3]].NumerPunktu;
+
+							if(PozycjaNaSciezce == IloscPunktowSciezki2)
+							{
+								Wygrana = 1;
+							}
 						}
 
 						OpoznienieUjemnyY = 0;
@@ -1415,6 +1346,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 			BSP_LCD_SetTextColor(LCD_COLOR_RED);
 			BSP_LCD_FillCircle(X, Y, 5);
+
+			BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
 		}
 	}
 
