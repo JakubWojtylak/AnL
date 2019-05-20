@@ -87,6 +87,11 @@ volatile int32_t CalkaPomocnicza2RomY[2];
 
 volatile uint8_t LicznikPomocniczy;
 volatile uint8_t LicznikPomocniczyRomberg;
+
+volatile int32_t X_pri;
+volatile int32_t X_post;
+volatile int32_t V_pri;
+volatile int32_t V_post;
 //*****************************************
 
 //Zmienne stanu gry************************
@@ -580,7 +585,7 @@ int main(void)
 				}
 
 
-				PozycjaNaSciezce = 10;
+				PozycjaNaSciezce = 1;
 
 				BSP_LCD_SetTextColor(LCD_COLOR_RED);
 
@@ -644,6 +649,52 @@ int main(void)
 
 				RozpoczetoNowaGre = 0;
 
+
+			}else if (WybranyPoziom == 2 && RozpoczetoNowaGre == 1)
+			{
+				BSP_LCD_Clear(LCD_COLOR_BLACK);
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+
+				for(uint32_t i = 1; i <= IloscPunktowSciezki3; i++)
+				{
+					if(PunktySciezki3[i].SasiedniePunkty[0] != 0)
+					{
+						for(int j = -6; j < 7; j++)
+						{
+							BSP_LCD_DrawLine(PunktySciezki3[i].X-6, PunktySciezki3[i].Y+j, PunktySciezki3[PunktySciezki3[i].SasiedniePunkty[0]].X+6, PunktySciezki3[PunktySciezki3[i].SasiedniePunkty[0]].Y+j);
+						}
+
+					}
+
+					if(PunktySciezki3[i].SasiedniePunkty[2] != 0)
+					{
+						for(int j = -6; j < 7; j++)
+						{
+							BSP_LCD_DrawLine(PunktySciezki3[i].X+j, PunktySciezki3[i].Y-6, PunktySciezki3[PunktySciezki3[i].SasiedniePunkty[2]].X+j, PunktySciezki3[PunktySciezki3[i].SasiedniePunkty[2]].Y+6);
+						}
+					}
+				}
+
+				PozycjaNaSciezce = 1;
+
+				BSP_LCD_SetTextColor(LCD_COLOR_RED);
+
+				BSP_LCD_FillCircle(PunktySciezki3[PozycjaNaSciezce].X, PunktySciezki3[PozycjaNaSciezce].Y, 5);
+
+				X = PunktySciezki3[PozycjaNaSciezce].X;
+				Y = PunktySciezki3[PozycjaNaSciezce].Y;
+
+				PoprzednieX = X;
+				PoprzednieY = Y;
+
+				BSP_LCD_SetTextColor(LCD_COLOR_CYAN);
+				BSP_LCD_FillRect(PunktySciezki3[IloscPunktowSciezki3].X-6, PunktySciezki3[IloscPunktowSciezki3].Y-6, 13, 13);
+
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+
+				RozpoczetoNowaGre = 0;
+
+
 			}else if (WybranyPoziom == 0 && KontynuowanaGra == 1)
 			{
 				BSP_LCD_Clear(LCD_COLOR_BLACK);
@@ -682,8 +733,8 @@ int main(void)
 
 				KontynuowanaGra = 0;
 
-			}
-			else if (WybranyPoziom == 1 && KontynuowanaGra == 1)
+
+			}else if (WybranyPoziom == 1 && KontynuowanaGra == 1)
 			{
 				BSP_LCD_Clear(LCD_COLOR_BLACK);
 				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
@@ -719,6 +770,44 @@ int main(void)
 				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
 
 				KontynuowanaGra = 0;
+
+
+			}else if (WybranyPoziom == 2 && KontynuowanaGra == 1)
+			{
+				BSP_LCD_Clear(LCD_COLOR_BLACK);
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+
+				for(uint32_t i = 1; i <= IloscPunktowSciezki3; i++)
+				{
+					if(PunktySciezki3[i].SasiedniePunkty[0] != 0)
+					{
+						for(int j = -6; j < 7; j++)
+						{
+							BSP_LCD_DrawLine(PunktySciezki3[i].X-6, PunktySciezki3[i].Y+j, PunktySciezki3[PunktySciezki3[i].SasiedniePunkty[0]].X+6, PunktySciezki3[PunktySciezki3[i].SasiedniePunkty[0]].Y+j);
+						}
+
+					}
+
+					if(PunktySciezki3[i].SasiedniePunkty[2] != 0)
+					{
+						for(int j = -6; j < 7; j++)
+						{
+							BSP_LCD_DrawLine(PunktySciezki3[i].X+j, PunktySciezki3[i].Y-6, PunktySciezki3[PunktySciezki3[i].SasiedniePunkty[2]].X+j, PunktySciezki3[PunktySciezki3[i].SasiedniePunkty[2]].Y+6);
+						}
+					}
+				}
+
+
+				BSP_LCD_SetTextColor(LCD_COLOR_RED);
+
+				BSP_LCD_FillCircle(PunktySciezki3[PozycjaNaSciezce].X, PunktySciezki3[PozycjaNaSciezce].Y, 5);
+
+				BSP_LCD_SetTextColor(LCD_COLOR_CYAN);
+				BSP_LCD_FillRect(PunktySciezki3[IloscPunktowSciezki3].X-6, PunktySciezki3[IloscPunktowSciezki3].Y-6, 13, 13);
+
+				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+
+				KontynuowanaGra = 0;
 			}
 
 		}
@@ -740,8 +829,8 @@ int main(void)
 		 printf("CalkaRicha X: %li\n\r", CalkaRichaX);
 		 printf("CalkaRicha Y: %li\n\r", CalkaRichaY);*/
 
-		//printf("CalkaRomb X: %li\n\r", CalkaRombX);
-		//printf("CalkaRomb Y: %li\n\r", CalkaRombY);
+		printf("CalkaRomb X: %li\n\r", CalkaRombX);
+		printf("CalkaRomb Y: %li\n\r", CalkaRombY);
 		//********************************************
 
 		//printf("OsX: %d\n\r", Data.OsX);
@@ -840,6 +929,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	if (htim->Instance == TIM11)
 	{
 		OurL3GD20_Read();
+		if(DataNow.OsX < 10 && DataNow.OsX > -10) DataNow.OsX = 0;
+		if(DataNow.OsY < 10 && DataNow.OsY > -10) DataNow.OsY = 0;
+		if(DataNow.OsZ < 10 && DataNow.OsZ > -10) DataNow.OsZ = 0;
+
+		X_pri = X_post +(int32_t)( 0.4 * V_post);
+		V_pri = V_post;
+
+		X_post = X_pri + (int32_t)(0.9 * (DataNow.OsX - V_pri)*0.4);
+		V_post = V_pri + (int32_t)(0.05 * (DataNow.OsX - V_pri));
+
 
 		//To mozna wsumie przy testowaniu wywalic za czesc testowa
 		if ((DataNow.OsX >= 25 && DataNow.OsY <= 20)
@@ -1115,6 +1214,31 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 					OpoznienieDodatniX += 1;
 				}
+
+			}else if(WybranyPoziom == 2)
+			{
+				if(PunktySciezki3[PozycjaNaSciezce].SasiedniePunkty[0] != 0 && X < PunktySciezki3[PunktySciezki3[PozycjaNaSciezce].SasiedniePunkty[0]].X
+					&& Y == PunktySciezki3[PunktySciezki3[PozycjaNaSciezce].SasiedniePunkty[0]].Y)
+				{
+					if(OpoznienieDodatniX > SPOWOLNIENIE_KULKI)
+					{
+						PoprzednieX = X;
+						X+=1;
+						if(X == PunktySciezki3[PunktySciezki3[PozycjaNaSciezce].SasiedniePunkty[0]].X)
+						{
+							PozycjaNaSciezce = PunktySciezki3[PunktySciezki3[PozycjaNaSciezce].SasiedniePunkty[0]].NumerPunktu;
+
+							if(PozycjaNaSciezce == IloscPunktowSciezki3)
+							{
+								Wygrana = 1;
+							}
+						}
+
+						OpoznienieDodatniX = 0;
+					}
+
+					OpoznienieDodatniX += 1;
+				}
 			}
 
 		}
@@ -1175,11 +1299,38 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 					}
 
 					OpoznienieUjemnyX += 1;
+
+				}
+
+			}else if(WybranyPoziom == 2)
+			{
+				if(PunktySciezki3[PozycjaNaSciezce].SasiedniePunkty[1] != 0 && X > PunktySciezki3[PunktySciezki3[PozycjaNaSciezce].SasiedniePunkty[1]].X
+					&& Y == PunktySciezki3[PunktySciezki3[PozycjaNaSciezce].SasiedniePunkty[1]].Y)
+				{
+					if(OpoznienieUjemnyX > SPOWOLNIENIE_KULKI)
+					{
+						PoprzednieX = X;
+						X-=1;
+						if(X == PunktySciezki3[PunktySciezki3[PozycjaNaSciezce].SasiedniePunkty[1]].X)
+						{
+							PozycjaNaSciezce = PunktySciezki3[PunktySciezki3[PozycjaNaSciezce].SasiedniePunkty[1]].NumerPunktu;
+
+							if(PozycjaNaSciezce == IloscPunktowSciezki3)
+							{
+								Wygrana = 1;
+							}
+
+						}
+
+						OpoznienieUjemnyX = 0;
+					}
+
+					OpoznienieUjemnyX += 1;
 				}
 			}
 		}
 
-		if (AngleX > 8000) //bylo 10000
+		if (X_post > 8000) //bylo 10000
 		{
 			fMovedX = 1;
 			fMovedY = 1;
@@ -1237,10 +1388,35 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 					OpoznienieDodatniY += 1;
 				}
+
+			}else if(WybranyPoziom == 2)
+			{
+				if(PunktySciezki3[PozycjaNaSciezce].SasiedniePunkty[2] != 0 && Y < PunktySciezki3[PunktySciezki3[PozycjaNaSciezce].SasiedniePunkty[2]].Y
+					&& X == PunktySciezki3[PunktySciezki3[PozycjaNaSciezce].SasiedniePunkty[2]].X)
+				{
+					if(OpoznienieDodatniY > SPOWOLNIENIE_KULKI)
+					{
+						PoprzednieY = Y;
+						Y+=1;
+						if(Y == PunktySciezki3[PunktySciezki3[PozycjaNaSciezce].SasiedniePunkty[2]].Y)
+						{
+							PozycjaNaSciezce = PunktySciezki3[PunktySciezki3[PozycjaNaSciezce].SasiedniePunkty[2]].NumerPunktu;
+
+							if(PozycjaNaSciezce == IloscPunktowSciezki3)
+							{
+								Wygrana = 1;
+							}
+						}
+
+						OpoznienieDodatniY = 0;
+					}
+
+					OpoznienieDodatniY += 1;
+				}
 			}
 
 		}
-		else if (AngleX < -8000) //bylo -10000
+		else if (X_post < -8000) //bylo -10000
 		{
 			fMovedX = 1;
 			fMovedY = 1;
@@ -1297,8 +1473,32 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 					OpoznienieUjemnyY += 1;
 				}
-			}
 
+			}else if(WybranyPoziom == 2)
+			{
+				if(PunktySciezki3[PozycjaNaSciezce].SasiedniePunkty[3] != 0 && Y > PunktySciezki3[PunktySciezki3[PozycjaNaSciezce].SasiedniePunkty[3]].Y
+						&& X == PunktySciezki3[PunktySciezki3[PozycjaNaSciezce].SasiedniePunkty[3]].X)
+				{
+					if(OpoznienieUjemnyY > SPOWOLNIENIE_KULKI)
+					{
+						PoprzednieY = Y;
+						Y-=1;
+						if(Y == PunktySciezki3[PunktySciezki3[PozycjaNaSciezce].SasiedniePunkty[3]].Y)
+						{
+							PozycjaNaSciezce = PunktySciezki3[PunktySciezki3[PozycjaNaSciezce].SasiedniePunkty[3]].NumerPunktu;
+
+							if(PozycjaNaSciezce == IloscPunktowSciezki3)
+							{
+								Wygrana = 1;
+							}
+						}
+
+						OpoznienieUjemnyY = 0;
+					}
+
+					OpoznienieUjemnyY += 1;
+				}
+			}
 		}
 
 		if (fMovedY == 1 && (AngleY <= 8000 && AngleY >= -8000) //bylo 10000
