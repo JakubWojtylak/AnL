@@ -90,8 +90,13 @@ volatile uint8_t LicznikPomocniczyRomberg;
 
 volatile int32_t X_pri;
 volatile int32_t X_post;
-volatile int32_t V_pri;
-volatile int32_t V_post;
+volatile int32_t V_priX;
+volatile int32_t V_postX;
+
+volatile int32_t Y_pri;
+volatile int32_t Y_post;
+volatile int32_t V_priY;
+volatile int32_t V_postY;
 //*****************************************
 
 //Zmienne stanu gry************************
@@ -933,12 +938,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		if(DataNow.OsY < 10 && DataNow.OsY > -10) DataNow.OsY = 0;
 		if(DataNow.OsZ < 10 && DataNow.OsZ > -10) DataNow.OsZ = 0;
 
-		X_pri = X_post +(int32_t)( 0.4 * V_post);
-		V_pri = V_post;
+		X_pri = X_post +(int32_t)( 0.4 * V_postX);
+		V_priX = V_postX;
 
-		X_post = X_pri + (int32_t)(0.9 * (DataNow.OsX - V_pri)*0.4);
-		V_post = V_pri + (int32_t)(0.05 * (DataNow.OsX - V_pri));
+		X_post = X_pri + (int32_t)(0.9 * (DataNow.OsX - V_priX)*0.4);
+		V_postX = V_priX + (int32_t)(0.05 * (DataNow.OsX - V_priX));
 
+
+		Y_pri = Y_post +(int32_t)( 0.4 * V_postY);
+		V_priY = V_postY;
+
+		Y_post = Y_pri + (int32_t)(0.9 * (DataNow.OsY - V_priY)*0.4);
+		V_postY = V_priY + (int32_t)(0.05 * (DataNow.OsY - V_priY));
 
 		//To mozna wsumie przy testowaniu wywalic za czesc testowa
 		if ((DataNow.OsX >= 25 && DataNow.OsY <= 20)
@@ -1156,7 +1167,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 		DataOld = DataNow;
 // movement of the ball
-		if (AngleY > 8000) //bylo 10000
+		if( Y_post > 5000) //bylo 10000
 		{
 			fMovedX = 1;
 			fMovedY = 1;
@@ -1242,7 +1253,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			}
 
 		}
-		else if (AngleY < -8000) //bylo -10000
+		else if (Y_post < -5000) //bylo -10000
 		{
 			fMovedX = 1;
 			fMovedY = 1;
@@ -1330,7 +1341,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			}
 		}
 
-		if (X_post > 8000) //bylo 10000
+		if (X_post > 5000) //bylo 10000
 		{
 			fMovedX = 1;
 			fMovedY = 1;
@@ -1416,7 +1427,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 			}
 
 		}
-		else if (X_post < -8000) //bylo -10000
+		else if (X_post < -5000) //bylo -10000
 		{
 			fMovedX = 1;
 			fMovedY = 1;
