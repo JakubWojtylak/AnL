@@ -556,7 +556,7 @@ int main(void)
 
 				BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
 
-				HAL_Delay(2000);
+				HAL_Delay(1200);
 
 				WybranyPoziom = (WybranyPoziom + 1)%3;
 				RozpoczetoNowaGre = 1;
