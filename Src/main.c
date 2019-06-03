@@ -374,7 +374,7 @@ int main(void)
     while (1)
     {
 
-        if (HAL_GetTick() - czasZmiany > 2000)
+        if (HAL_GetTick() - czasZmiany > 1500)
         {
             if (StanGry == Menu)
             {
@@ -462,7 +462,21 @@ int main(void)
         //Petla gry***********************************
 
         if (StanGry == Menu)
+
         {
+        	   X_pri =0;
+        	             V_priX = 0;
+
+        	             X_post = 0;
+        	             V_postX = 0;
+
+
+        	             Y_pri = 0;
+        	             V_priY = 0;
+
+        	             Y_post = 0;
+        	             V_postY = 0;
+        	HAL_TIM_Base_Stop_IT(&htim11);
             if (ZmienionoStanMenu == 1)
             {
                 switch (StanMenu)
@@ -548,6 +562,8 @@ int main(void)
         }
         else if (StanGry == Gra)
         {
+         	HAL_TIM_Base_Start_IT(&htim11);
+
             if(Wygrana == 1)
             {
                 HAL_TIM_Base_Stop_IT(&htim11);
@@ -730,7 +746,7 @@ int main(void)
 
                 BSP_LCD_SetTextColor(LCD_COLOR_RED);
 
-                BSP_LCD_FillCircle(PunktySciezki1[PozycjaNaSciezce].X, PunktySciezki1[PozycjaNaSciezce].Y, 5);
+                //BSP_LCD_FillCircle(PunktySciezki1[PozycjaNaSciezce].X, PunktySciezki1[PozycjaNaSciezce].Y, 5);
 
                 BSP_LCD_SetTextColor(LCD_COLOR_CYAN);
                 BSP_LCD_FillRect(PunktySciezki1[IloscPunktowSciezki1].X-6, PunktySciezki1[IloscPunktowSciezki1].Y-6, 13, 13);
@@ -768,7 +784,7 @@ int main(void)
 
                 BSP_LCD_SetTextColor(LCD_COLOR_RED);
 
-                BSP_LCD_FillCircle(PunktySciezki2[PozycjaNaSciezce].X, PunktySciezki2[PozycjaNaSciezce].Y, 5);
+                //BSP_LCD_FillCircle(PunktySciezki2[PozycjaNaSciezce].X, PunktySciezki2[PozycjaNaSciezce].Y, 5);
 
                 BSP_LCD_SetTextColor(LCD_COLOR_CYAN);
                 BSP_LCD_FillRect(PunktySciezki2[IloscPunktowSciezki2].X-6, PunktySciezki2[IloscPunktowSciezki2].Y-6, 13, 13);
@@ -806,7 +822,7 @@ int main(void)
 
                 BSP_LCD_SetTextColor(LCD_COLOR_RED);
 
-                BSP_LCD_FillCircle(PunktySciezki3[PozycjaNaSciezce].X, PunktySciezki3[PozycjaNaSciezce].Y, 5);
+                //BSP_LCD_FillCircle(PunktySciezki3[PozycjaNaSciezce].X, PunktySciezki3[PozycjaNaSciezce].Y, 5);
 
                 BSP_LCD_SetTextColor(LCD_COLOR_CYAN);
                 BSP_LCD_FillRect(PunktySciezki3[IloscPunktowSciezki3].X-6, PunktySciezki3[IloscPunktowSciezki3].Y-6, 13, 13);
@@ -819,14 +835,14 @@ int main(void)
         }
 
         //Koniec petli gry****************************
-
-        printf("Angle X: %li\n\r", AngleX);
-        printf("Angle Y: %li\n\r", AngleY);
-        printf("Angle Z: %li\n\r", AngleZ);
-        printf("CzasX: %d\n\r", ResetTimeX);
-        printf("CzasY: %d\n\r", ResetTimeY);
-        printf("Predkosc X: %d\n\r", DataNow.OsX);
-        printf("Predkosc Y: %d\n\r", DataNow.OsY);
+//
+//        printf("Angle X: %li\n\r", AngleX);
+//        printf("Angle Y: %li\n\r", AngleY);
+//        printf("Angle Z: %li\n\r", AngleZ);
+//        printf("CzasX: %d\n\r", ResetTimeX);
+//        printf("CzasY: %d\n\r", ResetTimeY);
+//        printf("Predkosc X: %d\n\r", DataNow.OsX);
+//        printf("Predkosc Y: %d\n\r", DataNow.OsY);
 
         //Do testu************************************
         /*printf("CalkaTrap X: %li\n\r", CalkaTrapX);
@@ -835,14 +851,14 @@ int main(void)
          printf("CalkaRicha X: %li\n\r", CalkaRichaX);
          printf("CalkaRicha Y: %li\n\r", CalkaRichaY);*/
 
-        printf("CalkaRomb X: %li\n\r", CalkaRombX);
-        printf("CalkaRomb Y: %li\n\r", CalkaRombY);
+        //printf("CalkaRomb X: %li\n\r", CalkaRombX);
+        //printf("CalkaRomb Y: %li\n\r", CalkaRombY);
         //********************************************
 
         //printf("OsX: %d\n\r", Data.OsX);
         //printf("OsY: %d\n\r", Data.OsY);
         //printf("OsZ: %d\n\r", Data.OsZ);
-        HAL_Delay(200);
+        //HAL_Delay(200);
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
